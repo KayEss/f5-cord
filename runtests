@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import os
+from os import path
+import subprocess
+import sys
+
+
+def worked(command, expected=0):
+    code = subprocess.call(command)
+    if not (code == expected):
+        sys.exit(code)
+
+
+CLANG_OPTS = ['clang++', '-std=c++14', '-Iinclude']
+
+if __name__ == "__main__":
+    print("Testing Cord...")
+
+    folder = 'test/compile'
+    for fname in os.listdir(folder):
+        execute = CLANG_OPTS + ['-fsyntax-only', path.join(folder, fname)]
+        print(execute)
+        worked(execute)
+
+    folder = 'test/run'
+    for fname in os.listdir(folder):
+        execute = CLANG_OPTS + ['-o', '/tmp/a.out', path.join(folder, fname)]
+        print(execute)
+        worked(execute)
+        worked(['/tmp/a.out'])
