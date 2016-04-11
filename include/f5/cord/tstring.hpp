@@ -26,6 +26,17 @@ namespace f5 {
                 return lstring(bytes);
             }
 
+            constexpr tstring() {}
+
+            constexpr std::size_t size() const {
+                return sizeof...(Text);
+            }
+
+            template<char ... App>
+            constexpr auto operator + (tstring<App...>) const {
+                return tstring<Text..., App...>();
+            }
+
             std::string as_string() const {
                 return std::string{Text...};
             }
@@ -36,6 +47,11 @@ namespace f5 {
 
         template<char ... Text>
         constexpr char tstring<Text...>::bytes[sizeof...(Text) + 1];
+
+        template<char ... Text>
+        constexpr bool operator == (tstring<Text...> l, lstring r) {
+            return l.as_lstring() == r;
+        }
 
 
     }
