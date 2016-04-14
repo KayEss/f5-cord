@@ -62,9 +62,15 @@ namespace f5 {
                 }
                 return bytes < o.bytes;
             }
+            bool operator < (const std::string &s) const {
+                return p < s;
+            }
         };
 
 
+        bool operator < (const std::string &l, lstring r) {
+            return l < r.c_str();
+        }
     }
 
 

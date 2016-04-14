@@ -7,7 +7,8 @@ constexpr f5::lstring html5 = "html5";
 
 
 int main() {
-    assert(html < html5);
+    assert(html < std::string(html5));
+    assert(std::string(html) < html5);
     return 0;
 }
 
