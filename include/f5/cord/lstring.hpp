@@ -54,6 +54,14 @@ namespace f5 {
                     return false;
                 }
             }
+
+            constexpr bool operator < (lstring o) const {
+                const auto checks = bytes < o.bytes ? bytes : o.bytes;
+                for ( std::size_t s{}; s != checks; ++s ) {
+                    if ( p[s] != o.p[s] ) return p[s] < o.p[s];
+                }
+                return bytes < o.bytes;
+            }
         };
 
 
