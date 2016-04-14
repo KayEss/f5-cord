@@ -68,7 +68,7 @@ namespace f5 {
         };
 
 
-        bool operator < (const std::string &l, lstring r) {
+        inline bool operator < (const std::string &l, lstring r) {
             return l < r.c_str();
         }
     }
