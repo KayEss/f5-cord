@@ -54,6 +54,9 @@ namespace f5 {
                     return false;
                 }
             }
+            constexpr bool operator != (lstring o) const {
+                return not (*this == o);
+            }
 
             constexpr bool operator < (lstring o) const {
                 const auto checks = bytes < o.bytes ? bytes : o.bytes;

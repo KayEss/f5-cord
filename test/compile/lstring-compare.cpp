@@ -6,6 +6,9 @@ constexpr f5::lstring html4 = "html4";
 constexpr f5::lstring html5 = "html5";
 constexpr f5::lstring xhtml5 = "xhtml5";
 
+static_assert(html == "html", "html == \"html\"");
+static_assert(html4 != html5, "html4 != html5");
+
 static_assert(empty < html, "empty < html");
 static_assert(html < html4, "html < html4");
 static_assert(html4 < html5, "html4 < html5");
