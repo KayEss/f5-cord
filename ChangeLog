@@ -1,5 +1,5 @@
 2016-04-14  Kirit Sælensminde  <kirit@felspar.com>
- Implement `constexpr` ordering for `lstring`.
+ Implement `constexpr` and `std::string` ordering for `lstring`.
 
 2016-04-11  Kirit Sælensminde  <kirit@felspar.com>
  Initial basic compile time strings.
