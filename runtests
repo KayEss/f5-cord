@@ -5,26 +5,31 @@ import subprocess
 import sys
 
 
-def worked(command, expected=0):
-    code = subprocess.call(command)
+def worked(execute, expected=0):
+    print(execute)
+    code = subprocess.call(execute)
     if not (code == expected):
         sys.exit(code)
 
 
-CLANG_OPTS = ['clang++', '-std=c++14', '-Iinclude']
+def compile(command, expected=0, fn=None):
+    for compiler in ['clang++', 'g++']:
+        execute = [compiler] + command
+        worked(execute, expected)
+        if fn: fn()
+
+
+CPP_OPTS = ['-std=c++14', '-Iinclude']
 
 if __name__ == "__main__":
     print("Testing Cord...")
 
     folder = 'test/compile'
     for fname in os.listdir(folder):
-        execute = CLANG_OPTS + ['-fsyntax-only', path.join(folder, fname)]
-        print(execute)
-        worked(execute)
+        execute = CPP_OPTS + ['-fsyntax-only', path.join(folder, fname)]
+        compile(execute)
 
     folder = 'test/run'
     for fname in os.listdir(folder):
-        execute = CLANG_OPTS + ['-o', '/tmp/a.out', path.join(folder, fname)]
-        print(execute)
-        worked(execute)
-        worked(['/tmp/a.out'])
+        execute = CPP_OPTS + ['-o', '/tmp/a.out', path.join(folder, fname)]
+        compile(execute, fn=lambda: worked(['/tmp/a.out']))
