@@ -9,7 +9,7 @@
 #pragma once
 
 
-#include <string>
+#include <f5/cord/lstring.hpp>
 
 
 namespace f5 {
