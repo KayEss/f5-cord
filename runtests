@@ -19,17 +19,18 @@ def compile(command, expected=0, fn=None):
         if fn: fn()
 
 
-CPP_OPTS = ['-std=c++14', '-Iinclude']
+CPP_OPTS = ['-Iinclude']
 
 if __name__ == "__main__":
     print("Testing Cord...")
 
-    folder = 'test/compile'
-    for fname in os.listdir(folder):
-        execute = CPP_OPTS + ['-fsyntax-only', path.join(folder, fname)]
-        compile(execute)
+    for std in ['-std=c++14', '-std=c++1z']:
+        folder = 'test/compile'
+        for fname in os.listdir(folder):
+            execute = CPP_OPTS + [std] + ['-fsyntax-only', path.join(folder, fname)]
+            compile(execute)
 
-    folder = 'test/run'
-    for fname in os.listdir(folder):
-        execute = CPP_OPTS + ['-o', '/tmp/a.out', path.join(folder, fname)]
-        compile(execute, fn=lambda: worked(['/tmp/a.out']))
+        folder = 'test/run'
+        for fname in os.listdir(folder):
+            execute = CPP_OPTS + [std] + ['-o', '/tmp/a.out', path.join(folder, fname)]
+            compile(execute, fn=lambda: worked(['/tmp/a.out']))
