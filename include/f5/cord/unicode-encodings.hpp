@@ -18,10 +18,16 @@ namespace f5 {
 
 
     /// Raise an error of type E giving it the specified error text
-    template<typename E> [[noreturn]]
+    template<typename E>
     constexpr inline
     void raise(f5::cord::lstring error) {
         throw E(error.c_str());
+    }
+
+    /// Specialisation for when we want an error return
+    template<>
+    constexpr inline
+    void raise<void>(f5::cord::lstring) {
     }
 
 
@@ -49,6 +55,7 @@ namespace f5 {
             } else {
                 return true;
             }
+            return false;
         }
 
         /// Return the number of UTF8 values that this code point will
@@ -57,7 +64,7 @@ namespace f5 {
         template<typename E = std::domain_error>
         constexpr inline
         std::size_t u8length(utf32 cp) {
-            check_valid<E>(cp);
+            if ( not check_valid<E>(cp) ) return 0u;
             return 1u;
         }
 
