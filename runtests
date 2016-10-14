@@ -13,7 +13,7 @@ def worked(execute, expected=0):
 
 
 def compile(command, expected=0, fn=None):
-    for compiler in ['clang++', 'g++']:
+    for compiler in ['clang++-3.5', 'g++-6']:
         execute = [compiler] + command
         worked(execute, expected)
         if fn: fn()
