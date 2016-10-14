@@ -10,6 +10,7 @@
 
 
 #include <stdexcept>
+#include <cstdint>
 
 
 namespace f5 {
