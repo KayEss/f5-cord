@@ -19,7 +19,7 @@ def compile(command, expected=0, fn=None):
         if fn: fn()
 
 
-CPP_OPTS = ['-Iinclude']
+CPP_OPTS = ['-Iinclude', '-Werror', '-Wall', '-Wextra']
 
 if __name__ == "__main__":
     print("Testing Cord...")
