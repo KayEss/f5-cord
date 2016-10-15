@@ -51,7 +51,10 @@ namespace f5 {
         constexpr inline
         std::size_t u8length(utf32 cp) {
             if ( not check_valid<E>(cp) ) return 0u;
-            return 1u;
+            else if ( cp < 0x00080 ) return 1u;
+            else if ( cp < 0x00800 ) return 2u;
+            else if ( cp < 0x10000 ) return 3u;
+            else return 4u;
         }
 
 
