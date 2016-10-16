@@ -64,33 +64,33 @@ namespace f5 {
         /// if the input was zero and is part of the encoded sequence.
         template<typename E = std::domain_error>
         constexpr inline
-        std::array<utf8, 4> u8encode(utf32 cp) {
+        std::pair<std::size_t, std::array<utf8, 4>> u8encode(utf32 cp) {
             std::size_t length = u8length<E>(cp);
             switch ( length )  {
             case 1:
-                return {{
+                return {length, {{
                     static_cast<utf8>(cp & 0x7f),
-                    0u, 0u, 0u}};
+                    0u, 0u, 0u}}};
             case 2:
-                return {{
+                return {length, {{
                     static_cast<utf8>(0xc0 | ((cp >> 6) & 0x1f)),
                     static_cast<utf8>(0x80 | (cp & 0x3f)),
-                    0u, 0u}};
+                    0u, 0u}}};
             case 3:
-                return {{
+                return {length, {{
                     static_cast<utf8>(0xe0 | ((cp >> 12) & 0xf)),
                     static_cast<utf8>(0x80 | ((cp >> 6) & 0x3f)),
                     static_cast<utf8>(0x80 | (cp & 0x3f)),
-                    0u}};
+                    0u}}};
             case 4:
-                return {{
+                return {length, {{
                     static_cast<utf8>(0xf0 | ((cp >> 18) & 0x7)),
                     static_cast<utf8>(0x80 | ((cp >> 12) & 0x3f)),
                     static_cast<utf8>(0x80 | ((cp >> 6) & 0x3f)),
-                    static_cast<utf8>(0x80 | (cp & 0x3f))}};
+                    static_cast<utf8>(0x80 | (cp & 0x3f))}}};
             default:
                 raise<E>("Cannot encode an invalid UTF32 code point ");
-                return {{0u, 0u, 0u, 0u}};
+                return {0u, {{0u, 0u, 0u, 0u}}};
             }
         }
 
