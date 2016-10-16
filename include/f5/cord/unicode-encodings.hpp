@@ -21,9 +21,9 @@ namespace f5 {
     inline namespace cord {
 
 
-        /// A UTF-8 code point
+        /// A UTF-8 code unit
         typedef unsigned char utf8;
-        /// A UTF-32 code point
+        /// A UTF-32 code unit (or code point)
         typedef uint32_t utf32;
 
 
