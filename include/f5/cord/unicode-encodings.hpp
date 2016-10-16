@@ -35,8 +35,6 @@ namespace f5 {
                 raise<E>("UTF32 code point is in the leading UTF16 surrogate pair range");
             } else if ( cp >= 0xdc00 && cp <= 0xdfff ) {
                 raise<E>("UTF32 code point is in the trailing UTF16 surrogate pair range");
-            } else if ( cp == 0xfffe || cp == 0xffff ) {
-                raise<E>("UTF32 code point is invalid");
             } else if ( cp > 0x10ffff ) {
                 raise<E>("UTF32 code point is beyond the allowable range");
             } else {
