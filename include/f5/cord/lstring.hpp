@@ -37,7 +37,7 @@ namespace f5 {
                 return bytes;
             }
 
-            constexpr const char * const c_str() const {
+            constexpr const char * c_str() const {
                 return p ? p : "";
             }
             operator std::string () const {
