@@ -50,7 +50,7 @@ namespace f5 {
         /// exception will be thrown.
         template<typename E = std::domain_error>
         constexpr inline
-        std::size_t u8length(utf32 cp) {
+        char u8length(utf32 cp) {
             if ( not check_valid<E>(cp) ) return 0u;
             else if ( cp < 0x00080 ) return 1u;
             else if ( cp < 0x00800 ) return 2u;
@@ -64,8 +64,8 @@ namespace f5 {
         /// if the input was zero and is part of the encoded sequence.
         template<typename E = std::domain_error>
         constexpr inline
-        std::pair<std::size_t, std::array<utf8, 4>> u8encode(utf32 cp) {
-            std::size_t length = u8length<E>(cp);
+        std::pair<char, std::array<utf8, 4>> u8encode(utf32 cp) {
+            char length = u8length<E>(cp);
             switch ( length )  {
             case 1:
                 return {1u, {{
