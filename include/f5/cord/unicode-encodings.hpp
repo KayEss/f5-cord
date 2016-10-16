@@ -10,6 +10,7 @@
 
 
 #include <f5/raise.hpp>
+#include <array>
 #include <stdexcept>
 #include <cstdint>
 
@@ -55,6 +56,42 @@ namespace f5 {
             else if ( cp < 0x00800 ) return 2u;
             else if ( cp < 0x10000 ) return 3u;
             else return 4u;
+        }
+
+        /// Return up to 4 bytes of the UTF8 sequence for a code point.
+        /// If the code point needs less than four bytes then unused ones
+        /// will have a value of zero. A zero in the first position is used
+        /// if the input was zero and is part of the encoded sequence.
+        template<typename E = std::domain_error>
+        constexpr inline
+        std::array<utf8, 4> u8encode(utf32 cp) {
+            std::size_t length = u8length<E>(cp);
+            switch ( length )  {
+            case 1:
+                return {{
+                    static_cast<utf8>(cp & 0x7f),
+                    0u, 0u, 0u}};
+            case 2:
+                return {{
+                    static_cast<utf8>(0xc0 | ((cp >> 6) & 0x1f)),
+                    static_cast<utf8>(0x80 | (cp & 0x3f)),
+                    0u, 0u}};
+            case 3:
+                return {{
+                    static_cast<utf8>(0xe0 | ((cp >> 12) & 0xf)),
+                    static_cast<utf8>(0x80 | ((cp >> 6) & 0x3f)),
+                    static_cast<utf8>(0x80 | (cp & 0x3f)),
+                    0u}};
+            case 4:
+                return {{
+                    static_cast<utf8>(0xf0 | ((cp >> 18) & 0x7)),
+                    static_cast<utf8>(0x80 | ((cp >> 12) & 0x3f)),
+                    static_cast<utf8>(0x80 | ((cp >> 6) & 0x3f)),
+                    static_cast<utf8>(0x80 | (cp & 0x3f))}};
+            default:
+                raise<E>("Cannot encode an invalid UTF32 code point ");
+                return {{0u, 0u, 0u, 0u}};
+            }
         }
 
 
