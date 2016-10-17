@@ -23,8 +23,10 @@ namespace f5 {
 
         /// A UTF-8 code unit
         typedef unsigned char utf8;
+        /// A UTF-16 code unit
+        typedef char16_t utf16;
         /// A UTF-32 code unit (or code point)
-        typedef uint32_t utf32;
+        typedef char32_t utf32;
 
 
         /// Check that the UTF32 code point is valid. Throw an exception if not.
