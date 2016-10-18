@@ -30,7 +30,7 @@ int main() {
 
     // Try invalid with void error type
     assert(f5::check_valid<void>(' '));
-    assert(not f5::check_valid<void>(0xffff));
+    assert(not f5::check_valid<void>(0xffffff));
 
     return 0;
 }
