@@ -1,35 +1,37 @@
 #!/usr/bin/env python3
 import os
 from os import path
+from shlex import quote
 import subprocess
 import sys
 
 
 def worked(execute, expected=0):
-    print(execute)
+    print(' '.join([quote(c) for c in execute]))
     code = subprocess.call(execute)
     if not (code == expected):
         sys.exit(code)
 
 
 def compile(command, expected=0, fn=None):
-    for compiler in ['clang++', 'g++']:
+    for compiler in ['clang++-3.5', 'g++-6']:
         execute = [compiler] + command
         worked(execute, expected)
         if fn: fn()
 
 
-CPP_OPTS = ['-std=c++14', '-Iinclude']
+CPP_OPTS = ['-Iinclude', '-Werror', '-Wall', '-Wextra', '-Wpedantic']
 
 if __name__ == "__main__":
     print("Testing Cord...")
 
-    folder = 'test/compile'
-    for fname in os.listdir(folder):
-        execute = CPP_OPTS + ['-fsyntax-only', path.join(folder, fname)]
-        compile(execute)
+    for std in ['-std=c++14', '-std=c++1z']:
+        folder = 'test/compile'
+        for fname in os.listdir(folder):
+            execute = CPP_OPTS + [std] + ['-fsyntax-only', path.join(folder, fname)]
+            compile(execute)
 
-    folder = 'test/run'
-    for fname in os.listdir(folder):
-        execute = CPP_OPTS + ['-o', '/tmp/a.out', path.join(folder, fname)]
-        compile(execute, fn=lambda: worked(['/tmp/a.out']))
+        folder = 'test/run'
+        for fname in os.listdir(folder):
+            execute = CPP_OPTS + [std] + ['-o', '/tmp/a.out', path.join(folder, fname)]
+            compile(execute, fn=lambda: worked(['/tmp/a.out']))
