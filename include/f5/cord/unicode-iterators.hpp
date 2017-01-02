@@ -76,11 +76,11 @@ namespace f5 {
 
 
         /// Make a pair of iterators from a UTF-32 iterator
-        template<typename Iterator> inline
+        template<typename E = std::range_error, typename Iterator> inline
         auto make_u16u32_iterator(Iterator b, Iterator e) {
             return std::make_pair(
-                const_u16u32_iterator<Iterator>(b, e),
-                const_u16u32_iterator<Iterator>(e, e));
+                const_u16u32_iterator<Iterator, E>(b, e),
+                const_u16u32_iterator<Iterator, E>(e, e));
         }
 
 
@@ -166,11 +166,11 @@ namespace f5 {
 
 
         /// Make a pair of iterators from a UTF-32 iterator
-        template<typename Iterator> inline
+        template<typename Iterator, typename E = std::range_error> inline
         auto make_u32u16_iterator(Iterator b, Iterator e) {
             return std::make_pair(
-                const_u32u16_iterator<Iterator>(b, e),
-                const_u32u16_iterator<Iterator>(e, e));
+                const_u32u16_iterator<Iterator, E>(b, e),
+                const_u32u16_iterator<Iterator, E>(e, e));
         }
 
 
