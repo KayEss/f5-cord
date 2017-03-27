@@ -1,3 +1,6 @@
+2017-03-27  Kirit Sælensminde  <kirit@felspar.com>
+ Added `iostream` output for `lstring`.
+
 2017-01-01  Kirit Sælensminde  <kirit@felspar.com>
  Add in iterators for converting between some combinations of UTF encodings.
 
