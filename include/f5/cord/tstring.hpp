@@ -1,5 +1,5 @@
 /*
-    Copyright 2016, Felspar Co Ltd. http://www.kirit.com/f5
+    Copyright 2016-2017, Felspar Co Ltd. http://www.kirit.com/f5
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -49,8 +49,43 @@ namespace f5 {
         constexpr char tstring<Text...>::bytes[sizeof...(Text) + 1];
 
         template<char ... Text>
-        constexpr bool operator == (tstring<Text...> l, lstring r) {
+        constexpr inline
+        bool operator == (tstring<Text...> l, lstring r) {
             return l.as_lstring() == r;
+        }
+        template<char ... Text>
+        constexpr inline
+        bool operator == (tstring<Text...>, tstring<Text...>) {
+            return true;
+        }
+        template<char ... Text1, char ... Text2>
+        constexpr inline
+        bool operator ==(tstring<Text1...>, tstring<Text2...>) {
+            return false;
+        }
+        template<char ... Text>
+        constexpr inline
+        bool operator != (tstring<Text...>, tstring<Text...>) {
+            return false;
+        }
+        template<char ... Text1, char ... Text2>
+        constexpr inline
+        bool operator !=(tstring<Text1...>, tstring<Text2...>) {
+            return true;
+        }
+
+
+    }
+
+
+    inline namespace literals {
+
+
+        template<typename C, C ... Text>
+        constexpr inline
+        auto operator "" _t () {
+            static_assert(sizeof(C) == 1, "Only char types allowed with _t string literals");
+            return tstring<Text...>{};
         }
 
 

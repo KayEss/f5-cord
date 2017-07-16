@@ -1,5 +1,5 @@
 /*
-    Copyright 2016, Felspar Co Ltd. http://www.kirit.com/f5
+    Copyright 2016-2017, Felspar Co Ltd. http://www.kirit.com/f5
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,6 +20,7 @@ namespace f5 {
 
         /// A compile time string which is a concatenation of other compile
         /// time strings.
+        [[deprecated("Prefer the use of tstring")]]
         template<std::size_t N>
         struct vstring {
             lstring strings[N];
