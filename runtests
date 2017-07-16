@@ -14,13 +14,21 @@ def worked(execute, expected=0):
 
 
 COMPILER = {
-    'clang++': ['-Wno-unused-const-variable'],
-    'clang++-3.8': ['-Wno-unused-const-variable'],
-    'clang++-4.0': ['-Wno-unused-const-variable'],
+    'clang++': [
+        '-Wno-gnu-string-literal-operator-template',
+        '-Wno-unused-const-variable',
+    ],
+    'g++': [
+        '-Wno-gnu-string-literal-operator-template',
+    ],
 }
 def compile(command, expected=0, fn=None):
     for compiler in sys.argv[1:] or ['clang++', 'g++']:
-        execute = [compiler] + command + COMPILER.get(compiler, [])
+        extras = []
+        for cxx, opts in COMPILER.items():
+            if cxx in compiler:
+                extras += opts
+        execute = [compiler] + command + extras
         worked(execute, expected)
         if fn: fn()
 
