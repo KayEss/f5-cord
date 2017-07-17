@@ -26,12 +26,12 @@ namespace f5 {
         using utf32 = char32_t;
 
         /// Const memory buffers
-        using u8buffer = array_view<utf8>;
-        using u16buffer = array_view<utf16>;
-        using u32buffer = array_view<utf32>;
-        using const_u8buffer = array_view<const utf8>;
-        using const_u16buffer = array_view<const utf16>;
-        using const_u32buffer = array_view<const utf32>;
+        using u8buffer = buffer<utf8>;
+        using u16buffer = buffer<utf16>;
+        using u32buffer = buffer<utf32>;
+        using const_u8buffer = buffer<const utf8>;
+        using const_u16buffer = buffer<const utf16>;
+        using const_u32buffer = buffer<const utf32>;
 
 
     }

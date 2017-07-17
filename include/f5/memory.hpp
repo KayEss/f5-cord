@@ -20,7 +20,7 @@ namespace f5 {
     /// Basic view of contiguous blocks of some type. Two views
     /// are the same only if they point to the same underlying memory.
     template<typename V>
-    class array_view final {
+    class buffer final {
         V *m_data;
         std::size_t m_size;
     public:
@@ -32,44 +32,44 @@ namespace f5 {
         using pointer_const_type = std::add_pointer_t<std::add_const_t<V>>;
 
         /// Default construct an empty buffer
-        array_view()
+        buffer()
         : m_data(nullptr), m_size(0u) {
         }
 
         /// Construct from a vector
-        array_view(std::vector<value_type> &v)
+        buffer(std::vector<value_type> &v)
         : m_data(v.data()), m_size(v.size()) {
         }
         template<typename T>
-        array_view(const std::vector<T> &v)
+        buffer(const std::vector<T> &v)
         : m_data(v.data()), m_size(v.size()) {
         }
         // For C++ arrays
         template<typename T, std::size_t N>
-        constexpr array_view(std::array<T, N> &v)
+        constexpr buffer(std::array<T, N> &v)
         : m_data(v.data()), m_size(N) {
         }
         template<typename T, std::size_t N>
-        constexpr array_view(const std::array<T, N> &v)
+        constexpr buffer(const std::array<T, N> &v)
         : m_data(v.data()), m_size(N) {
         }
         /// From a C array
         template<std::size_t N>
-        constexpr array_view(V (&a)[N])
+        constexpr buffer(V (&a)[N])
         : m_data(a), m_size(N) {
         }
 
         /// Construct from pointers
-        constexpr array_view(pointer_type a, std::size_t items)
+        constexpr buffer(pointer_type a, std::size_t items)
         : m_data(a), m_size(items) {
         }
-        constexpr array_view(pointer_const_type a, std::size_t items)
+        constexpr buffer(pointer_const_type a, std::size_t items)
         : m_data(a), m_size(items) {
         }
-        array_view(pointer_type b, pointer_type e)
+        buffer(pointer_type b, pointer_type e)
         : m_data(b), m_size(e - b) {
         }
-        array_view(pointer_const_type b, pointer_const_type e)
+        buffer(pointer_const_type b, pointer_const_type e)
         : m_data(b), m_size(e - b) {
         }
 
@@ -77,7 +77,7 @@ namespace f5 {
         template<typename W, typename E = std::enable_if_t<
                 std::is_same<W, std::remove_const_t<V>>::value
             >>
-        array_view(array_view<W> a)
+        buffer(buffer<W> a)
         : m_data(a.data()), m_size(a.size()) {
         }
 
@@ -94,11 +94,11 @@ namespace f5 {
         }
 
         /// Return a slice of this array
-        constexpr array_view slice(std::size_t start) const {
-            return array_view(m_data + start, m_size - start);
+        constexpr buffer slice(std::size_t start) const {
+            return buffer(m_data + start, m_size - start);
         }
-        constexpr array_view slice(std::size_t start, std::size_t items) const {
-            return array_view(m_data + start, items);
+        constexpr buffer slice(std::size_t start, std::size_t items) const {
+            return buffer(m_data + start, items);
         }
 
         /// Index into the arraay

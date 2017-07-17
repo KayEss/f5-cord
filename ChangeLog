@@ -1,5 +1,6 @@
 2017-07-17  Kirit Sælensminde  <kirit@felspar.com>
- Add `u8view` and UTF8 decode function.
+ * Rename `array_view` to `buffer` as it is not always immutable.
+ * Add `u8view` and UTF8 decode function.
 
 2017-07-16  Kirit Sælensminde  <kirit@felspar.com>
  * Added an `array_view` with some `constexpr` support.
