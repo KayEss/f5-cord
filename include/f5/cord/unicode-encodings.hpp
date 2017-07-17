@@ -132,7 +132,7 @@ namespace f5 {
         /// Returns both the code point and the rest of the buffer.
         template<typename L = std::length_error, typename E = std::domain_error>
         constexpr inline
-        std::pair<utf32, const_u8buffer> decode(const_u8buffer buffer) {
+        std::pair<utf32, const_u8buffer> decode_one(const_u8buffer buffer) {
             if ( not buffer.size() ) {
                 raise<L>("Can't decode UTF8 from an empty data buffer");
                 return std::make_pair(0u, buffer);

@@ -28,17 +28,17 @@ static_assert(f5::u8length(0x1d11e) == 4, "The treble clef is 4 bytes long");
 constexpr auto space = f5::u8encode(' ');
 // u8decode
 constexpr unsigned char x[1] = {'x'};
-static_assert(f5::decode(x).first == 'x', "Expected x");
-static_assert(f5::decode(x).second.size() == 0u, "Should have used it all");
+static_assert(f5::decode_one(x).first == 'x', "Expected x");
+static_assert(f5::decode_one(x).second.size() == 0u, "Should have used it all");
 constexpr unsigned char ae[2] = {0xC3, 0xA6};
-static_assert(f5::decode(ae).first == 0xe6, "Expected x");
-static_assert(f5::decode(ae).second.size() == 0u, "Should have used it all");
+static_assert(f5::decode_one(ae).first == 0xe6, "Expected x");
+static_assert(f5::decode_one(ae).second.size() == 0u, "Should have used it all");
 constexpr unsigned char bom[3] = {0xEF,0xBB,0xBF};
-static_assert(f5::decode(bom).first == 0xfeff, "Expected the BOM");
-static_assert(f5::decode(bom).second.size() == 0u, "Should have used it all");
+static_assert(f5::decode_one(bom).first == 0xfeff, "Expected the BOM");
+static_assert(f5::decode_one(bom).second.size() == 0u, "Should have used it all");
 constexpr unsigned char clef[4] = {0xF0, 0x9D, 0x84, 0x9E};
-static_assert(f5::decode(clef).first == 0x1d11e, "Expected the Clef");
-static_assert(f5::decode(clef).second.size() == 0u, "Should have used it all");
+static_assert(f5::decode_one(clef).first == 0x1d11e, "Expected the Clef");
+static_assert(f5::decode_one(clef).second.size() == 0u, "Should have used it all");
 
 // UTF-16
 static_assert(not f5::is_surrogate(' '), "Space");

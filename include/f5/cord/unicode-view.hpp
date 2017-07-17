@@ -63,7 +63,7 @@ namespace f5 {
                 const_iterator() {}
 
                 utf32 operator * () const {
-                    return decode(buffer).first;
+                    return decode_one(buffer).first;
                 }
                 const_iterator &operator ++ () {
                     const auto here = **this;
@@ -115,7 +115,7 @@ namespace f5 {
             }
             /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
-                return const_u8buffer(buffer.data() + buffer.size(), 0u);
+                return const_u8buffer(buffer.data() + buffer.size(), std::size_t{0u});
             }
 
             /// Return the begin iterator that delivers UTF16 code points
