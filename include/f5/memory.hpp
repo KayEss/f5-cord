@@ -10,6 +10,7 @@
 
 
 #include <array>
+#include <memory>
 #include <type_traits>
 #include <vector>
 
@@ -129,6 +130,68 @@ namespace f5 {
         /// End at the beginning
         const_reverse_iterator rend() const {
             return const_reverse_iterator(begin());
+        }
+    };
+
+
+    /// An buffer whose ownership is shared
+    template<typename V>
+    class shared_buffer {
+        std::shared_ptr<V> m_data;
+        std::size_t m_size;
+
+        shared_buffer(std::shared_ptr<V> ptr, std::size_t begin, std::size_t count)
+        : m_data(std::move(ptr), ptr.get() + begin), m_size(count) {
+        }
+    public:
+        /// Buffer types
+        using buffer_type = buffer<std::remove_const_t<V>>;
+        using const_buffer_type = buffer<std::add_const_t<V>>;
+
+        /// Construct buffer large enough to hold `size` items, which are
+        /// all default constructed.
+        shared_buffer(std::size_t size)
+        : m_data(new V[size], [](auto p) { delete[] p; }), m_size(size) {
+        }
+
+        /// The number of elements in the buffer
+        std::size_t size() const {
+            return m_size;
+        }
+
+        /// Access to the underlying memory block
+        V *data() {
+            return m_data.get();
+        }
+
+        /// Subscription operators into the memory
+        V& operator [] (std::size_t index) {
+            return data()[index];
+        }
+
+        /// Return a slice which is also shared
+        shared_buffer slice(std::size_t index) {
+            return shared_buffer(m_data, index, m_size - index);
+        }
+        shared_buffer slice(std::size_t index, std::size_t count) {
+            return shared_buffer(m_data, index, count);
+        }
+
+        /// Iteration across the memory
+        using iterator = V*;
+        iterator begin() {
+            return data();
+        }
+        iterator end() {
+            return data() + m_size;
+        }
+
+        /// Conversion to non-owning buffers
+        operator buffer<V> () {
+            return buffer<V>{m_data.get(), m_size};
+        }
+        operator buffer<const V> () const {
+            return buffer<const V>{m_data.get(), m_size};
         }
     };
 

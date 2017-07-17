@@ -126,6 +126,11 @@ namespace f5 {
             const_u16_iterator u16end() const {
                 return const_u16_iterator(end(), end());
             }
+
+            /// Safe conversions
+            operator const_u8buffer () const {
+                return buffer;
+            }
         };
 
 
