@@ -69,6 +69,10 @@ namespace f5 {
         array_view(pointer_type b, pointer_type e)
         : m_data(b), m_size(e - b) {
         }
+        array_view(pointer_const_type b, pointer_const_type e)
+        : m_data(b), m_size(e - b) {
+        }
+
         /// Converting constructors
         template<typename W, typename E = std::enable_if_t<
                 std::is_same<W, std::remove_const_t<V>>::value
