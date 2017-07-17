@@ -44,11 +44,22 @@ namespace f5 {
         array_view(const std::vector<T> &v)
         : m_data(v.data()), m_size(v.size()) {
         }
+        // For C++ arrays
         template<typename T, std::size_t N>
-        array_view(std::array<T, N> &v)
+        constexpr array_view(std::array<T, N> &v)
         : m_data(v.data()), m_size(N) {
         }
-        /// Construct from an array
+        template<typename T, std::size_t N>
+        constexpr array_view(const std::array<T, N> &v)
+        : m_data(v.data()), m_size(N) {
+        }
+        /// From a C array
+        template<std::size_t N>
+        constexpr array_view(V (&a)[N])
+        : m_data(a), m_size(N) {
+        }
+
+        /// Construct from pointers
         constexpr array_view(pointer_type a, std::size_t items)
         : m_data(a), m_size(items) {
         }
@@ -67,7 +78,7 @@ namespace f5 {
         }
 
         /// The start of the data array
-        std::add_pointer_t<V> data() {
+        constexpr std::add_pointer_t<V> data() {
             return m_data;
         }
         constexpr pointer_const_type data() const {
@@ -87,7 +98,7 @@ namespace f5 {
         }
 
         /// Index into the arraay
-        V &operator [] (std::size_t index) {
+        constexpr V &operator [] (std::size_t index) {
             return data()[index];
         }
         constexpr const V &operator [] (std::size_t index) const {

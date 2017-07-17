@@ -1,4 +1,7 @@
-2017-03-27  Kirit Sælensminde  <kirit@felspar.com>
+2017-07-17  Kirit Sælensminde  <kirit@felspar.com>
+ Add `u8view` and UTF8 decode function.
+
+2017-07-16  Kirit Sælensminde  <kirit@felspar.com>
  * Added an `array_view` with some `constexpr` support.
  * Add a `_t` literal for creating `tstring` instances. This allows us to deprecate the `vstring` template.
 

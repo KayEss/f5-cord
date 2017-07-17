@@ -9,7 +9,9 @@
 #pragma once
 
 
+#include <f5/memory.hpp>
 #include <f5/cord/lstring.hpp>
+#include <f5/cord/unicode-core.hpp>
 
 
 namespace f5 {
@@ -40,8 +42,16 @@ namespace f5 {
             std::string as_string() const {
                 return std::string{Text...};
             }
+            /// Allow conversion to a std::string (should this be explicit?)
             operator std::string () const {
                 return as_string();
+            }
+            /// Safe conversions
+            operator lstring () const {
+                return as_lstring();
+            }
+            operator const_u8buffer () const {
+                return as_lstring();
             }
         };
 

@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <f5/cord/unicode-core.hpp>
 #include <string>
 
 
@@ -40,8 +41,14 @@ namespace f5 {
             constexpr const char * c_str() const {
                 return p ? p : "";
             }
+
+            /// Convert to a std::string (should this be explicit?)
             operator std::string () const {
-                return p ? std::string{p} : std::string();
+                return p ? std::string{c_str()} : std::string();
+            }
+            /// Save conversions
+            operator const_u8buffer () const {
+                return const_u8buffer(reinterpret_cast<const unsigned char *>(p), bytes);
             }
 
             constexpr bool operator == (lstring o) const {
