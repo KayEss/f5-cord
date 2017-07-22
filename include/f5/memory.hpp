@@ -148,6 +148,10 @@ namespace f5 {
         using buffer_type = buffer<std::remove_const_t<V>>;
         using const_buffer_type = buffer<std::add_const_t<V>>;
 
+        /// Pointer types
+        using pointer_type = typename buffer_type::pointer_type;
+        using pointer_const_type = typename buffer_type::pointer_const_type;
+
         /// Construct buffer large enough to hold `size` items, which are
         /// all default constructed.
         shared_buffer(std::size_t size)
@@ -160,7 +164,10 @@ namespace f5 {
         }
 
         /// Access to the underlying memory block
-        V *data() {
+        pointer_type data() {
+            return m_data.get();
+        }
+        pointer_const_type data() const {
             return m_data.get();
         }
 
