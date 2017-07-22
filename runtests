@@ -13,9 +13,22 @@ def worked(execute, expected=0):
         sys.exit(code)
 
 
+COMPILER = {
+    'clang++': [
+        '-Wno-gnu-string-literal-operator-template',
+        '-Wno-unused-const-variable',
+    ],
+    'g++': [
+        '-Wno-gnu-string-literal-operator-template',
+    ],
+}
 def compile(command, expected=0, fn=None):
-    for compiler in ['clang++-3.5', 'g++-6']:
-        execute = [compiler] + command
+    for compiler in sys.argv[1:] or ['clang++', 'g++']:
+        extras = []
+        for cxx, opts in COMPILER.items():
+            if cxx in compiler:
+                extras += opts
+        execute = [compiler] + command + extras
         worked(execute, expected)
         if fn: fn()
 

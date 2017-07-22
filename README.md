@@ -22,14 +22,17 @@ A compile time string type for use with literals. These cannot be further manipu
 
 #### `f5::cord::tstring`
 
-A compile time string type where the characters can be manipulated. `tstrings` can be concatenated with other `tstring`s to make `tstring`s and they can also be converted to an `lstring`.
+A compile time string type where the characters can be manipulated. `tstrings` can be concatenated with other `tstring`s to make `tstring`s and they can also be converted to an `lstring`. They can be created from a string literal using the `_t` literal modifier:
+
+    using namespace f5::literals;
+    constexpr auto hello_world = "Hello, World!"_t;
 
 `tstring` instances can be concatenated to create new `tstring` instances. De-indexing is also `constexpr`.
 
 
 #### `f5::cord::vstring`
 
-A compile time string type made up of a concatenation of `lstring` values.
+A compile time string type made up of a concatenation of `lstring` values. This template is deprecated.
 
 
 ### Unicode handling

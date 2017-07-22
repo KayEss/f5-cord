@@ -1,3 +1,9 @@
+2017-03-27  Kirit Sælensminde  <kirit@felspar.com>
+ Add a `_t` literal for creating `tstring` instances. This allows us to deprecate the `vstring` template.
+
+2017-03-27  Kirit Sælensminde  <kirit@felspar.com>
+ Added `iostream` output for `lstring`.
+
 2017-01-01  Kirit Sælensminde  <kirit@felspar.com>
  Add in iterators for converting between some combinations of UTF encodings.
 
