@@ -1,11 +1,18 @@
 # f5-cord
+
 Strings and their utilities (runtime and compile time)
+
+[![Build Status](https://travis-ci.org/KayEss/f5-cord.svg?branch=master)](https://travis-ci.org/KayEss/f5-cord)
 
 
 ## `f5::cord`
 
-
 `cord` is an inline namespace in `f5` meaning it can be left out of the type names below.
+
+
+### Low level memory views
+
+There are a few low level memory [span/view types](./f5/memory.md) used for dealing with contiguous runs of data.
 
 
 ### Compile time strings
@@ -32,7 +39,7 @@ A compile time string type where the characters can be manipulated. `tstrings` c
 
 #### `f5::cord::vstring`
 
-A compile time string type made up of a concatenation of `lstring` values. This template is deprecated.
+A compile time string type made up of a concatenation of `lstring` values. *This template is deprecated.*
 
 
 ### Unicode handling

@@ -1,5 +1,6 @@
 # Memory
 
+
 ## `buffer`
 
 A view into a contiguous block of memory containing some type `V`. The underlying type may be marked `const` to show that the buffer content is immutable.
