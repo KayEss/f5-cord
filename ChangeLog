@@ -1,3 +1,6 @@
+2017-07-25  Kirit Sælensminde  <kirit@felspar.com>
+ Fill in more of the `lstring` comparison members.
+
 2017-07-17  Kirit Sælensminde  <kirit@felspar.com>
  * Add shared buffers who can own strings (and other things).
  * Rename `array_view` to `buffer` as it is not always immutable.
