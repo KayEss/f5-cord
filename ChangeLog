@@ -1,4 +1,7 @@
 2017-07-25  Kirit Sælensminde  <kirit@felspar.com>
+ Add string equality comparison and `substr` operations to `u8view`.
+
+2017-07-25  Kirit Sælensminde  <kirit@felspar.com>
  Fill in more of the `lstring` comparison members.
 
 2017-07-17  Kirit Sælensminde  <kirit@felspar.com>

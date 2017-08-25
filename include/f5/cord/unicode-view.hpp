@@ -11,6 +11,9 @@
 
 #include <f5/memory.hpp>
 #include <f5/cord/unicode-encodings.hpp>
+#include <f5/cord/unicode-iterators.hpp>
+
+#include <cstring>
 
 
 namespace f5 {
@@ -103,10 +106,33 @@ namespace f5 {
             const char *data() const {
                 return reinterpret_cast<const char *>(buffer.data());
             }
-
             /// Return the size in bytes of the string
             std::size_t bytes() const {
                 return buffer.size();
+            }
+
+            /// Comparison. Acts as a string would. Not unicode aware in
+            /// that it doesn't take into account normalisation, it only
+            /// compares the byte values.
+            bool operator == (u8view r) const {
+                return bytes() == r.bytes() &&
+                    std::memcmp(data(), r.data(), bytes()) == 0;
+            }
+            bool operator != (u8view r) const {
+                return not ((*this) == r);
+            }
+
+            /// Safe substring against Unicode code point counts. The result
+            /// undefined if the end marker is smaller than the start marker.
+            u8view substr(std::size_t s) {
+                auto pos = begin(), e = end();
+                for ( ; s && pos != e; --s, ++pos );
+                return u8view(pos, e);
+            }
+            u8view substr(std::size_t s, std::size_t e) {
+                auto starts = substr(s);
+                auto ends = starts.substr(e - s);
+                return u8view(starts.data(), ends.data() - starts.data());
             }
 
             /// Return the begin iterator that delivers UTF32 code points
