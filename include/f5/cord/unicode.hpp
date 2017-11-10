@@ -11,4 +11,5 @@
 
 #include <f5/cord/unicode-encodings.hpp>
 #include <f5/cord/unicode-iterators.hpp>
+#include <f5/cord/unicode-view.hpp>
 

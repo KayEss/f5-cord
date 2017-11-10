@@ -10,6 +10,7 @@
 
 
 #include <f5/raise.hpp>
+#include <f5/cord/unicode-core.hpp>
 #include <array>
 #include <stdexcept>
 #include <cstdint>
@@ -19,14 +20,6 @@ namespace f5 {
 
 
     inline namespace cord {
-
-
-        /// A UTF-8 code unit
-        typedef unsigned char utf8;
-        /// A UTF-16 code unit
-        typedef char16_t utf16;
-        /// A UTF-32 code unit (or code point)
-        typedef char32_t utf32;
 
 
         /// Check that the UTF32 code point is valid. Throw an exception if not.
@@ -107,6 +100,71 @@ namespace f5 {
                 raise<E>("Cannot encode an invalid UTF32 code point ");
                 return {0u, {{0u, 0u, 0u, 0u}}};
             }
+        }
+
+
+
+        /// Returns the number of bytes used to encode a UTF-8 sequence
+        /// as implied by the first byte.
+        template<typename E = std::domain_error>
+        constexpr inline
+        std::size_t u8codepoint_length(utf8 ch) {
+            if ( ch < 0x80 )
+                return 1u;
+            else if ( ch >= 0x80 && ch <= 0xBF )
+                raise<E>("UTF8 continuation byte found in lead position");
+            else if ( ch >= 0xC0 && ch < 0xE0 )
+                return 2u;
+            else if ( ch >= 0xE0 && ch < 0xF0 )
+                return 3u;
+            else if ( ch >= 0xF0 && ch < 0xF8 )
+                return 4u;
+            else if ( ch >= 0xF8 && ch < 0xFC )
+                raise<E>("UTF8 control byte may not imply five byte sequence");
+            else if ( ch >= 0xFC && ch < 0xFE )
+                raise<E>("UTF8 control byte may not imply six byte sequence");
+            else
+                raise<E>("Invalid UTF8 byte value 0xFF");
+            return 0u;
+        }
+
+        /// Decode a single UTF-8 code point from the memory buffer.
+        /// Returns both the code point and the rest of the buffer.
+        template<typename L = std::length_error, typename E = std::domain_error>
+        constexpr inline
+        std::pair<utf32, const_u8buffer> decode_one(const_u8buffer buffer) {
+            if ( not buffer.size() ) {
+                raise<L>("Can't decode UTF8 from an empty data buffer");
+                return std::make_pair(0u, buffer);
+            }
+            auto first = buffer[0];
+            auto bytes = u8codepoint_length<E>(first);
+            if ( buffer.size() < bytes ) {
+                raise<L>("Not enough characters in the buffer to decode a UTF8 code point");
+                return std::make_pair(0u, buffer);
+            }
+            utf32 ch{};
+            switch ( bytes ) {
+            case 1:
+                ch = utf32(buffer[0] & 0x7F);
+                break;
+            case 2:
+                ch = utf32(buffer[0] & 0x1F) << 6;
+                ch |= utf32(buffer[1] & 0x3F);
+                break;
+            case 3:
+                ch = utf32(buffer[0] & 0x0F) << 12;
+                ch |= utf32(buffer[1] & 0x3F) << 6;
+                ch |= utf32(buffer[2] & 0x3F);
+                break;
+            case 4:
+                ch = utf32(buffer[0] & 0x07) << 18;
+                ch |= utf32(buffer[1] & 0x3F) << 12;
+                ch |= utf32(buffer[2] & 0x3F) << 6;
+                ch |= utf32(buffer[3] & 0x3F);
+                break;
+            }
+            return std::make_pair(ch, buffer.slice(bytes));
         }
 
 
