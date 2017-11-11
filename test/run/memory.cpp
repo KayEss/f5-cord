@@ -20,16 +20,15 @@ int main() {
     assert(b3[1] == 3);
     assert(b3[2] == 4);
 
-    f5::buffer<int> b4{b1};
+    f5::buffer<int> b4 = b1;
     assert(b4.size() == 10);
-    f5::buffer<const int> b5{b3};
+    f5::buffer<const int> b5 = b3;
     assert(b5.size() == 3);
-    f5::buffer<int> b6{b1.slice(6)};
+    f5::buffer<int> b6 = b1.slice(6);
     assert(b6.size() == 4);
 
-    f5::buffer<const int> b7{b1};
+    f5::buffer<const int> b7 = b1;
     assert(b7.size() == 10);
 
     return 0;
 }
-
