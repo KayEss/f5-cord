@@ -20,6 +20,8 @@ int main() {
     assert(t1 != (const char *)"123 \xe2\x9c\x93 321 extra");
     assert(t1 == (const char *)"123 \xe2\x9c\x93 321");
 
+    assert((std::string)t1 ==  "123 \xe2\x9c\x93 321");
+
     assert(t1.substr(0) == "123 \xe2\x9c\x93 321");
     assert(t1.substr(2) == "3 \xe2\x9c\x93 321");
     assert(t1.substr(6) == "321");

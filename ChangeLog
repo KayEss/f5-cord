@@ -1,5 +1,6 @@
 2017-12-12  Kirit Sælensminde  <kirit@felspar.com>
- `u8view` is now comparable with `const char *`.
+ * `u8view` can be explicitly converted to a `std::string`.
+ * `u8view` is now comparable with `const char *`.
 
 2017-07-25  Kirit Sælensminde  <kirit@felspar.com>
  Add string equality comparison and `substr` operations to `u8view`.

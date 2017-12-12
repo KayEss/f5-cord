@@ -167,6 +167,9 @@ namespace f5 {
             operator const_u8buffer () const {
                 return buffer;
             }
+            explicit operator std::string () const {
+                return std::string(buffer.data(), buffer.data() + buffer.size());
+            }
         };
 
 
