@@ -13,10 +13,10 @@ install:
     - sudo mv clang.list /etc/apt/sources.list.d/
     - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     - sudo apt-get update -qq
-    - sudo apt-get install -qq -y --force-yes g++-6 clang-4.0 lldb-4.0 lld-4.0
-    - 'if [ "$CXX" = "g++" ]; then echo "g++-6" > ~/compiler; fi'
+    - sudo apt-get install -qq -y --force-yes g++-7 clang-4.0 lldb-4.0 lld-4.0
+    - 'if [ "$CXX" = "g++" ]; then echo "g++-7" > ~/compiler; fi'
     - 'if [ "$CXX" = "clang++" ]; then echo "clang++-4.0" > ~/compiler; fi'
-    - g++-6 --version
+    - g++-7 --version
     - clang++-4.0 --version
 
 script:
