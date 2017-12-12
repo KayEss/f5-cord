@@ -121,6 +121,16 @@ namespace f5 {
             bool operator != (u8view r) const {
                 return not ((*this) == r);
             }
+            bool operator == (const char *s) const {
+                std::size_t pos{};
+                for ( ; pos < buffer.size() && *s; ++pos, ++s ) {
+                    if ( buffer[pos] != (unsigned char)*s ) return false;
+                }
+                return pos == buffer.size() && *s == 0;
+            }
+            bool operator != (const char *s) const {
+                return not ((*this) == s);
+            }
 
             /// Safe substring against Unicode code point counts. The result
             /// undefined if the end marker is smaller than the start marker.
