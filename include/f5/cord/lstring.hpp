@@ -40,6 +40,9 @@ namespace f5 {
             constexpr std::size_t size() const {
                 return bytes;
             }
+            constexpr bool empty() const {
+                return not bytes;
+            }
             constexpr const char * c_str() const {
                 return p ? p : "";
             }
