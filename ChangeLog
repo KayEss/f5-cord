@@ -1,3 +1,6 @@
+2017-12-13  Kirit Sælensminde  <kirit@felspar.com>
+ The const shared string buffers need to be immutable.
+
 2017-12-12  Kirit Sælensminde  <kirit@felspar.com>
  * `u8view` can be explicitly converted to a `std::string`.
  * `u8view` is now comparable with `const char *`.

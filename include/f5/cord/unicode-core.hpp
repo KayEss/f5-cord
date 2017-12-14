@@ -34,9 +34,9 @@ namespace f5 {
         using const_u32buffer = buffer<const utf32>;
 
         /// Shared immutable strings
-        using u8shared = shared_buffer<utf8>;
-        using u16shared = shared_buffer<utf16>;
-        using u32shared = shared_buffer<utf32>;
+        using u8shared = shared_buffer<const utf8>;
+        using u16shared = shared_buffer<const utf16>;
+        using u32shared = shared_buffer<const utf32>;
 
 
     }
