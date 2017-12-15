@@ -10,6 +10,7 @@
 
 
 #include <f5/memory.hpp>
+#include <f5/cord/lstring.hpp>
 #include <f5/cord/unicode-encodings.hpp>
 #include <f5/cord/unicode-iterators.hpp>
 
@@ -46,6 +47,10 @@ namespace f5 {
                     reinterpret_cast<const unsigned char *>(u8.data()),
                     u8.size())
             {
+            }
+
+            u8view(lstring s)
+            : buffer(reinterpret_cast<const unsigned char *>(s.c_str()), s.size()) {
             }
 
             /// An iterator that spits out UTF32 code points from the string
@@ -130,6 +135,10 @@ namespace f5 {
             }
             bool operator != (const char *s) const {
                 return not ((*this) == s);
+            }
+
+            bool operator < (f5::u8view r) const {
+                return buffer < r.buffer;
             }
 
             /// Safe substring against Unicode code point counts. The result

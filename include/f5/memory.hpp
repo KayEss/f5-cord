@@ -102,6 +102,16 @@ namespace f5 {
             return buffer(m_data + start, items);
         }
 
+        /// Ordering. Performs element-wise ordering. In a tie the shortest
+        /// is less than the longest.
+        constexpr bool operator < (buffer r) const {
+            const auto checks = m_size < r.m_size ? m_size : r.m_size;
+            for ( std::size_t s{}; s != checks; ++s ) {
+                if ( m_data[s] != r.m_data[s] ) return m_data[s] < r.m_data[s];
+            }
+            return m_size < r.m_size;
+        }
+
         /// Index into the arraay
         constexpr V &operator [] (std::size_t index) {
             return data()[index];

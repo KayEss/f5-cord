@@ -1,4 +1,5 @@
 2017-12-15  Kirit Sælensminde  <kirit@felspar.com>
+ * `u8view` supports operator <.
  * `lstring` now also has a string literal, `_l`.
 
 2017-12-13  Kirit Sælensminde  <kirit@felspar.com>
