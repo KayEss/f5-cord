@@ -1,3 +1,6 @@
+2017-12-15  Kirit Sælensminde  <kirit@felspar.com>
+ * `lstring` now also has a string literal, `_l`.
+
 2017-12-13  Kirit Sælensminde  <kirit@felspar.com>
  * Add `empty()` member to `lstirng`.
  * The const shared string buffers need to be immutable.
