@@ -182,6 +182,20 @@ namespace f5 {
         };
 
 
+        /// Concatenations with std::string
+        inline std::string operator + (std::string f, u8view e) {
+            f.append(e.data(), e.bytes());
+            return f;
+        }
+        inline std::string operator + (u8view f, u8view e) {
+            std::string r;
+            r.reserve(f.bytes() + e.bytes());
+            r.append(f.data(), f.bytes());
+            r.append(e.data(), e.bytes());
+            return r;
+        }
+
+
     }
 
 

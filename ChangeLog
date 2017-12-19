@@ -1,3 +1,6 @@
+2017-12-19  Kirit Sælensminde  <kirit@felspar.com>
+ `u8view`s can be concatenated to form `std::string`s.
+
 2017-12-15  Kirit Sælensminde  <kirit@felspar.com>
  * `u8view` supports operator <.
  * `lstring` now also has a string literal, `_l`.
