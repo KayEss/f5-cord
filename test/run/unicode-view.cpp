@@ -31,6 +31,8 @@ int main() {
 
     assert(std::string(t1) ==  "123 \xe2\x9c\x93 321");
     assert(std::string(t1) + t1.substr(6) == "123 \xe2\x9c\x93 321321");
+    std::string s1{"ABC"};
+    assert((s1 += t1) == "ABC123 \xe2\x9c\x93 321");
 
     return 0;
 }

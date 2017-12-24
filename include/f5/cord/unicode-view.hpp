@@ -195,6 +195,11 @@ namespace f5 {
             return r;
         }
 
+        inline std::string &operator += (std::string &s, u8view e) {
+            s.append(e.data(), e.bytes());
+            return s;
+        }
+
 
     }
 
