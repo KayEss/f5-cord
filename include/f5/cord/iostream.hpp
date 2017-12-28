@@ -14,8 +14,21 @@
 #include <iostream>
 
 
-template<class Ch, class Tr> inline
-std::basic_ostream<Ch, Tr> &operator << (std::basic_ostream<Ch, Tr> &os, const f5::cord::lstring &ls) {
-    return os << ls.c_str();
-}
+namespace std {
 
+
+    template<class Ch, class Tr> inline
+    auto &operator << (basic_ostream<Ch, Tr> &os, const f5::cord::lstring &ls) {
+        return os << ls.c_str();
+    }
+
+
+    template<class Ch, class Tr> inline
+    auto &operator << (basic_ostream<Ch, Tr> &os, f5::cord::u8view s) {
+        for ( auto c : s )
+            os << c;
+        return os;
+    }
+
+
+}

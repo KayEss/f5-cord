@@ -1,3 +1,6 @@
+2017-12-28  Kirit Sælensminde  <kirit@felspar.com>
+ Add ability to output `u8view` and move overloaded `operator <<`s to `std` namespace.
+
 2017-12-24  Kirit Sælensminde  <kirit@felspar.com>
  Allow appending of a `u8view` to a `std::string`.
 
