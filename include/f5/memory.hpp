@@ -93,6 +93,10 @@ namespace f5 {
         constexpr std::size_t size() const {
             return m_size;
         }
+        /// Return true if there are no items in the array
+        constexpr bool empty() const {
+            return m_size == 0;
+        }
 
         /// Return a slice of this array
         constexpr buffer slice(std::size_t start) const {

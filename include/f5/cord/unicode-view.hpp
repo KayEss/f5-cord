@@ -115,6 +115,10 @@ namespace f5 {
             std::size_t bytes() const {
                 return buffer.size();
             }
+            /// Return true if the view is empty
+            bool empty() const {
+                return buffer.empty();
+            }
 
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
