@@ -10,6 +10,7 @@
 
 
 #include "lstring.hpp"
+#include "unicode-view.hpp"
 
 #include <iostream>
 
