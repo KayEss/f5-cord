@@ -15,11 +15,14 @@ def worked(execute, expected=0):
 
 COMPILER = {
     'clang++': [
+        '-fdiagnostics-show-option',
         '-Wno-gnu-string-literal-operator-template',
         '-Wno-unused-const-variable',
     ],
     'g++': [
+        '-fdiagnostics-show-option',
         '-Wno-gnu-string-literal-operator-template',
+        '-Wno-unused-variable',
     ],
 }
 def compile(command, expected=0, fn=None):
