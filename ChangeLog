@@ -1,3 +1,25 @@
+2017-12-28  Kirit Sælensminde  <kirit@felspar.com>
+ * Add `empty` to the `u8view` and buffers.
+ * Add ability to output `u8view` and move overloaded `operator <<`s to `std` namespace.
+
+2017-12-24  Kirit Sælensminde  <kirit@felspar.com>
+ Allow appending of a `u8view` to a `std::string`.
+
+2017-12-19  Kirit Sælensminde  <kirit@felspar.com>
+ `u8view`s can be concatenated to form `std::string`s.
+
+2017-12-15  Kirit Sælensminde  <kirit@felspar.com>
+ * `u8view` supports operator <.
+ * `lstring` now also has a string literal, `_l`.
+
+2017-12-13  Kirit Sælensminde  <kirit@felspar.com>
+ * Add `empty()` member to `lstirng`.
+ * The const shared string buffers need to be immutable.
+
+2017-12-12  Kirit Sælensminde  <kirit@felspar.com>
+ * `u8view` can be explicitly converted to a `std::string`.
+ * `u8view` is now comparable with `const char *`.
+
 2017-07-25  Kirit Sælensminde  <kirit@felspar.com>
  Add string equality comparison and `substr` operations to `u8view`.
 

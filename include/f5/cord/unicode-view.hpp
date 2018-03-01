@@ -10,6 +10,7 @@
 
 
 #include <f5/memory.hpp>
+#include <f5/cord/lstring.hpp>
 #include <f5/cord/unicode-encodings.hpp>
 #include <f5/cord/unicode-iterators.hpp>
 
@@ -46,6 +47,10 @@ namespace f5 {
                     reinterpret_cast<const unsigned char *>(u8.data()),
                     u8.size())
             {
+            }
+
+            u8view(lstring s)
+            : buffer(reinterpret_cast<const unsigned char *>(s.c_str()), s.size()) {
             }
 
             /// An iterator that spits out UTF32 code points from the string
@@ -110,6 +115,10 @@ namespace f5 {
             std::size_t bytes() const {
                 return buffer.size();
             }
+            /// Return true if the view is empty
+            bool empty() const {
+                return buffer.empty();
+            }
 
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
@@ -120,6 +129,20 @@ namespace f5 {
             }
             bool operator != (u8view r) const {
                 return not ((*this) == r);
+            }
+            bool operator == (const char *s) const {
+                std::size_t pos{};
+                for ( ; pos < buffer.size() && *s; ++pos, ++s ) {
+                    if ( buffer[pos] != (unsigned char)*s ) return false;
+                }
+                return pos == buffer.size() && *s == 0;
+            }
+            bool operator != (const char *s) const {
+                return not ((*this) == s);
+            }
+
+            bool operator < (f5::u8view r) const {
+                return buffer < r.buffer;
             }
 
             /// Safe substring against Unicode code point counts. The result
@@ -157,7 +180,29 @@ namespace f5 {
             operator const_u8buffer () const {
                 return buffer;
             }
+            explicit operator std::string () const {
+                return std::string(buffer.data(), buffer.data() + buffer.size());
+            }
         };
+
+
+        /// Concatenations with std::string
+        inline std::string operator + (std::string f, u8view e) {
+            f.append(e.data(), e.bytes());
+            return f;
+        }
+        inline std::string operator + (u8view f, u8view e) {
+            std::string r;
+            r.reserve(f.bytes() + e.bytes());
+            r.append(f.data(), f.bytes());
+            r.append(e.data(), e.bytes());
+            return r;
+        }
+
+        inline std::string &operator += (std::string &s, u8view e) {
+            s.append(e.data(), e.bytes());
+            return s;
+        }
 
 
     }

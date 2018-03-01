@@ -15,11 +15,14 @@ def worked(execute, expected=0):
 
 COMPILER = {
     'clang++': [
+        '-fdiagnostics-show-option',
         '-Wno-gnu-string-literal-operator-template',
         '-Wno-unused-const-variable',
     ],
     'g++': [
+        '-fdiagnostics-show-option',
         '-Wno-gnu-string-literal-operator-template',
+        '-Wno-unused-variable',
     ],
 }
 def compile(command, expected=0, fn=None):
@@ -36,9 +39,12 @@ def compile(command, expected=0, fn=None):
 CPP_OPTS = ['-Iinclude', '-Werror', '-Wall', '-Wextra', '-Wpedantic']
 
 if __name__ == "__main__":
-    print("Testing Cord...")
-
     for std in ['-std=c++14', '-std=c++1z']:
+        folder = 'test/headers'
+        for fname in os.listdir(folder):
+            execute = CPP_OPTS + [std] + ['-fsyntax-only', path.join(folder, fname)]
+            compile(execute)
+
         folder = 'test/compile'
         for fname in os.listdir(folder):
             execute = CPP_OPTS + [std] + ['-fsyntax-only', path.join(folder, fname)]

@@ -17,6 +17,14 @@ namespace f5 {
 
 
     inline namespace cord {
+        class lstring;
+    }
+    inline namespace literals {
+        constexpr lstring operator "" _l (const char *, std::size_t);
+    }
+
+
+    inline namespace cord {
 
 
         /// A wrapper around a string literal used for compile time string
@@ -25,6 +33,12 @@ namespace f5 {
         private:
             const char *p;
             std::size_t bytes;
+
+            /// Used only by the literal
+            friend constexpr lstring f5::literals::operator "" _l (const char *, std::size_t);
+            constexpr lstring(const char *s, std::size_t b)
+            : p(s), bytes(b) {
+            }
 
         public:
             /// Compile time construction
@@ -39,6 +53,9 @@ namespace f5 {
             /// Data access
             constexpr std::size_t size() const {
                 return bytes;
+            }
+            constexpr bool empty() const {
+                return not bytes;
             }
             constexpr const char * c_str() const {
                 return p ? p : "";
@@ -83,11 +100,8 @@ namespace f5 {
 
             /// Ordering with an `lstring` on the left
             constexpr bool operator < (lstring o) const {
-                const auto checks = bytes < o.bytes ? bytes : o.bytes;
-                for ( std::size_t s{}; s != checks; ++s ) {
-                    if ( p[s] != o.p[s] ) return p[s] < o.p[s];
-                }
-                return bytes < o.bytes;
+                using b = buffer<const char>;
+                return b(p, bytes) < b(o.p, o.bytes);
             }
             bool operator < (const std::string &s) const {
                 return c_str() < s;
@@ -107,6 +121,18 @@ namespace f5 {
         inline bool operator < (const std::string &l, lstring r) {
             return l < r.c_str();
         }
+    }
+
+
+    inline namespace literals {
+
+
+        constexpr inline
+        cord::lstring operator "" _l (const char *s, std::size_t n) {
+            return cord::lstring(s, n);
+        }
+
+
     }
 
 

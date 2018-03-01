@@ -93,6 +93,10 @@ namespace f5 {
         constexpr std::size_t size() const {
             return m_size;
         }
+        /// Return true if there are no items in the array
+        constexpr bool empty() const {
+            return m_size == 0;
+        }
 
         /// Return a slice of this array
         constexpr buffer slice(std::size_t start) const {
@@ -100,6 +104,16 @@ namespace f5 {
         }
         constexpr buffer slice(std::size_t start, std::size_t items) const {
             return buffer(m_data + start, items);
+        }
+
+        /// Ordering. Performs element-wise ordering. In a tie the shortest
+        /// is less than the longest.
+        constexpr bool operator < (buffer r) const {
+            const auto checks = m_size < r.m_size ? m_size : r.m_size;
+            for ( std::size_t s{}; s != checks; ++s ) {
+                if ( m_data[s] != r.m_data[s] ) return m_data[s] < r.m_data[s];
+            }
+            return m_size < r.m_size;
         }
 
         /// Index into the arraay
