@@ -1,5 +1,5 @@
 /*
-    Copyright 2017, Felspar Co Ltd. http://www.kirit.com/f5
+    Copyright 2017-2018, Felspar Co Ltd. http://www.kirit.com/f5
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -16,6 +16,10 @@
 
 
 namespace f5 {
+
+
+    /// This `byte` definition is the same as the one from C+17
+    enum class byte : unsigned char {} ;
 
 
     /// Basic view of contiguous blocks of some type. Two views
