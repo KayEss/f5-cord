@@ -18,8 +18,8 @@
 namespace f5 {
 
 
-    /// This `byte` definition is the same as the one from C+17
-    enum class byte : unsigned char {} ;
+    /// Simple byte alias so at least everywhere can agree on the one type
+    using byte = unsigned char;
 
 
     /// Basic view of contiguous blocks of some type. Two views
