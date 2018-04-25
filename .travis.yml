@@ -6,14 +6,5 @@ compiler:
     - gcc
     - clang
 
-install:
-    # Get newer compilers
-    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-    - sudo apt-get update -qq
-    - sudo apt-get install -qq -y --force-yes g++-7
-    - 'if [ "$CXX" = "g++" ]; then echo "g++-7" > ~/compiler; fi'
-    - 'if [ "$CXX" = "clang++" ]; then echo "clang++" > ~/compiler; fi'
-    - g++-7 --version
-
 script:
-    - ./runtests $(cat ~/compiler)
+    - ./runtests $(CXX)
