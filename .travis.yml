@@ -8,16 +8,12 @@ compiler:
 
 install:
     # Get newer compilers
-    - wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-    - echo "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main" > clang.list
-    - sudo mv clang.list /etc/apt/sources.list.d/
     - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     - sudo apt-get update -qq
-    - sudo apt-get install -qq -y --force-yes g++-7 clang-4.0 lldb-4.0 lld-4.0
+    - sudo apt-get install -qq -y --force-yes g++-7
     - 'if [ "$CXX" = "g++" ]; then echo "g++-7" > ~/compiler; fi'
-    - 'if [ "$CXX" = "clang++" ]; then echo "clang++-4.0" > ~/compiler; fi'
+    - 'if [ "$CXX" = "clang++" ]; then echo "clang++" > ~/compiler; fi'
     - g++-7 --version
-    - clang++-4.0 --version
 
 script:
     - ./runtests $(cat ~/compiler)
