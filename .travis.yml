@@ -6,4 +6,4 @@ compiler:
     - clang
 
 script:
-    - ./runtests $(CXX)
+    - ./runtests $CXX
