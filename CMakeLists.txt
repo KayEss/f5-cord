@@ -4,4 +4,7 @@ add_library(f5-cord INTERFACE)
 target_include_directories(f5-cord INTERFACE include)
 target_compile_options(f5-cord INTERFACE -std=c++14)
 
+enable_testing()
+add_custom_target(check)
+set_property(TARGET check PROPERTY EXCLUDE_FROM_ALL TRUE)
 add_subdirectory(test)
