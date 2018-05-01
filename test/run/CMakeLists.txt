@@ -1,7 +1,9 @@
 function(runtest name)
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} f5-cord)
-    add_custom_command(TARGET ${name} POST_BUILD COMMAND ${name})
+    if(TARGET check)
+        add_custom_command(TARGET ${name} POST_BUILD COMMAND ${name})
+    endif()
 endfunction(runtest)
 
 runtest(lstring-compare)
