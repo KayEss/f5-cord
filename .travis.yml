@@ -7,4 +7,8 @@ compiler:
     - clang
 
 script:
-    - ./runtests $CXX
+    - mkdir build.tmp && cd build.tmp
+    - cmake ..
+    - make
+    - make check
+
