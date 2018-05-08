@@ -6,6 +6,11 @@ compiler:
     - gcc
     - clang
 
+env:
+    -
+    - CMAKE_BUILD_TYPE=Debug
+    - CMAKE_BUILD_TYPE=Release
+
 script:
     - mkdir build.tmp && cd build.tmp
     - cmake ..
