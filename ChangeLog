@@ -1,3 +1,6 @@
+2018-05-22  Kirit Sælensminde  <kirit@felspar.com>
+ Add a `memory` method to the `u8view` so that the underlying memory buffer can be accessed.
+
 2017-12-28  Kirit Sælensminde  <kirit@felspar.com>
  * Add `empty` to the `u8view` and buffers.
  * Add ability to output `u8view` and move overloaded `operator <<`s to `std` namespace.
