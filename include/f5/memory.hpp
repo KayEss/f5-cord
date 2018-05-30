@@ -1,8 +1,8 @@
-/*
-    Copyright 2017-2018, Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2017-2018, Felspar Co Ltd. <http://www.kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -22,8 +22,25 @@ namespace f5 {
     using byte = unsigned char;
 
 
-    /// Basic view of contiguous blocks of some type. Two views
-    /// are the same only if they point to the same underlying memory.
+    /// ## `buffer`
+    /**
+        A view into a contiguous block of memory containing some type `V`. The
+        underlying type may be marked `const` to show that the buffer content is
+        immutable.
+
+        ```c++
+        #include <f5/memory.hpp>
+
+        constexpr const char * letters = "abcdefghijk";
+        constexpr f5::buffer<const char> abc(letters, 3);
+        constexpr auto bc = abc.slice(1);
+        constexpr auto b = abc.slice(1, 1);
+        ```
+
+        No comparison operators are available so there cannot be any confusion
+        about whether the memory contents or the memory locations are used
+        for equality checks.
+     */
     template<typename V>
     class buffer final {
         V *m_data;
@@ -49,7 +66,7 @@ namespace f5 {
         buffer(const std::vector<T> &v)
         : m_data(v.data()), m_size(v.size()) {
         }
-        // For C++ arrays
+        /// For C++ arrays
         template<typename T, std::size_t N>
         constexpr buffer(std::array<T, N> &v)
         : m_data(v.data()), m_size(N) {
@@ -152,13 +169,36 @@ namespace f5 {
     };
 
 
-    /// An buffer whose ownership is shared
+    /// ## `shared_buffer`
+    /**
+        Shared ownership of a memory block that can be split into parts using `buffer`.
+        It supports `slice`s which return shared buffers so the buffer can be split
+        arbitrarily.
+
+        There are also automatic conversions to `buffer` types.
+
+        ```c++
+        #include <f5/memory.hpp>
+
+        int items[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+        f5::shared_buffer<int> b1{10};
+        std::copy(std::begin(items), std::end(items), b1.begin());
+
+        auto b2 = b1.slice(8);
+        ```
+
+        The type may not be `const`. Like the `buffer` class, no comparison
+        operators are supplied to avoid confusion between comparison of
+        memory locations and memory content.
+      */
     template<typename V>
-    class shared_buffer {
+    class shared_buffer final {
         std::shared_ptr<V> m_data;
         std::size_t m_size;
 
-        shared_buffer(std::shared_ptr<V> ptr, std::size_t begin, std::size_t count)
+        shared_buffer(std::shared_ptr<V> ptr, std::size_t begin, std::size_t
+count)
         : m_data(std::move(ptr), ptr.get() + begin), m_size(count) {
         }
     public:
@@ -170,10 +210,24 @@ namespace f5 {
         using pointer_type = typename buffer_type::pointer_type;
         using pointer_const_type = typename buffer_type::pointer_const_type;
 
+        /// Default construct an empty buffer. The data pointer will be
+        /// equal to `nullptr`.
+        shared_buffer()
+        : m_data{}, m_size{} {
+        }
+
         /// Construct buffer large enough to hold `size` items, which are
         /// all default constructed.
         shared_buffer(std::size_t size)
         : m_data(new V[size], [](auto p) { delete[] p; }), m_size(size) {
+        }
+
+        /// Construct from a `shared_ptr` to the  underlying type. The
+        /// destructor that was given to it must be appropriate for the data
+        /// array used when constructing the `shared_ptr`. It must be
+        /// an array of contiguous memory that can be sliced.
+        shared_buffer(std::shared_ptr<V> p, std::size_t s)
+        : m_data(p), m_size(s) {
         }
 
         /// The number of elements in the buffer
