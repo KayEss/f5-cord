@@ -119,6 +119,10 @@ namespace f5 {
             bool empty() const {
                 return buffer.empty();
             }
+            /// Return the underlying memory block for the data
+            auto memory() const {
+                return buffer;
+            }
 
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
