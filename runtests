@@ -42,15 +42,18 @@ if __name__ == "__main__":
     for std in ['-std=c++14', '-std=c++1z']:
         folder = 'test/headers'
         for fname in os.listdir(folder):
+            if fname == "CMakeLists.txt": continue
             execute = CPP_OPTS + [std] + ['-fsyntax-only', path.join(folder, fname)]
             compile(execute)
 
         folder = 'test/compile'
         for fname in os.listdir(folder):
+            if fname == "CMakeLists.txt": continue
             execute = CPP_OPTS + [std] + ['-fsyntax-only', path.join(folder, fname)]
             compile(execute)
 
         folder = 'test/run'
         for fname in os.listdir(folder):
+            if fname == "CMakeLists.txt": continue
             execute = CPP_OPTS + [std] + ['-o', '/tmp/a.out', path.join(folder, fname)]
             compile(execute, fn=lambda: worked(['/tmp/a.out']))
