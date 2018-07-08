@@ -7,9 +7,9 @@ compiler:
     - clang
 
 env:
-    -
-    - CMAKE_BUILD_TYPE=Debug
-    - CMAKE_BUILD_TYPE=Release
+    - CXX_FLAGS=-std=c++14
+    - CXX_FLAGS=-std=c++14 CMAKE_BUILD_TYPE=Debug
+    - CXX_FLAGS=-std=c++14 CMAKE_BUILD_TYPE=Release
 
 script:
     - mkdir build.tmp && cd build.tmp
