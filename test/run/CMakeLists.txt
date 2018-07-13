@@ -1,9 +1,10 @@
 function(runtest name)
-    add_executable(${name} EXCLUDE_FROM_ALL ${name}.cpp)
-    target_link_libraries(${name} f5-cord)
-    add_custom_command(TARGET ${name} POST_BUILD COMMAND ${name})
-    add_dependencies(check ${name})
-    add_test(NAME ${name}-test COMMAND ${name})
+    add_executable(cord-run-test-${name} EXCLUDE_FROM_ALL ${name}.cpp)
+    target_link_libraries(cord-run-test-${name} f5-cord)
+    add_custom_command(TARGET cord-run-test-${name}
+        POST_BUILD COMMAND cord-run-test-${name})
+    add_dependencies(check cord-run-test-${name})
+    add_test(NAME cord-run-test-${name}-test COMMAND cord-run-test-${name})
 endfunction(runtest)
 
 runtest(lstring-compare)
