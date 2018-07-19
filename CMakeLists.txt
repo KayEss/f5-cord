@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
+project(f5-cord)
 
 add_library(f5-cord INTERFACE)
 target_include_directories(f5-cord INTERFACE include)
