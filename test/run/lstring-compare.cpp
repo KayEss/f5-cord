@@ -1,5 +1,7 @@
 #include <cassert>
 #include <f5/cord/lstring.hpp>
+#include <f5/cord/unicode-view.hpp>
+
 
 constexpr f5::lstring empty;
 constexpr f5::lstring html = "html";
