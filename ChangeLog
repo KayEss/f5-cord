@@ -1,4 +1,7 @@
 2018-05-30  Kirit Sælensminde  <kirit@felspar.com>
+ Add more equality comparison for u8view.
+
+2018-05-30  Kirit Sælensminde  <kirit@felspar.com>
  Add better members for initialising the `shared_buffer`.
 
 2018-05-22  Kirit Sælensminde  <kirit@felspar.com>
