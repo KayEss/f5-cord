@@ -1,3 +1,6 @@
+2018-08-12  Kirit Sælensminde  <kirit@felspar.com>
+ Fix a bug in the printing of `u8view` to streams.
+
 2018-05-30  Kirit Sælensminde  <kirit@felspar.com>
  Add more equality comparison for u8view.
 
