@@ -115,6 +115,10 @@ namespace f5 {
             std::size_t bytes() const {
                 return buffer.size();
             }
+            /// Return the size in code points
+            auto code_points() const {
+                return std::distance(begin(), end());
+            }
             /// Return true if the view is empty
             bool empty() const {
                 return buffer.empty();
