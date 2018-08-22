@@ -1,3 +1,15 @@
+2018-08-16  Kirit Sælensminde  <kirit@felspar.com>
+ Add a member to fetch the number of code points from `u8view`.
+
+2018-08-12  Kirit Sælensminde  <kirit@felspar.com>
+ Fix a bug in the printing of `u8view` to streams.
+
+2018-05-30  Kirit Sælensminde  <kirit@felspar.com>
+ Add more equality comparison for u8view.
+
+2018-05-30  Kirit Sælensminde  <kirit@felspar.com>
+ Add better members for initialising the `shared_buffer`.
+
 2018-05-22  Kirit Sælensminde  <kirit@felspar.com>
  Add a `memory` method to the `u8view` so that the underlying memory buffer can be accessed.
 

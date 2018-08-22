@@ -1,8 +1,8 @@
-/*
-    Copyright 2017, Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2017-2018, Felspar Co Ltd. <https://kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -26,8 +26,7 @@ namespace std {
 
     template<class Ch, class Tr> inline
     auto &operator << (basic_ostream<Ch, Tr> &os, f5::cord::u8view s) {
-        for ( auto c : s )
-            os << c;
+        os.write(s.data(), s.bytes());
         return os;
     }
 

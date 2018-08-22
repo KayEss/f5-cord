@@ -12,7 +12,7 @@ Strings and their utilities (runtime and compile time)
 
 ### Low level memory views
 
-There are a few low level memory [span/view types](./f5/memory.md) used for dealing with contiguous runs of data.
+There are a few low level memory [span/view types and buffers](./include/f5/memory.hpp) used for dealing with contiguous runs of data.
 
 
 ### Compile time strings
@@ -22,12 +22,12 @@ These string classes offer different trade offs for creating and manipulating. N
 All of the string types may be compared using `constexpr` operator `==`.
 
 
-#### `f5::cord::lstring`
+#### `[f5::cord::lstring](./include/f5/cord/lstring.hpp)`
 
-A compile time string type for use with literals. These cannot be further manipulated, but they can be concatenated to yield a `vstring`.
+A compile time string type for use with literals.
 
 
-#### `f5::cord::tstring`
+#### `[f5::cord::tstring](./include/f5/cord/tstring.hpp)`
 
 A compile time string type where the characters can be manipulated. `tstrings` can be concatenated with other `tstring`s to make `tstring`s and they can also be converted to an `lstring`. They can be created from a string literal using the `_t` literal modifier:
 

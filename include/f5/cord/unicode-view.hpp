@@ -1,8 +1,8 @@
-/*
-    Copyright 2017, Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2017-2018, Felspar Co Ltd. <https://kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -115,6 +115,10 @@ namespace f5 {
             std::size_t bytes() const {
                 return buffer.size();
             }
+            /// Return the size in code points
+            auto code_points() const {
+                return std::distance(begin(), end());
+            }
             /// Return true if the view is empty
             bool empty() const {
                 return buffer.empty();
@@ -189,6 +193,16 @@ namespace f5 {
             }
         };
 
+
+        /// Equality against other types
+        inline
+        bool operator == (lstring l, u8view r) {
+            return r.operator == (l);
+        }
+        inline
+        bool operator != (lstring l, u8view r) {
+            return r.operator != (l);
+        }
 
         /// Concatenations with std::string
         inline std::string operator + (std::string f, u8view e) {
