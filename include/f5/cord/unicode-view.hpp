@@ -153,6 +153,11 @@ namespace f5 {
                 return buffer < r.buffer;
             }
 
+            /// Useful checks for parts of a string
+            bool starts_with(u8view str) const {
+                return u8view{buffer.slice(0, str.buffer.size())} == str;
+            }
+
             /// Safe substring against Unicode code point counts. The result
             /// undefined if the end marker is smaller than the start marker.
             u8view substr(std::size_t s) {

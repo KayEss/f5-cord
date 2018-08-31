@@ -1,5 +1,6 @@
 2018-08-31  Kirit Sælensminde  <kirit@felspar.com>
- Add a missing comparison operator.
+ * Add a `starts_with` member to `u8view`.
+ * Add a missing comparison operator.
 
 2018-08-16  Kirit Sælensminde  <kirit@felspar.com>
  Add a member to fetch the number of code points from `u8view`.
