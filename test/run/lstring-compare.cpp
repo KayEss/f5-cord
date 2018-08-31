@@ -23,6 +23,9 @@ int main() {
     assert(html5 == f5::u8view(html5));
     assert(f5::u8view(html5) == html5);
 
+    assert(html < f5::u8view(html5));
+    assert(f5::u8view(html) < html5);
+
     return 0;
 }
 

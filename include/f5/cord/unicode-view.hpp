@@ -204,6 +204,12 @@ namespace f5 {
             return r.operator != (l);
         }
 
+        /// Comparison against other types
+        inline
+        bool operator < (lstring l, u8view r) {
+            return u8view(l) < r;
+        }
+
         /// Concatenations with std::string
         inline std::string operator + (std::string f, u8view e) {
             f.append(e.data(), e.bytes());
