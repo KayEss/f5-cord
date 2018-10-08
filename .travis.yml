@@ -18,7 +18,7 @@ install:
 
 script:
     - mkdir build.tmp && cd build.tmp
-    - cmake ..
+    - cmake .. -G Ninja
     - ninja
     - ninja check
 
