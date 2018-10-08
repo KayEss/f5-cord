@@ -3,13 +3,7 @@ sudo: required
 dist: xenial
 
 notifications:
-    webhooks:
-        urls:
-            # Telegram
-            - "https://fathomless-fjord-24024.herokuapp.com/notify"
-        on_success: always
-        on_failure: always
-        on_start: never
+    webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
 
 compiler:
     - gcc
