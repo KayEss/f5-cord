@@ -15,8 +15,8 @@ void nop_u8view(f5::u8view) {
 }
 
 
-int main(int argc, const char */*argv*/[]) {
-    assert(argc);
-//     f5::shared_string s{argv[0]};
+int main() {
+    f5::shared_string hw{f5::lstring{"Hello world"}};
+    nop_u8view(hw);
 }
 

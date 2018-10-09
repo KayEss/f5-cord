@@ -22,11 +22,20 @@ namespace f5 {
         class shared_string {
             u8shared buffer;
         public:
+            /// ## Constructors
             explicit shared_string(u8shared b) noexcept
             : buffer{b} {
             }
 
-            /// Safe conversions to other types
+            explicit shared_string(lstring l)
+            : buffer{
+                std::shared_ptr<const unsigned char>{
+                    reinterpret_cast<const unsigned char *>(l.c_str()),
+                    [](auto &&){}},
+                l.size()}
+            {}
+
+            /// ## Conversions
             explicit operator u8shared () const noexcept {
                 return buffer;
             }
