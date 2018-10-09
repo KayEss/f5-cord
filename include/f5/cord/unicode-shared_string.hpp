@@ -11,6 +11,8 @@
 
 #include <f5/cord/unicode-view.hpp>
 
+#include <algorithm>
+
 
 namespace f5 {
 
@@ -34,6 +36,20 @@ namespace f5 {
                     [](auto &&){}},
                 l.size()}
             {}
+
+            /// ## Substrings
+            shared_string substr(std::size_t, std::size_t) const {
+                return *this;
+            }
+
+            /// ## Comparisons
+            bool operator == (u8view l) const {
+                u8view m{*this};
+                return std::equal(l.begin(), l.end(), m.begin(), m.end());
+            }
+            bool operator != (u8view l) const {
+                return not ((*this) == l);
+            }
 
             /// ## Conversions
             explicit operator u8shared () const noexcept {

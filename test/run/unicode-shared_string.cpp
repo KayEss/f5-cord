@@ -11,12 +11,17 @@
 #include <cassert>
 
 
-void nop_u8view(f5::u8view) {
-}
-
-
 int main() {
     f5::shared_string hw{f5::lstring{"Hello world"}};
-    nop_u8view(hw);
+    const auto chw{hw};
+
+    [](f5::u8view){}(hw);
+    [](f5::u8shared){}(f5::u8shared{chw});
+
+    assert(hw == "Hello world");
+    assert(hw != "Hello");
+    assert(chw == "Hello world");
+
+//     assert(hw.substr(0, 3) == "Hel");
 }
 
