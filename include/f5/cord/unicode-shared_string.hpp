@@ -9,7 +9,7 @@
 #pragma once
 
 
-#include <f5/cord/unicode-core.hpp>
+#include <f5/cord/unicode-view.hpp>
 
 
 namespace f5 {
@@ -22,6 +22,17 @@ namespace f5 {
         class shared_string {
             u8shared buffer;
         public:
+            explicit shared_string(u8shared b) noexcept
+            : buffer{b} {
+            }
+
+            /// Safe conversions to other types
+            explicit operator u8shared () const noexcept {
+                return buffer;
+            }
+            operator u8view () const {
+                return u8view{const_u8buffer{buffer}};
+            }
         };
 
 
