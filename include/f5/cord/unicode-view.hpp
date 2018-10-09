@@ -108,11 +108,11 @@ namespace f5 {
             }
 
             /// Return the data array
-            const char *data() const {
+            const char *data() const noexcept {
                 return reinterpret_cast<const char *>(buffer.data());
             }
             /// Return the size in bytes of the string
-            std::size_t bytes() const {
+            std::size_t bytes() const noexcept {
                 return buffer.size();
             }
             /// Return the size in code points
@@ -120,7 +120,7 @@ namespace f5 {
                 return std::distance(begin(), end());
             }
             /// Return true if the view is empty
-            bool empty() const {
+            bool empty() const noexcept {
                 return buffer.empty();
             }
             /// Return the underlying memory block for the data

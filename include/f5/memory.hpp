@@ -104,18 +104,18 @@ namespace f5 {
         }
 
         /// The start of the data array
-        constexpr std::add_pointer_t<V> data() {
+        constexpr std::add_pointer_t<V> data() noexcept {
             return m_data;
         }
-        constexpr pointer_const_type data() const {
+        constexpr pointer_const_type data() const noexcept {
             return m_data;
         }
         /// The number of items in the array
-        constexpr std::size_t size() const {
+        constexpr std::size_t size() const noexcept {
             return m_size;
         }
         /// Return true if there are no items in the array
-        constexpr bool empty() const {
+        constexpr bool empty() const noexcept {
             return m_size == 0;
         }
 
@@ -231,7 +231,7 @@ count)
         }
 
         /// The number of elements in the buffer
-        std::size_t size() const {
+        std::size_t size() const noexcept {
             return m_size;
         }
 
