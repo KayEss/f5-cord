@@ -6,7 +6,7 @@ add_library(cord-headers-tests STATIC EXCLUDE_FROM_ALL
         unicode.cpp
         unicode-encodings.cpp
         unicode-iterators.cpp
-        unicode-shared_string.cpp
+        unicode-string.cpp
         unicode-view.cpp
     )
 target_link_libraries(cord-headers-tests f5-cord)
