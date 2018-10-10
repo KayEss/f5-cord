@@ -12,6 +12,7 @@
 
 
 int main() {
+    f5::shared_string h{f5::lstring{"Hello"}};
     f5::shared_string hw{f5::lstring{"Hello world"}};
     const auto chw{hw};
 
@@ -35,8 +36,10 @@ int main() {
     assert(chw >= gw);
     assert(chw > gw);
 
-//     assert(hw >= hw);
-//     assert(hw <= hw);
+    assert(hw <= hw);
+    assert(hw >= hw);
+    assert(h < hw);
+    assert(hw > h);
 
 //     assert(hw.substr(0, 3) == "Hel");
 }
