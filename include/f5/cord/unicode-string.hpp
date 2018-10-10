@@ -19,15 +19,15 @@ namespace f5 {
 
 
         /// UTF8 string with shared ownership.
-        class shared_string {
+        class u8string {
             u8shared buffer;
         public:
             /// ## Constructors
-            explicit shared_string(u8shared b) noexcept
+            explicit u8string(u8shared b) noexcept
             : buffer{b} {
             }
 
-            explicit shared_string(lstring l)
+            explicit u8string(lstring l)
             : buffer{
                 std::shared_ptr<const unsigned char>{
                     reinterpret_cast<const unsigned char *>(l.c_str()),
@@ -43,7 +43,7 @@ namespace f5 {
                     const utf32 *,
                     utf32>
             {
-                friend class shared_string;
+                friend class u8string;
                 u8shared buffer;
 
                 const_iterator(u8shared b)
@@ -55,7 +55,7 @@ namespace f5 {
             };
 
             /// ## Substrings
-            shared_string substr(std::size_t, std::size_t) const {
+            u8string substr(std::size_t, std::size_t) const {
                 return *this;
             }
 

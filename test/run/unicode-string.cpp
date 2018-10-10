@@ -12,8 +12,8 @@
 
 
 int main() {
-    f5::shared_string h{f5::lstring{"Hello"}};
-    f5::shared_string hw{f5::lstring{"Hello world"}};
+    f5::u8string h{f5::lstring{"Hello"}};
+    f5::u8string hw{f5::lstring{"Hello world"}};
     const auto chw{hw};
 
     [](f5::u8view){}(hw);
@@ -24,7 +24,7 @@ int main() {
     assert(chw == "Hello world");
     assert(hw == chw);
 
-    f5::shared_string gw{f5::lstring{"Goodbye world"}};
+    f5::u8string gw{f5::lstring{"Goodbye world"}};
 
     assert(gw < hw);
     assert(gw <= hw);
