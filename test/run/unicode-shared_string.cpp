@@ -21,6 +21,22 @@ int main() {
     assert(hw == "Hello world");
     assert(hw != "Hello");
     assert(chw == "Hello world");
+    assert(hw == chw);
+
+    f5::shared_string gw{f5::lstring{"Goodbye world"}};
+
+    assert(gw < hw);
+    assert(gw <= hw);
+    assert(hw >= gw);
+    assert(hw > gw);
+
+    assert(gw < chw);
+    assert(gw <= chw);
+    assert(chw >= gw);
+    assert(chw > gw);
+
+//     assert(hw >= hw);
+//     assert(hw <= hw);
 
 //     assert(hw.substr(0, 3) == "Hel");
 }
