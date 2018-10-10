@@ -41,6 +41,9 @@ int main() {
     assert(h < hw);
     assert(hw > h);
 
+    for ( auto c : h ) {
+    }
+
 //     assert(hw.substr(0, 3) == "Hel");
 }
 

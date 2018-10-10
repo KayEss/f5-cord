@@ -36,10 +36,6 @@ namespace f5 {
         constexpr auto bc = abc.slice(1);
         constexpr auto b = abc.slice(1, 1);
         ```
-
-        No comparison operators are available so there cannot be any confusion
-        about whether the memory contents or the memory locations are used
-        for equality checks.
      */
     template<typename V>
     class buffer final {
@@ -196,10 +192,6 @@ namespace f5 {
 
         auto b2 = b1.slice(8);
         ```
-
-        The type may not be `const`. Like the `buffer` class, no comparison
-        operators are supplied to avoid confusion between comparison of
-        memory locations and memory content.
       */
     template<typename V>
     class shared_buffer final {
@@ -228,7 +220,7 @@ count)
         /// Construct buffer large enough to hold `size` items, which are
         /// all default constructed.
         shared_buffer(std::size_t size)
-        : m_data(new V[size], [](auto p) { delete[] p; }), m_size(size) {
+        : m_data{size ? new V[size] : nullptr, [](auto p) { delete[] p; }}, m_size{size} {
         }
 
         /// Construct from a `shared_ptr` to the  underlying type. The
@@ -236,7 +228,7 @@ count)
         /// array used when constructing the `shared_ptr`. It must be
         /// an array of contiguous memory that can be sliced.
         shared_buffer(std::shared_ptr<V> p, std::size_t s)
-        : m_data(p), m_size(s) {
+        : m_data{s ? p : std::shared_ptr<V>{}}, m_size{s} {
         }
 
         /// The number of elements in the buffer
@@ -245,7 +237,7 @@ count)
         }
 
         /// Access to the underlying memory block
-        pointer_type data() {
+        std::add_pointer_t<V> data() {
             return m_data.get();
         }
         pointer_const_type data() const {
@@ -258,10 +250,10 @@ count)
         }
 
         /// Return a slice which is also shared
-        shared_buffer slice(std::size_t index) {
+        shared_buffer slice(std::size_t index) const {
             return shared_buffer(m_data, index, m_size - index);
         }
-        shared_buffer slice(std::size_t index, std::size_t count) {
+        shared_buffer slice(std::size_t index, std::size_t count) const {
             return shared_buffer(m_data, index, count);
         }
 

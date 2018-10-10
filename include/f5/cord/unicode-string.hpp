@@ -52,7 +52,37 @@ namespace f5 {
 
             public:
                 const_iterator() {}
+
+                utf32 operator * () const {
+                    return decode_one(buffer).first;
+                }
+
+                const_iterator &operator ++ () {
+                    const auto here = **this;
+                    const auto bytes = u8length(here);
+                    buffer = buffer.slice(bytes);
+                    return *this;
+                }
+                const_iterator operator ++ (int) {
+                    const_iterator ret{*this};
+                    ++(*this);
+                    return ret;
+                }
+
+                bool operator == (const_iterator it) const {
+                    return buffer.data() == it.buffer.data();
+                }
+                bool operator != (const_iterator it) const {
+                    return buffer.data() != it.buffer.data();
+                }
             };
+
+            const_iterator begin() const {
+                return const_iterator{buffer};
+            }
+            const_iterator end() const {
+                return const_iterator{buffer.slice(buffer.size())};
+            }
 
             /// ## Substrings
             u8string substr(std::size_t, std::size_t) const {
