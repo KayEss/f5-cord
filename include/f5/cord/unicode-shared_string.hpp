@@ -11,8 +11,6 @@
 
 #include <f5/cord/unicode-view.hpp>
 
-#include <algorithm>
-
 
 namespace f5 {
 
@@ -44,11 +42,22 @@ namespace f5 {
 
             /// ## Comparisons
             bool operator == (u8view l) const {
-                u8view m{*this};
-                return std::equal(l.begin(), l.end(), m.begin(), m.end());
+                return u8view{const_u8buffer{buffer}} == l;
             }
             bool operator != (u8view l) const {
-                return not ((*this) == l);
+                return u8view{const_u8buffer{buffer}} != l;
+            }
+            bool operator < (u8view l) const {
+                return u8view{const_u8buffer{buffer}} < l;
+            }
+            bool operator <= (u8view l) const {
+                return u8view{const_u8buffer{buffer}} <= l;
+            }
+            bool operator >= (u8view l) const {
+                return u8view{const_u8buffer{buffer}} >= l;
+            }
+            bool operator > (u8view l) const {
+                return u8view{const_u8buffer{buffer}} > l;
             }
 
             /// ## Conversions

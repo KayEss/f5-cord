@@ -136,6 +136,19 @@ namespace f5 {
             }
             return m_size < r.m_size;
         }
+        constexpr bool operator <= (buffer r) const {
+            return r > *this;
+        }
+        constexpr bool operator > (buffer r) const {
+            const auto checks = m_size < r.m_size ? m_size : r.m_size;
+            for ( std::size_t s{}; s != checks; ++s ) {
+                if ( m_data[s] != r.m_data[s] ) return m_data[s] > r.m_data[s];
+            }
+            return m_size >= r.m_size;
+        }
+        constexpr bool operator >= (buffer r) const {
+            return r < *this;
+        }
 
         /// Index into the arraay
         constexpr V &operator [] (std::size_t index) {

@@ -14,6 +14,7 @@
 #include <f5/cord/unicode-encodings.hpp>
 #include <f5/cord/unicode-iterators.hpp>
 
+#include <algorithm>
 #include <cstring>
 
 
@@ -132,8 +133,7 @@ namespace f5 {
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
             bool operator == (u8view r) const {
-                return bytes() == r.bytes() &&
-                    std::memcmp(data(), r.data(), bytes()) == 0;
+                return std::equal(buffer.begin(), buffer.end(), r.buffer.begin(), r.buffer.end());
             }
             bool operator != (u8view r) const {
                 return not ((*this) == r);
@@ -151,6 +151,15 @@ namespace f5 {
 
             bool operator < (f5::u8view r) const {
                 return buffer < r.buffer;
+            }
+            bool operator <= (f5::u8view r) const {
+                return buffer <= r.buffer;
+            }
+            bool operator >= (f5::u8view r) const {
+                return buffer >= r.buffer;
+            }
+            bool operator > (f5::u8view r) const {
+                return buffer > r.buffer;
             }
 
             /// Useful checks for parts of a string
