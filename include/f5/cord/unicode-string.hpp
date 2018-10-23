@@ -99,13 +99,6 @@ namespace f5 {
             }
 
 
-            const_iterator begin() const {
-                return const_iterator{buffer};
-            }
-            const_iterator end() const {
-                return const_iterator{buffer.slice(buffer.size())};
-            }
-
             /// ## Substrings
             u8string substr(std::size_t s) const {
                 auto pos = begin(), e = end();
