@@ -14,6 +14,6 @@ void assert_impl(bool a, const char *at, const char *f, unsigned l) {
         std::cout << f << ":" << l << " => assert(" << at << ") failed\n";
         std::exit(120);
     }
-};
+}
 #define assert(b) assert_impl(b, #b, __FILE__, __LINE__);
 
