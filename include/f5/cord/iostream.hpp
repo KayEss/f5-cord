@@ -12,7 +12,7 @@
 #include "lstring.hpp"
 #include "unicode-view.hpp"
 
-#include <iostream>
+#include <iosfwd>
 
 
 namespace std {
@@ -32,3 +32,4 @@ namespace std {
 
 
 }
+
