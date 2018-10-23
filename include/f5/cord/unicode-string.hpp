@@ -23,6 +23,8 @@ namespace f5 {
             u8shared buffer;
         public:
             /// ## Constructors
+            u8string() {}
+
             explicit u8string(u8shared b) noexcept
             : buffer{b} {
             }
@@ -53,6 +55,11 @@ namespace f5 {
             public:
                 const_iterator() {}
             };
+
+            /// ## Queries
+            bool empty() const {
+                return buffer.size() == 0;
+            }
 
             /// ## Substrings
             u8string substr(std::size_t, std::size_t) const {

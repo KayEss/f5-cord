@@ -12,12 +12,16 @@
 
 
 int main() {
+    f5::u8string e{};
     f5::u8string h{f5::lstring{"Hello"}};
     f5::u8string hw{f5::lstring{"Hello world"}};
-    const auto chw{hw};
+    const auto chw{hw}, ce{e};
 
     [](f5::u8view){}(hw);
     [](f5::u8shared){}(f5::u8shared{chw});
+
+    assert(e.empty());
+    assert(ce.empty());
 
     assert(hw == "Hello world");
     assert(hw != "Hello");
