@@ -9,8 +9,16 @@
 #include <f5/cord/iostream.hpp>
 #include <f5/cord/unicode-string.hpp>
 
-#include <cassert>
 #include <iostream>
+
+
+void assert_impl(bool a, const char *at, const char *f, unsigned l) {
+    if ( not a ) {
+        std::cout << f << ":" << l << " => assert(" << at << ") failed\n";
+        std::exit(120);
+    }
+};
+#define assert(b) assert_impl(b, #b, __FILE__, __LINE__);
 
 
 int main() {
