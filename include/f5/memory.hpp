@@ -196,10 +196,6 @@ namespace f5 {
 
         auto b2 = b1.slice(8);
         ```
-
-        The type may not be `const`. Like the `buffer` class, no comparison
-        operators are supplied to avoid confusion between comparison of
-        memory locations and memory content.
       */
     template<typename V>
     class shared_buffer final {
@@ -238,6 +234,9 @@ count)
         shared_buffer(std::shared_ptr<V> p, std::size_t s)
         : m_data(p), m_size(s) {
         }
+        shared_buffer(shared_buffer op, pointer_const_type p, std::size_t s)
+        : m_data(op.m_data, p), m_size(s) {
+        }
 
         /// The number of elements in the buffer
         std::size_t size() const noexcept {
@@ -245,7 +244,7 @@ count)
         }
 
         /// Access to the underlying memory block
-        pointer_type data() {
+        auto *data() {
             return m_data.get();
         }
         pointer_const_type data() const {

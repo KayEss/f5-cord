@@ -37,6 +37,7 @@ namespace f5 {
                 l.size()}
             {}
 
+
             /// ## Iterator
             class const_iterator : public std::iterator<
                     std::forward_iterator_tag,
@@ -54,17 +55,49 @@ namespace f5 {
 
             public:
                 const_iterator() {}
+
+                utf32 operator * () const {
+                    return decode_one(buffer).first;
+                }
+
+                const_iterator &operator ++ () {
+                    const auto here = **this;
+                    const auto bytes = u8length(here);
+                    buffer = u8shared{buffer, buffer.data() + bytes, buffer.size() - bytes};
+                    return *this;
+                }
+                const_iterator operator ++ (int) {
+                    const_iterator ret{*this};
+                    ++(*this);
+                    return ret;
+                }
+
+                bool operator == (const_iterator it) const {
+                    return buffer.data() == it.buffer.data();
+                }
+                bool operator != (const_iterator it) const {
+                    return buffer.data() != it.buffer.data();
+                }
             };
+            const_iterator begin() const {
+                return buffer;
+            }
+            const_iterator end() const {
+                return u8shared{buffer, buffer.data() + buffer.size(), 0u};
+            }
+
 
             /// ## Queries
             bool empty() const {
                 return buffer.size() == 0;
             }
 
+
             /// ## Substrings
             u8string substr(std::size_t, std::size_t) const {
                 return *this;
             }
+
 
             /// ## Comparisons
             bool operator == (u8view l) const {
@@ -85,6 +118,7 @@ namespace f5 {
             bool operator > (u8view l) const {
                 return u8view{const_u8buffer{buffer}} > l;
             }
+
 
             /// ## Conversions
             explicit operator u8shared () const noexcept {

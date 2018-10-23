@@ -45,6 +45,22 @@ int main() {
     assert(h < hw);
     assert(hw > h);
 
+    {
+        auto p = h.begin();
+        assert(*p == 'H');
+        assert(*(++p) == 'e');
+        assert(*(p++) == 'e');
+        assert(*p == 'l');
+    }
+
+    {
+        f5::utf32 hel[] = {'H', 'e', 'l', 'l', 'o'};
+        f5::utf32 *p_hel = hel;
+        for ( auto c : h ) {
+            assert(c == *p_hel++);
+        }
+    }
+
 //     assert(hw.substr(0, 3) == "Hel");
 }
 
