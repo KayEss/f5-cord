@@ -85,17 +85,30 @@ namespace f5 {
             const_iterator end() const {
                 return u8shared{buffer, buffer.data() + buffer.size(), 0u};
             }
+            u8string(const_iterator b, const_iterator e)
+            : buffer{b.buffer, b.buffer.data(), b.buffer.size() - e.buffer.size()} {
+            }
 
 
             /// ## Queries
+            std::size_t bytes() const {
+                return buffer.size();
+            }
             bool empty() const {
-                return buffer.size() == 0;
+                return bytes() == 0;
             }
 
 
             /// ## Substrings
-            u8string substr(std::size_t, std::size_t) const {
-                return *this;
+            u8string substr(std::size_t s) const {
+                auto pos = begin(), e = end();
+                for ( ; s && pos != e; --s, ++pos );
+                return u8string(pos, e);
+            }
+            u8string substr(std::size_t s, std::size_t e) const {
+                auto starts = substr(s);
+                auto ends = starts.substr(e - s);
+                return u8string(starts.begin(), ends.begin());
             }
 
 

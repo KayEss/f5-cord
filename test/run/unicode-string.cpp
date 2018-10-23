@@ -6,16 +6,18 @@
 */
 
 
+#include <f5/cord/iostream.hpp>
 #include <f5/cord/unicode-string.hpp>
 
 #include <cassert>
+#include <iostream>
 
 
 int main() {
     f5::u8string e{};
     f5::u8string h{f5::lstring{"Hello"}};
     f5::u8string hw{f5::lstring{"Hello world"}};
-    const auto chw{hw}, ce{e};
+    const auto ce{e}, ch{h}, chw{hw};
 
     [](f5::u8view){}(hw);
     [](f5::u8shared){}(f5::u8shared{chw});
@@ -46,7 +48,7 @@ int main() {
     assert(hw > h);
 
     {
-        auto p = h.begin();
+        auto p = ch.begin();
         assert(*p == 'H');
         assert(*(++p) == 'e');
         assert(*(p++) == 'e');
@@ -61,6 +63,11 @@ int main() {
         }
     }
 
-//     assert(hw.substr(0, 3) == "Hel");
+    const auto chel = h.substr(3);
+    assert(chel.bytes() == 2);
+    assert(chel == "lo");
+    assert(hw.substr(0, 3) == "Hel");
+    assert(h.substr(10) == "");
+    assert(hw.substr(3) == hw.substr(3, 123));
 }
 
