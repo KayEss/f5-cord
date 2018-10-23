@@ -6,18 +6,23 @@
 */
 
 
+#include <f5/cord/iostream.hpp>
 #include <f5/cord/unicode-string.hpp>
 
-#include <cassert>
+#include "assert.hpp"
 
 
 int main() {
+    f5::u8string e{};
     f5::u8string h{f5::lstring{"Hello"}};
     f5::u8string hw{f5::lstring{"Hello world"}};
-    const auto chw{hw};
+    const auto ce{e}, ch{h}, chw{hw};
 
     [](f5::u8view){}(hw);
     [](f5::u8shared){}(f5::u8shared{chw});
+
+    assert(e.empty());
+    assert(ce.empty());
 
     assert(hw == "Hello world");
     assert(hw != "Hello");
@@ -41,9 +46,27 @@ int main() {
     assert(h < hw);
     assert(hw > h);
 
-    for ( auto c : h ) {
+    {
+        auto p = ch.begin();
+        assert(*p == 'H');
+        assert(*(++p) == 'e');
+        assert(*(p++) == 'e');
+        assert(*p == 'l');
     }
 
-//     assert(hw.substr(0, 3) == "Hel");
+    {
+        f5::utf32 hel[] = {'H', 'e', 'l', 'l', 'o'};
+        f5::utf32 *p_hel = hel;
+        for ( auto c : h ) {
+            assert(c == *p_hel++);
+        }
+    }
+
+    const auto chel = h.substr(3);
+    assert(chel.bytes() == 2);
+    assert(chel == "lo");
+    assert(hw.substr(0, 3) == "Hel");
+    assert(h.substr(10) == "");
+    assert(hw.substr(3) == hw.substr(3, 123));
 }
 

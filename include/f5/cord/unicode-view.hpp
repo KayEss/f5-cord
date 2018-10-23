@@ -86,12 +86,6 @@ namespace f5 {
                     return ret;
                 }
 
-                const_iterator &operator += (std::size_t cps) {
-                    while ( cps-- ) // Not undefined behaviour
-                        ++(*this);
-                    return *this;
-                }
-
                 bool operator == (const_iterator it) const {
                     return buffer.data() == it.buffer.data();
                 }

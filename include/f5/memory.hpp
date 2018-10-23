@@ -230,6 +230,9 @@ count)
         shared_buffer(std::shared_ptr<V> p, std::size_t s)
         : m_data{s ? p : std::shared_ptr<V>{}}, m_size{s} {
         }
+        shared_buffer(shared_buffer op, pointer_const_type p, std::size_t s)
+        : m_data(op.m_data, p), m_size(s) {
+        }
 
         /// The number of elements in the buffer
         std::size_t size() const noexcept {

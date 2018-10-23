@@ -23,6 +23,8 @@ namespace f5 {
             u8shared buffer;
         public:
             /// ## Constructors
+            u8string() {}
+
             explicit u8string(u8shared b) noexcept
             : buffer{b} {
             }
@@ -34,6 +36,7 @@ namespace f5 {
                     [](auto &&){}},
                 l.size()}
             {}
+
 
             /// ## Iterator
             class const_iterator : public std::iterator<
@@ -76,6 +79,25 @@ namespace f5 {
                     return buffer.data() != it.buffer.data();
                 }
             };
+            const_iterator begin() const {
+                return buffer;
+            }
+            const_iterator end() const {
+                return u8shared{buffer, buffer.data() + buffer.size(), 0u};
+            }
+            u8string(const_iterator b, const_iterator e)
+            : buffer{b.buffer, b.buffer.data(), b.buffer.size() - e.buffer.size()} {
+            }
+
+
+            /// ## Queries
+            std::size_t bytes() const {
+                return buffer.size();
+            }
+            bool empty() const {
+                return bytes() == 0;
+            }
+
 
             const_iterator begin() const {
                 return const_iterator{buffer};
@@ -85,9 +107,17 @@ namespace f5 {
             }
 
             /// ## Substrings
-            u8string substr(std::size_t, std::size_t) const {
-                return *this;
+            u8string substr(std::size_t s) const {
+                auto pos = begin(), e = end();
+                for ( ; s && pos != e; --s, ++pos );
+                return u8string(pos, e);
             }
+            u8string substr(std::size_t s, std::size_t e) const {
+                auto starts = substr(s);
+                auto ends = starts.substr(e - s);
+                return u8string(starts.begin(), ends.begin());
+            }
+
 
             /// ## Comparisons
             bool operator == (u8view l) const {
@@ -108,6 +138,7 @@ namespace f5 {
             bool operator > (u8view l) const {
                 return u8view{const_u8buffer{buffer}} > l;
             }
+
 
             /// ## Conversions
             explicit operator u8shared () const noexcept {
