@@ -77,6 +77,11 @@ namespace f5 {
                 return buffer;
             }
 
+            /// Useful checks for parts of a string
+            bool starts_with(u8view str) const {
+                return u8view{buffer.slice(0, str.bytes())} == str;
+            }
+
 
             /// ## Substrings
             u8string substr(std::size_t s) const {

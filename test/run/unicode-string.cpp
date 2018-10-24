@@ -71,6 +71,8 @@ int main() {
     assert(h.substr(10) == "");
     assert(hw.substr(3) == hw.substr(3, 123));
 
+    assert(hw.starts_with("Hello"));
+
     assert(std::string("Hello") + hw.substr(5) == "Hello world");
     {
         std::string s{"Hello"};
