@@ -77,7 +77,7 @@ namespace f5 {
                 const_iterator &operator ++ () {
                     const auto here = **this;
                     const auto bytes = u8length(here);
-                    buffer = const_u8buffer(buffer.data() + bytes, buffer.size() - bytes);
+                    buffer = buffer.slice(bytes);
                     return *this;
                 }
                 const_iterator operator ++ (int) {
