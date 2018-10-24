@@ -30,7 +30,7 @@ namespace f5 {
         public:
             u8view() {}
 
-            u8view(const_u8buffer b)
+            explicit u8view(const_u8buffer b)
             : buffer(b) {
             }
 
