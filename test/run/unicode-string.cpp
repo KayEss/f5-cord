@@ -25,8 +25,10 @@ int main() {
     assert(ce.empty());
 
     assert(hw == "Hello world");
+    assert("Hello world" == hw);
     assert(hw != "Hello");
     assert(chw == "Hello world");
+    assert("Hello world" == chw);
     assert(hw == chw);
 
     f5::u8string gw{f5::lstring{"Goodbye world"}};
@@ -68,5 +70,12 @@ int main() {
     assert(hw.substr(0, 3) == "Hel");
     assert(h.substr(10) == "");
     assert(hw.substr(3) == hw.substr(3, 123));
+
+    assert(std::string("Hello") + hw.substr(5) == "Hello world");
+    {
+        std::string s{"Hello"};
+        s += chw.substr(5);
+        assert(s == "Hello world");
+    }
 }
 
