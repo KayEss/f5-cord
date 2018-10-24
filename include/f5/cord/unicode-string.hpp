@@ -32,7 +32,7 @@ namespace f5 {
             explicit u8string(lstring l)
             : buffer{
                 std::shared_ptr<const unsigned char>{
-                    reinterpret_cast<const unsigned char *>(l.c_str()),
+                    reinterpret_cast<const unsigned char *>(l.data()),
                     [](auto &&){}},
                 l.size()}
             {}
