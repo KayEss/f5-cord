@@ -40,6 +40,7 @@ namespace f5 {
 
             /// ## Iterator
 
+            /// An iterator that produces UTF32 code points
             using const_iterator = const_u32_iterator<u8shared>;
             const_iterator begin() const {
                 return const_iterator{buffer};
@@ -51,6 +52,18 @@ namespace f5 {
             : buffer{b.buffer, b.buffer.data(), b.buffer.size() - e.buffer.size()} {
             }
 
+            /// An iterator that produces UTF16 code points from the string
+            using const_u16_iterator = f5::const_u32u16_iterator<const_iterator>;
+
+            /// Return the begin iterator that delivers UTF16 code points
+            const_u16_iterator u16begin() const {
+                return const_u16_iterator(begin(), end());
+            }
+            /// Return the end iterator that delivers UTF16 code points
+            const_u16_iterator u16end() const {
+                return const_u16_iterator(end(), end());
+            }
+
 
             /// ## Queries
             std::size_t bytes() const {
@@ -58,6 +71,10 @@ namespace f5 {
             }
             bool empty() const {
                 return bytes() == 0;
+            }
+            /// Return the underlying memory block for the data
+            auto memory() const {
+                return buffer;
             }
 
 
@@ -75,6 +92,9 @@ namespace f5 {
 
 
             /// ## Comparisons
+            /// Comparison. Acts as a string would. Not unicode aware in
+            /// that it doesn't take into account normalisation, it only
+            /// compares the byte values.
             bool operator == (u8view l) const {
                 return u8view{const_u8buffer{buffer}} == l;
             }

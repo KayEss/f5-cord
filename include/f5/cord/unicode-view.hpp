@@ -108,6 +108,7 @@ namespace f5 {
                 return buffer;
             }
 
+            /// ## Comparisons
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
