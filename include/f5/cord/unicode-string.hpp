@@ -39,51 +39,13 @@ namespace f5 {
 
 
             /// ## Iterator
-            class const_iterator : public std::iterator<
-                    std::forward_iterator_tag,
-                    utf32,
-                    std::ptrdiff_t,
-                    const utf32 *,
-                    utf32>
-            {
-                friend class u8string;
-                u8shared buffer;
 
-                const_iterator(u8shared b)
-                : buffer{b} {
-                }
-
-            public:
-                const_iterator() {}
-
-                utf32 operator * () const {
-                    return decode_one(buffer).first;
-                }
-
-                const_iterator &operator ++ () {
-                    const auto here = **this;
-                    const auto bytes = u8length(here);
-                    buffer = buffer.slice(bytes);
-                    return *this;
-                }
-                const_iterator operator ++ (int) {
-                    const_iterator ret{*this};
-                    ++(*this);
-                    return ret;
-                }
-
-                bool operator == (const_iterator it) const {
-                    return buffer.data() == it.buffer.data();
-                }
-                bool operator != (const_iterator it) const {
-                    return buffer.data() != it.buffer.data();
-                }
-            };
+            using const_iterator = const_u32_iterator<u8shared>;
             const_iterator begin() const {
-                return buffer;
+                return const_iterator{buffer};
             }
             const_iterator end() const {
-                return u8shared{buffer, buffer.data() + buffer.size(), 0u};
+                return const_iterator{buffer.slice(buffer.size())};
             }
             u8string(const_iterator b, const_iterator e)
             : buffer{b.buffer, b.buffer.data(), b.buffer.size() - e.buffer.size()} {
