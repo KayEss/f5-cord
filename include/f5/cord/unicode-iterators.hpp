@@ -186,7 +186,7 @@ namespace f5 {
 
             buffer_type buffer;
 
-            const_u32_iterator() {}
+            constexpr const_u32_iterator() {}
 
             explicit const_u32_iterator(buffer_type b) noexcept
             : buffer(std::move(b)) {
