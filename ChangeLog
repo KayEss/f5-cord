@@ -1,3 +1,6 @@
+2018-10-24  Kirit Sælensminde  <kirit@felspar.com>
+ Add a new `f5::cord::string` type, immutable shared string.
+
 2018-08-31  Kirit Sælensminde  <kirit@felspar.com>
  * Add a `starts_with` member to `u8view`.
  * Add a missing comparison operator.

@@ -2,18 +2,23 @@ language: cpp
 sudo: required
 dist: xenial
 
+notifications:
+    webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
+
 compiler:
     - gcc
     - clang
 
 env:
-    -
     - CMAKE_BUILD_TYPE=Debug
     - CMAKE_BUILD_TYPE=Release
 
+install:
+    - sudo apt-get install ninja-build
+
 script:
     - mkdir build.tmp && cd build.tmp
-    - cmake ..
-    - make
-    - make check
+    - cmake .. -G Ninja
+    - ninja
+    - ninja check
 
