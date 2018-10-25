@@ -42,13 +42,13 @@ namespace f5 {
 
             /// An iterator that produces UTF32 code points
             using const_iterator = const_u32_iterator<u8shared>;
-            const_iterator begin() const {
+            const_iterator begin() const noexcept {
                 return const_iterator{buffer};
             }
-            const_iterator end() const {
+            const_iterator end() const noexcept {
                 return const_iterator{buffer.slice(buffer.size())};
             }
-            u8string(const_iterator b, const_iterator e)
+            u8string(const_iterator b, const_iterator e) noexcept
             : buffer{b.buffer, b.buffer.data(), b.buffer.size() - e.buffer.size()} {
             }
 
@@ -66,14 +66,14 @@ namespace f5 {
 
 
             /// ## Queries
-            std::size_t bytes() const {
+            std::size_t bytes() const noexcept {
                 return buffer.size();
             }
-            bool empty() const {
+            bool empty() const noexcept {
                 return bytes() == 0;
             }
             /// Return the underlying memory block for the data
-            auto memory() const {
+            auto memory() const noexcept {
                 return buffer;
             }
 
@@ -124,7 +124,7 @@ namespace f5 {
             explicit operator u8shared () const noexcept {
                 return buffer;
             }
-            operator u8view () const {
+            operator u8view () const noexcept {
                 return u8view{const_u8buffer{buffer}};
             }
         };

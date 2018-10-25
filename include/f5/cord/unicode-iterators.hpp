@@ -188,7 +188,7 @@ namespace f5 {
 
             const_u32_iterator() {}
 
-            explicit const_u32_iterator(buffer_type b)
+            explicit const_u32_iterator(buffer_type b) noexcept
             : buffer(std::move(b)) {
             }
 
@@ -207,10 +207,10 @@ namespace f5 {
                 return ret;
             }
 
-            bool operator == (const_u32_iterator it) const {
+            bool operator == (const_u32_iterator it) const noexcept {
                 return buffer.data() == it.buffer.data();
             }
-            bool operator != (const_u32_iterator it) const {
+            bool operator != (const_u32_iterator it) const noexcept {
                 return buffer.data() != it.buffer.data();
             }
         };
