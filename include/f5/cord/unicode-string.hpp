@@ -26,7 +26,7 @@ namespace f5 {
             u8string() {}
 
             explicit u8string(u8shared b) noexcept
-            : buffer{b} {
+            : buffer{std::move(b)} {
             }
 
             explicit u8string(lstring l)

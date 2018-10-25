@@ -189,7 +189,7 @@ namespace f5 {
             const_u32_iterator() {}
 
             explicit const_u32_iterator(buffer_type b)
-            : buffer(b) {
+            : buffer(std::move(b)) {
             }
 
             utf32 operator * () const {
