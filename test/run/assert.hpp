@@ -15,5 +15,9 @@ void assert_impl(bool a, const char *at, const char *f, unsigned l) {
         std::exit(120);
     }
 }
+
+#ifdef assert // Apple, sigh...
+#undef assert
+#endif
 #define assert(b) assert_impl(b, #b, __FILE__, __LINE__);
 
