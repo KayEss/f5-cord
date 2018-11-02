@@ -36,9 +36,13 @@ namespace f5 {
                     [](auto &&){}},
                 l.size()}
             {}
+            template<std::size_t N>
+            u8string(const char (&a)[N])
+            : u8string{lstring{a}} {
+            }
 
 
-            /// ## Iterator
+            /// ## Iteration
 
             /// An iterator that produces UTF32 code points
             using const_iterator = const_u32_iterator<u8shared>;
