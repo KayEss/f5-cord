@@ -18,7 +18,9 @@ install:
 
 script:
     - mkdir build.tmp && cd build.tmp
-    - cmake .. -G Ninja
+    - 'if [ "$CXX" = "g++" ]; then export CC=gcc-8; export CXX=g++-8; fi'
+    - cp ../.travis.CMakeLists.txt CMakeLists.txt
+    - cmake . -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -G Ninja
     - ninja
     - ninja check
 
