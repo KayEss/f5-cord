@@ -12,5 +12,6 @@ endif()
 install(DIRECTORY include/f5 DESTINATION include)
 
 if(TARGET check)
+    set_property(TARGET check PROPERTY EXCLUDE_FROM_ALL TRUE)
     add_subdirectory(test)
 endif()
