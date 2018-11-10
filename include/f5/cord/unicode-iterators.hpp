@@ -1,8 +1,8 @@
-/*
-    Copyright 2016-2017 Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2016-2018, Felspar Co Ltd. <http://www.kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -172,6 +172,48 @@ namespace f5 {
                 const_u32u16_iterator<Iterator, E>(b, e),
                 const_u32u16_iterator<Iterator, E>(e, e));
         }
+
+
+        template<typename B>
+        struct const_u32_iterator : public std::iterator<
+            std::forward_iterator_tag,
+            utf32,
+            std::ptrdiff_t,
+            const utf32 *,
+            utf32>
+        {
+            using buffer_type = B;
+
+            buffer_type buffer;
+
+            constexpr const_u32_iterator() {}
+
+            explicit const_u32_iterator(buffer_type b) noexcept
+            : buffer(std::move(b)) {
+            }
+
+            utf32 operator * () const {
+                return decode_one(buffer).first;
+            }
+            const_u32_iterator &operator ++ () {
+                const auto here = **this;
+                const auto bytes = u8length(here);
+                buffer = buffer.slice(bytes);
+                return *this;
+            }
+            const_u32_iterator operator ++ (int) {
+                const_u32_iterator ret{*this};
+                ++(*this);
+                return ret;
+            }
+
+            bool operator == (const_u32_iterator it) const noexcept {
+                return buffer.data() == it.buffer.data();
+            }
+            bool operator != (const_u32_iterator it) const noexcept {
+                return buffer.data() != it.buffer.data();
+            }
+        };
 
 
     }
