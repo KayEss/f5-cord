@@ -1,3 +1,6 @@
+2018-11-23  Kirit Sælensminde  <kirit@felspar.com>
+ Support (explicit) conversions of the string types to `std::string_view`
+
 2018-10-24  Kirit Sælensminde  <kirit@felspar.com>
  Add a new `f5::cord::string` type, immutable shared string.
 

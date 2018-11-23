@@ -131,6 +131,9 @@ namespace f5 {
             operator u8view () const noexcept {
                 return u8view{const_u8buffer{buffer}};
             }
+            explicit operator std::string_view () const noexcept {
+                return static_cast<std::string_view>(static_cast<u8view>(*this));
+            }
         };
 
 

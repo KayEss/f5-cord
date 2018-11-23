@@ -164,6 +164,11 @@ namespace f5 {
             operator const_u8buffer () const {
                 return buffer;
             }
+
+            /// Other conversions
+            explicit operator std::string_view () const noexcept {
+                return std::string_view(reinterpret_cast<const char *>(buffer.data()), buffer.size());
+            }
             explicit operator std::string () const {
                 return std::string(buffer.data(), buffer.data() + buffer.size());
             }
