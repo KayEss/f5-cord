@@ -18,18 +18,18 @@
 namespace std {
 
 
-    template<class Ch, class Tr> inline
-    auto &operator << (basic_ostream<Ch, Tr> &os, const f5::cord::lstring &ls) {
+    template<class Ch, class Tr>
+    inline auto &
+            operator<<(basic_ostream<Ch, Tr> &os, const f5::cord::lstring &ls) {
         return os << ls.c_str();
     }
 
 
-    template<class Ch, class Tr> inline
-    auto &operator << (basic_ostream<Ch, Tr> &os, f5::cord::u8view s) {
+    template<class Ch, class Tr>
+    inline auto &operator<<(basic_ostream<Ch, Tr> &os, f5::cord::u8view s) {
         os.write(s.data(), s.bytes());
         return os;
     }
 
 
 }
-

@@ -10,7 +10,7 @@
 
 
 void assert_impl(bool a, const char *at, const char *f, unsigned l) {
-    if ( not a ) {
+    if (not a) {
         std::cout << f << ":" << l << " => assert(" << at << ") failed\n";
         std::exit(120);
     }
@@ -20,4 +20,3 @@ void assert_impl(bool a, const char *at, const char *f, unsigned l) {
 #undef assert
 #endif
 #define assert(b) assert_impl(b, #b, __FILE__, __LINE__);
-

@@ -18,8 +18,8 @@ int main() {
     f5::u8string hw{f5::lstring{"Hello world"}};
     const auto ce{e}, ch{h}, chw{hw};
 
-    [](f5::u8view){}(hw);
-    [](f5::u8shared){}(f5::u8shared{chw});
+    [](f5::u8view) {}(hw);
+    [](f5::u8shared) {}(f5::u8shared{chw});
 
     assert(e.empty());
     assert(ce.empty());
@@ -59,9 +59,7 @@ int main() {
     {
         f5::utf32 hel[] = {'H', 'e', 'l', 'l', 'o'};
         f5::utf32 *p_hel = hel;
-        for ( auto c : h ) {
-            assert(c == *p_hel++);
-        }
+        for (auto c : h) { assert(c == *p_hel++); }
     }
 
     const auto chel = h.substr(3);
@@ -80,4 +78,3 @@ int main() {
         assert(s == "Hello world");
     }
 }
-

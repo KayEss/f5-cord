@@ -25,9 +25,9 @@ int main() {
     assert(std::string(html) < html5);
 
     assert(now < std::string("op:set"));
-    assert(not (now < std::string("op:now")));
-    assert(not (set < std::string("op:set")));
-    assert(not (set < std::string("op:now")));
+    assert(not(now < std::string("op:now")));
+    assert(not(set < std::string("op:set")));
+    assert(not(set < std::string("op:now")));
 
     assert(html5 == f5::u8view(html5));
     assert(f5::u8view(html5) == html5);
@@ -37,4 +37,3 @@ int main() {
 
     return 0;
 }
-

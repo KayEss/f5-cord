@@ -19,6 +19,6 @@ using namespace f5::literals;
 constexpr auto hello = "Hello, "_t;
 constexpr auto world = "World!"_t;
 static_assert(hello != world, "Hello is World :(");
-static_assert(not (hello == world), "Hello is World :(");
+static_assert(not(hello == world), "Hello is World :(");
 static_assert(hello + world == "Hello, World!"_t, "Not a welcoming world");
-static_assert(not (hello + world != "Hello, World!"_t), "Not a welcoming world");
+static_assert(not(hello + world != "Hello, World!"_t), "Not a welcoming world");
