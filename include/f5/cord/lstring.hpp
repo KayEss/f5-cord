@@ -64,11 +64,14 @@ namespace f5 {
                 return p ? p : "";
             }
 
-            /// Convert to a std::string (should this be explicit?)
-            operator std::string () const {
+            /// Convert to a std::string
+            explicit operator std::string () const {
                 return p ? std::string{c_str()} : std::string();
             }
-            /// Save conversions
+            explicit operator std::string_view () const noexcept {
+                return std::string_view(data(), size());
+            }
+            /// Safe conversions
             operator const_u8buffer () const {
                 return const_u8buffer(reinterpret_cast<const unsigned char *>(p), bytes);
             }
