@@ -13,7 +13,9 @@ using namespace f5::literals;
 
 // check_valid
 static_assert(f5::check_valid(' '), "Space is a valid UTF32 code point");
-static_assert(not f5::check_valid<void>(0xff'ff'ff), "0xff'ff'ff is not a valid code point");
+static_assert(
+        not f5::check_valid<void>(0xff'ff'ff),
+        "0xff'ff'ff is not a valid code point");
 
 
 // u8length
@@ -33,12 +35,14 @@ static_assert(f5::decode_one(x).second.size() == 0u, "Should have used it all");
 constexpr unsigned char ae[2] = {0xC3, 0xA6};
 static_assert(f5::decode_one(ae).first == 0xe6, "Expected x");
 static_assert(f5::decode_one(ae).second.size() == 0u, "Should have used it all");
-constexpr unsigned char bom[3] = {0xEF,0xBB,0xBF};
+constexpr unsigned char bom[3] = {0xEF, 0xBB, 0xBF};
 static_assert(f5::decode_one(bom).first == 0xfeff, "Expected the BOM");
-static_assert(f5::decode_one(bom).second.size() == 0u, "Should have used it all");
+static_assert(
+        f5::decode_one(bom).second.size() == 0u, "Should have used it all");
 constexpr unsigned char clef[4] = {0xF0, 0x9D, 0x84, 0x9E};
 static_assert(f5::decode_one(clef).first == 0x1d11e, "Expected the Clef");
-static_assert(f5::decode_one(clef).second.size() == 0u, "Should have used it all");
+static_assert(
+        f5::decode_one(clef).second.size() == 0u, "Should have used it all");
 
 // UTF-16
 static_assert(not f5::is_surrogate(' '), "Space");

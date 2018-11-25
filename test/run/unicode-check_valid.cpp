@@ -15,14 +15,14 @@ bool check_exception(f5::utf32 cp, const std::string &what) {
     try {
         f5::check_valid(cp);
         return false;
-    } catch ( std::exception &e ) {
-        return what == e.what();
-    }
+    } catch (std::exception &e) { return what == e.what(); }
 }
 
 
-const std::string leading_pair = "UTF32 code point is in the leading UTF16 surrogate pair range";
-const std::string trailing_pair = "UTF32 code point is in the trailing UTF16 surrogate pair range";
+const std::string leading_pair =
+        "UTF32 code point is in the leading UTF16 surrogate pair range";
+const std::string trailing_pair =
+        "UTF32 code point is in the trailing UTF16 surrogate pair range";
 const std::string too_big = "UTF32 code point is beyond the allowable range";
 
 
@@ -43,4 +43,3 @@ int main() {
 
     return 0;
 }
-

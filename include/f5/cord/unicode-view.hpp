@@ -27,32 +27,26 @@ namespace f5 {
         /// For unsigned char types with an UTF-8 encoding
         class u8view {
             const_u8buffer buffer;
-        public:
+
+          public:
             u8view() {}
 
-            explicit u8view(const_u8buffer b)
-            : buffer(b) {
-            }
+            explicit u8view(const_u8buffer b) : buffer(b) {}
 
             template<std::size_t N>
             u8view(const char (&s)[N])
-            : buffer(reinterpret_cast<const unsigned char *>(s), N-1) {
-            }
+            : buffer(reinterpret_cast<const unsigned char *>(s), N - 1) {}
 
             u8view(const char *b, std::size_t s)
-            : buffer(reinterpret_cast<const unsigned char *>(b), s) {
-            }
+            : buffer(reinterpret_cast<const unsigned char *>(b), s) {}
 
             explicit u8view(const std::string &u8)
-            : buffer(
-                    reinterpret_cast<const unsigned char *>(u8.data()),
-                    u8.size())
-            {
-            }
+            : buffer(reinterpret_cast<const unsigned char *>(u8.data()),
+                     u8.size()) {}
 
             u8view(lstring s)
-            : buffer(reinterpret_cast<const unsigned char *>(s.c_str()), s.size()) {
-            }
+            : buffer(reinterpret_cast<const unsigned char *>(s.c_str()),
+                     s.size()) {}
 
             /// ## Iterators
 
@@ -60,9 +54,7 @@ namespace f5 {
             using const_iterator = const_u32_iterator<const_u8buffer>;
 
             /// Return the begin iterator that delivers UTF32 code points
-            const_iterator begin() const {
-                return const_iterator{buffer};
-            }
+            const_iterator begin() const { return const_iterator{buffer}; }
             /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
                 return const_iterator{buffer.slice(buffer.size())};
@@ -70,11 +62,11 @@ namespace f5 {
 
             /// Construct a u8view from part of another
             u8view(const_iterator s, const_iterator e)
-            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()) {
-            }
+            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()) {}
 
             /// An iterator that produces UTF16 code points from the string
-            using const_u16_iterator = f5::const_u32u16_iterator<const_iterator>;
+            using const_u16_iterator =
+                    f5::const_u32u16_iterator<const_iterator>;
 
             /// Return the begin iterator that delivers UTF16 code points
             const_u16_iterator u16begin() const {
@@ -92,55 +84,37 @@ namespace f5 {
                 return reinterpret_cast<const char *>(buffer.data());
             }
             /// Return the size in bytes of the string
-            std::size_t bytes() const noexcept {
-                return buffer.size();
-            }
+            std::size_t bytes() const noexcept { return buffer.size(); }
             /// Return the size in code points
-            auto code_points() const {
-                return std::distance(begin(), end());
-            }
+            auto code_points() const { return std::distance(begin(), end()); }
             /// Return true if the view is empty
-            bool empty() const noexcept {
-                return buffer.empty();
-            }
+            bool empty() const noexcept { return buffer.empty(); }
             /// Return the underlying memory block for the data
-            auto memory() const {
-                return buffer;
-            }
+            auto memory() const { return buffer; }
 
             /// ## Comparisons
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
-            bool operator == (u8view r) const {
-                return std::equal(buffer.begin(), buffer.end(), r.buffer.begin(), r.buffer.end());
+            bool operator==(u8view r) const {
+                return std::equal(
+                        buffer.begin(), buffer.end(), r.buffer.begin(),
+                        r.buffer.end());
             }
-            bool operator != (u8view r) const {
-                return not ((*this) == r);
-            }
-            bool operator == (const char *s) const {
+            bool operator!=(u8view r) const { return not((*this) == r); }
+            bool operator==(const char *s) const {
                 std::size_t pos{};
-                for ( ; pos < buffer.size() && *s; ++pos, ++s ) {
-                    if ( buffer[pos] != (unsigned char)*s ) return false;
+                for (; pos < buffer.size() && *s; ++pos, ++s) {
+                    if (buffer[pos] != (unsigned char)*s) return false;
                 }
                 return pos == buffer.size() && *s == 0;
             }
-            bool operator != (const char *s) const {
-                return not ((*this) == s);
-            }
+            bool operator!=(const char *s) const { return not((*this) == s); }
 
-            bool operator < (f5::u8view r) const {
-                return buffer < r.buffer;
-            }
-            bool operator <= (f5::u8view r) const {
-                return buffer <= r.buffer;
-            }
-            bool operator >= (f5::u8view r) const {
-                return buffer >= r.buffer;
-            }
-            bool operator > (f5::u8view r) const {
-                return buffer > r.buffer;
-            }
+            bool operator<(f5::u8view r) const { return buffer < r.buffer; }
+            bool operator<=(f5::u8view r) const { return buffer <= r.buffer; }
+            bool operator>=(f5::u8view r) const { return buffer >= r.buffer; }
+            bool operator>(f5::u8view r) const { return buffer > r.buffer; }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
@@ -151,7 +125,8 @@ namespace f5 {
             /// undefined if the end marker is smaller than the start marker.
             u8view substr(std::size_t s) {
                 auto pos = begin(), e = end();
-                for ( ; s && pos != e; --s, ++pos );
+                for (; s && pos != e; --s, ++pos)
+                    ;
                 return u8view(pos, e);
             }
             u8view substr(std::size_t s, std::size_t e) {
@@ -161,42 +136,34 @@ namespace f5 {
             }
 
             /// Safe conversions
-            operator const_u8buffer () const {
-                return buffer;
-            }
+            operator const_u8buffer() const { return buffer; }
 
             /// Other conversions
-            explicit operator std::string_view () const noexcept {
-                return std::string_view(reinterpret_cast<const char *>(buffer.data()), buffer.size());
+            explicit operator std::string_view() const noexcept {
+                return std::string_view(
+                        reinterpret_cast<const char *>(buffer.data()),
+                        buffer.size());
             }
-            explicit operator std::string () const {
-                return std::string(buffer.data(), buffer.data() + buffer.size());
+            explicit operator std::string() const {
+                return std::string(
+                        buffer.data(), buffer.data() + buffer.size());
             }
         };
 
 
         /// Equality against other types
-        inline
-        bool operator == (lstring l, u8view r) {
-            return r.operator == (l);
-        }
-        inline
-        bool operator != (lstring l, u8view r) {
-            return r.operator != (l);
-        }
+        inline bool operator==(lstring l, u8view r) { return r.operator==(l); }
+        inline bool operator!=(lstring l, u8view r) { return r.operator!=(l); }
 
         /// Comparison against other types
-        inline
-        bool operator < (lstring l, u8view r) {
-            return u8view(l) < r;
-        }
+        inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
 
         /// Concatenations with std::string
-        inline std::string operator + (std::string f, u8view e) {
+        inline std::string operator+(std::string f, u8view e) {
             f.append(e.data(), e.bytes());
             return f;
         }
-        inline std::string operator + (u8view f, u8view e) {
+        inline std::string operator+(u8view f, u8view e) {
             std::string r;
             r.reserve(f.bytes() + e.bytes());
             r.append(f.data(), f.bytes());
@@ -204,7 +171,7 @@ namespace f5 {
             return r;
         }
 
-        inline std::string &operator += (std::string &s, u8view e) {
+        inline std::string &operator+=(std::string &s, u8view e) {
             s.append(e.data(), e.bytes());
             return s;
         }
@@ -214,4 +181,3 @@ namespace f5 {
 
 
 }
-

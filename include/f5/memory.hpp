@@ -41,7 +41,8 @@ namespace f5 {
     class buffer final {
         V *m_data;
         std::size_t m_size;
-    public:
+
+      public:
         /// The value type
         using value_type = V;
         /// The underlying pointer type
@@ -50,70 +51,46 @@ namespace f5 {
         using pointer_const_type = std::add_pointer_t<std::add_const_t<V>>;
 
         /// Default construct an empty buffer
-        buffer()
-        : m_data(nullptr), m_size(0u) {
-        }
+        buffer() : m_data(nullptr), m_size(0u) {}
 
         /// Construct from a vector
         buffer(std::vector<value_type> &v)
-        : m_data(v.data()), m_size(v.size()) {
-        }
+        : m_data(v.data()), m_size(v.size()) {}
         template<typename T>
-        buffer(const std::vector<T> &v)
-        : m_data(v.data()), m_size(v.size()) {
-        }
+        buffer(const std::vector<T> &v) : m_data(v.data()), m_size(v.size()) {}
         /// For C++ arrays
         template<typename T, std::size_t N>
-        constexpr buffer(std::array<T, N> &v)
-        : m_data(v.data()), m_size(N) {
-        }
+        constexpr buffer(std::array<T, N> &v) : m_data(v.data()), m_size(N) {}
         template<typename T, std::size_t N>
         constexpr buffer(const std::array<T, N> &v)
-        : m_data(v.data()), m_size(N) {
-        }
+        : m_data(v.data()), m_size(N) {}
         /// From a C array
         template<std::size_t N>
-        constexpr buffer(V (&a)[N])
-        : m_data(a), m_size(N) {
-        }
+        constexpr buffer(V (&a)[N]) : m_data(a), m_size(N) {}
 
         /// Construct from pointers
         constexpr buffer(pointer_type a, std::size_t items)
-        : m_data(a), m_size(items) {
-        }
+        : m_data(a), m_size(items) {}
         constexpr buffer(pointer_const_type a, std::size_t items)
-        : m_data(a), m_size(items) {
-        }
-        buffer(pointer_type b, pointer_type e)
-        : m_data(b), m_size(e - b) {
-        }
+        : m_data(a), m_size(items) {}
+        buffer(pointer_type b, pointer_type e) : m_data(b), m_size(e - b) {}
         buffer(pointer_const_type b, pointer_const_type e)
-        : m_data(b), m_size(e - b) {
-        }
+        : m_data(b), m_size(e - b) {}
 
         /// Converting constructors
-        template<typename W, typename E = std::enable_if_t<
-                std::is_same<W, std::remove_const_t<V>>::value
-            >>
-        buffer(buffer<W> a)
-        : m_data(a.data()), m_size(a.size()) {
-        }
+        template<
+                typename W,
+                typename E = std::enable_if_t<
+                        std::is_same<W, std::remove_const_t<V>>::value>>
+        buffer(buffer<W> a) : m_data(a.data()), m_size(a.size()) {}
 
         /// The start of the data array
-        constexpr std::add_pointer_t<V> data() noexcept {
-            return m_data;
-        }
-        constexpr pointer_const_type data() const noexcept {
-            return m_data;
-        }
+        constexpr std::add_pointer_t<V> data() noexcept { return m_data; }
+        constexpr pointer_const_type data() const noexcept { return m_data; }
         /// The number of items in the array
-        constexpr std::size_t size() const noexcept {
-            return m_size;
-        }
+        constexpr std::size_t size() const noexcept { return m_size; }
         /// Return true if there are no items in the array
-        constexpr bool empty() const noexcept {
-            return m_size == 0;
-        }
+        constexpr bool empty() const noexcept { return m_size == 0; }
 
         /// Return a slice of this array
         constexpr buffer slice(std::size_t start) const {
@@ -125,41 +102,29 @@ namespace f5 {
 
         /// Ordering. Performs element-wise ordering. In a tie the shortest
         /// is less than the longest.
-        constexpr bool operator < (buffer r) const {
+        constexpr bool operator<(buffer r) const {
             const auto checks = m_size < r.m_size ? m_size : r.m_size;
-            for ( std::size_t s{}; s != checks; ++s ) {
-                if ( m_data[s] != r.m_data[s] ) return m_data[s] < r.m_data[s];
+            for (std::size_t s{}; s != checks; ++s) {
+                if (m_data[s] != r.m_data[s]) return m_data[s] < r.m_data[s];
             }
             return m_size < r.m_size;
         }
-        constexpr bool operator <= (buffer r) const {
-            return not (r < *this);
-        }
-        constexpr bool operator > (buffer r) const {
-            return r < *this;
-        }
-        constexpr bool operator >= (buffer r) const {
-            return not (*this < r);
-        }
+        constexpr bool operator<=(buffer r) const { return not(r < *this); }
+        constexpr bool operator>(buffer r) const { return r < *this; }
+        constexpr bool operator>=(buffer r) const { return not(*this < r); }
 
         /// Index into the arraay
-        constexpr V &operator [] (std::size_t index) {
-            return data()[index];
-        }
-        constexpr const V &operator [] (std::size_t index) const {
+        constexpr V &operator[](std::size_t index) { return data()[index]; }
+        constexpr const V &operator[](std::size_t index) const {
             return data()[index];
         }
 
         /// Constant iterator
         using const_iterator = pointer_const_type;
         /// Start iterator
-        const_iterator begin() const {
-            return data();
-        }
+        const_iterator begin() const { return data(); }
         /// End iterator
-        const_iterator end() const {
-            return data() + size();
-        }
+        const_iterator end() const { return data() + size(); }
 
         /// Reverse const iterator
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
@@ -176,9 +141,9 @@ namespace f5 {
 
     /// ## `shared_buffer`
     /**
-        Shared ownership of a memory block that can be split into parts using `buffer`.
-        It supports `slice`s which return shared buffers so the buffer can be split
-        arbitrarily.
+        Shared ownership of a memory block that can be split into parts using
+       `buffer`. It supports `slice`s which return shared buffers so the buffer
+       can be split arbitrarily.
 
         There are also automatic conversions to `buffer` types.
 
@@ -198,11 +163,11 @@ namespace f5 {
         std::shared_ptr<V> m_data;
         std::size_t m_size;
 
-        shared_buffer(std::shared_ptr<V> ptr, std::size_t begin, std::size_t
-count)
-        : m_data(std::move(ptr), ptr.get() + begin), m_size(count) {
-        }
-    public:
+        shared_buffer(
+                std::shared_ptr<V> ptr, std::size_t begin, std::size_t count)
+        : m_data(std::move(ptr), ptr.get() + begin), m_size(count) {}
+
+      public:
         /// Buffer types
         using buffer_type = buffer<std::remove_const_t<V>>;
         using const_buffer_type = buffer<std::add_const_t<V>>;
@@ -213,44 +178,32 @@ count)
 
         /// Default construct an empty buffer. The data pointer will be
         /// equal to `nullptr`.
-        shared_buffer()
-        : m_data{}, m_size{} {
-        }
+        shared_buffer() : m_data{}, m_size{} {}
 
         /// Construct buffer large enough to hold `size` items, which are
         /// all default constructed.
         shared_buffer(std::size_t size)
-        : m_data{size ? new V[size] : nullptr, [](auto p) { delete[] p; }}, m_size{size} {
-        }
+        : m_data{size ? new V[size] : nullptr, [](auto p) { delete[] p; }},
+          m_size{size} {}
 
         /// Construct from a `shared_ptr` to the  underlying type. The
         /// destructor that was given to it must be appropriate for the data
         /// array used when constructing the `shared_ptr`. It must be
         /// an array of contiguous memory that can be sliced.
         shared_buffer(std::shared_ptr<V> p, std::size_t s)
-        : m_data{s ? p : std::shared_ptr<V>{}}, m_size{s} {
-        }
+        : m_data{s ? p : std::shared_ptr<V>{}}, m_size{s} {}
         shared_buffer(shared_buffer op, pointer_const_type p, std::size_t s)
-        : m_data(op.m_data, p), m_size(s) {
-        }
+        : m_data(op.m_data, p), m_size(s) {}
 
         /// The number of elements in the buffer
-        std::size_t size() const noexcept {
-            return m_size;
-        }
+        std::size_t size() const noexcept { return m_size; }
 
         /// Access to the underlying memory block
-        std::add_pointer_t<V> data() {
-            return m_data.get();
-        }
-        pointer_const_type data() const {
-            return m_data.get();
-        }
+        std::add_pointer_t<V> data() { return m_data.get(); }
+        pointer_const_type data() const { return m_data.get(); }
 
         /// Subscription operators into the memory
-        V& operator [] (std::size_t index) {
-            return data()[index];
-        }
+        V &operator[](std::size_t index) { return data()[index]; }
 
         /// Return a slice which is also shared
         shared_buffer slice(std::size_t index) const {
@@ -261,23 +214,16 @@ count)
         }
 
         /// Iteration across the memory
-        using iterator = V*;
-        iterator begin() {
-            return data();
-        }
-        iterator end() {
-            return data() + m_size;
-        }
+        using iterator = V *;
+        iterator begin() { return data(); }
+        iterator end() { return data() + m_size; }
 
         /// Conversion to non-owning buffers
-        operator buffer<V> () {
-            return buffer<V>{m_data.get(), m_size};
-        }
-        operator buffer<const V> () const {
+        operator buffer<V>() { return buffer<V>{m_data.get(), m_size}; }
+        operator buffer<const V>() const {
             return buffer<const V>{m_data.get(), m_size};
         }
     };
 
 
 }
-

@@ -22,38 +22,35 @@ namespace f5 {
 
         /// An iterator that produces UTF-32 from a UTF-16 iterator
         template<typename U16, typename E = std::range_error>
-        class const_u16u32_iterator : public std::iterator<
+        class const_u16u32_iterator :
+        public std::iterator<
                 std::forward_iterator_tag,
                 utf32,
                 typename U16::difference_type,
                 const utf32 *,
-                utf32>
-        {
+                utf32> {
             U16 pos, end;
-        public:
+
+          public:
             /// Default construct
-            const_u16u32_iterator()
-            : pos{}, end{} {
-            }
+            const_u16u32_iterator() : pos{}, end{} {}
 
             /// Construct from a begin and end pair
-            const_u16u32_iterator(U16 begin, U16 end)
-            : pos(begin), end(end) {
-            }
+            const_u16u32_iterator(U16 begin, U16 end) : pos(begin), end(end) {}
 
             /// Increment position
-            const_u16u32_iterator &operator ++ () {
-                if ( u16length(**this) == 2 ) ++pos;
+            const_u16u32_iterator &operator++() {
+                if (u16length(**this) == 2) ++pos;
                 ++pos;
                 return *this;
             }
 
             /// Return the current character
-            utf32 operator * () const {
-                if ( is_surrogate(*pos) ) {
+            utf32 operator*() const {
+                if (is_surrogate(*pos)) {
                     auto next = pos;
                     ++next;
-                    if ( next == end ) {
+                    if (next == end) {
                         raise<E>("Truncated surrogate pair in UTF-16 sequence");
                         return 0;
                     } else {
@@ -65,50 +62,48 @@ namespace f5 {
             }
 
             /// Compare for equality
-            bool operator == (const const_u16u32_iterator &rhs) const {
+            bool operator==(const const_u16u32_iterator &rhs) const {
                 return pos == rhs.pos;
             }
             /// Compare for inequality
-            bool operator != (const const_u16u32_iterator &rhs) const {
+            bool operator!=(const const_u16u32_iterator &rhs) const {
                 return pos != rhs.pos;
             }
         };
 
 
         /// Make a pair of iterators from a UTF-32 iterator
-        template<typename E = std::range_error, typename Iterator> inline
-        auto make_u16u32_iterator(Iterator b, Iterator e) {
+        template<typename E = std::range_error, typename Iterator>
+        inline auto make_u16u32_iterator(Iterator b, Iterator e) {
             return std::make_pair(
-                const_u16u32_iterator<Iterator, E>(b, e),
-                const_u16u32_iterator<Iterator, E>(e, e));
+                    const_u16u32_iterator<Iterator, E>(b, e),
+                    const_u16u32_iterator<Iterator, E>(e, e));
         }
 
 
         /// An iterator that produces UTF-16 from a UTF-32 iterator
         template<typename U32, typename E = std::range_error>
-        class const_u32u16_iterator : public std::iterator<
+        class const_u32u16_iterator :
+        public std::iterator<
                 std::forward_iterator_tag,
                 utf16,
                 typename U32::difference_type,
                 const utf16 *,
-                utf16>
-        {
+                utf16> {
             U32 pos, end;
             std::array<utf16, 2> buffer;
             char in_buffer;
 
             /// Decode the current position (if safe)
             void decode() {
-                if ( pos != end ) {
+                if (pos != end) {
                     std::tie(in_buffer, buffer) = f5::u16encode(*pos);
                 }
             }
 
-        public:
+          public:
             /// Default construct
-            const_u32u16_iterator()
-            : in_buffer{} {
-            }
+            const_u32u16_iterator() : in_buffer{} {}
 
             /// Wrap a U32 iterator
             const_u32u16_iterator(U32 pos, U32 end)
@@ -117,71 +112,67 @@ namespace f5 {
             }
 
             /// The current code point
-            utf16 operator * () const {
-                return buffer[0];
-            }
+            utf16 operator*() const { return buffer[0]; }
 
             /// Increment the iterator
-            const_u32u16_iterator &operator ++ () {
-                if ( in_buffer ) {
+            const_u32u16_iterator &operator++() {
+                if (in_buffer) {
                     /// If there is anything in the local buffer then
                     /// we can decrement its count and shift down
                     /// the buffer content. This is always safe
                     --in_buffer;
                     buffer[0] = buffer[1];
                 }
-                if ( not in_buffer && pos != end ) {
+                if (not in_buffer && pos != end) {
                     /// Our local buffer is empty and we're not at
                     /// the end of the sequence, so we can move
                     /// to the next position and decode it
                     ++pos;
                     decode();
-                } else if ( pos == end ) {
+                } else if (pos == end) {
                     raise<E>("Run off the end of the iterator");
                 }
                 return *this;
             }
 
             /// Post increment the iterator
-            const_u32u16_iterator operator ++ (int) {
+            const_u32u16_iterator operator++(int) {
                 auto ret = *this;
                 ++(*this);
                 return ret;
             }
 
             /// Compare iterators
-            bool operator == (const const_u32u16_iterator &rhs) const {
+            bool operator==(const const_u32u16_iterator &rhs) const {
                 return pos == rhs.pos && in_buffer == rhs.in_buffer;
             }
             /// Compare iterators
-            bool operator != (const const_u32u16_iterator &rhs) const {
-                return not (*this == rhs);
+            bool operator!=(const const_u32u16_iterator &rhs) const {
+                return not(*this == rhs);
             }
 
             /// Return a copy of the current position in the UTF-32 sequence
-            const U32 &u32_iterator() const {
-                return pos;
-            }
+            const U32 &u32_iterator() const { return pos; }
         };
 
 
         /// Make a pair of iterators from a UTF-32 iterator
-        template<typename Iterator, typename E = std::range_error> inline
-        auto make_u32u16_iterator(Iterator b, Iterator e) {
+        template<typename Iterator, typename E = std::range_error>
+        inline auto make_u32u16_iterator(Iterator b, Iterator e) {
             return std::make_pair(
-                const_u32u16_iterator<Iterator, E>(b, e),
-                const_u32u16_iterator<Iterator, E>(e, e));
+                    const_u32u16_iterator<Iterator, E>(b, e),
+                    const_u32u16_iterator<Iterator, E>(e, e));
         }
 
 
         template<typename B>
-        struct const_u32_iterator : public std::iterator<
-            std::forward_iterator_tag,
-            utf32,
-            std::ptrdiff_t,
-            const utf32 *,
-            utf32>
-        {
+        struct const_u32_iterator :
+        public std::iterator<
+                std::forward_iterator_tag,
+                utf32,
+                std::ptrdiff_t,
+                const utf32 *,
+                utf32> {
             using buffer_type = B;
 
             buffer_type buffer;
@@ -189,28 +180,25 @@ namespace f5 {
             constexpr const_u32_iterator() {}
 
             explicit const_u32_iterator(buffer_type b) noexcept
-            : buffer(std::move(b)) {
-            }
+            : buffer(std::move(b)) {}
 
-            utf32 operator * () const {
-                return decode_one(buffer).first;
-            }
-            const_u32_iterator &operator ++ () {
+            utf32 operator*() const { return decode_one(buffer).first; }
+            const_u32_iterator &operator++() {
                 const auto here = **this;
                 const auto bytes = u8length(here);
                 buffer = buffer.slice(bytes);
                 return *this;
             }
-            const_u32_iterator operator ++ (int) {
+            const_u32_iterator operator++(int) {
                 const_u32_iterator ret{*this};
                 ++(*this);
                 return ret;
             }
 
-            bool operator == (const_u32_iterator it) const noexcept {
+            bool operator==(const_u32_iterator it) const noexcept {
                 return buffer.data() == it.buffer.data();
             }
-            bool operator != (const_u32_iterator it) const noexcept {
+            bool operator!=(const_u32_iterator it) const noexcept {
                 return buffer.data() != it.buffer.data();
             }
         };
@@ -220,4 +208,3 @@ namespace f5 {
 
 
 }
-

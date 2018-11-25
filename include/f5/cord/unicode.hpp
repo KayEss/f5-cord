@@ -13,4 +13,3 @@
 #include <f5/cord/unicode-iterators.hpp>
 #include <f5/cord/unicode-view.hpp>
 #include <f5/cord/unicode-string.hpp>
-
