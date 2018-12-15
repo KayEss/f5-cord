@@ -34,25 +34,40 @@ namespace f5 {
             /// ## Constructors
             u8string() noexcept : buffer{}, owner{} {}
 
+            /// The type is copyable and movable. Handle the control block
+            /// appropriately.
             u8string(const u8string &b)
             : buffer{b.buffer}, owner{control_type::increment(b.owner)} {}
             u8string(u8string &&b)
             : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
+            /// Creation from a `u8view` will never allocate because the
+            /// `u8view` remembers the shared status of its history
+            u8string(u8view v)
+            : buffer{v.buffer}, owner{control_type::increment(v.owner)} {}
+
+            /// From literals we have a `nullptr` control block as we have
+            /// nothing to count
             explicit u8string(lstring l) noexcept
-            : buffer{(unsigned char const *)(l.data()), l.size()}, owner{} {}
+            : buffer{reinterpret_cast<unsigned char const *>(l.data()),
+                     l.size()},
+              owner{} {}
             template<std::size_t N>
             u8string(const char (&a)[N]) noexcept : u8string{lstring{a}} {}
 
+            /// For `std::string` we have to move the string into a memory area
+            /// we can control
             explicit u8string(std::string s) : buffer{}, owner{} {
+                // TODO This allocates memory twice. Once below for the
+                // std::string, and once again in control_type::make for the
+                // control block. We should be able to allocate all of this
+                // memory in one go
                 auto ss = std::make_unique<std::string>(std::move(s));
                 auto sp = reinterpret_cast<unsigned char const *>(ss->data());
                 buffer = const_u8buffer{sp, ss->size()};
                 owner = control_type::make(
                         sp, [ss = ss.release()](auto const *) { delete ss; });
             }
-
-            u8string(u8view v);
 
             ~u8string() { control_type::decrement(owner); }
 

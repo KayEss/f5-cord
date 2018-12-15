@@ -25,6 +25,10 @@ int main() {
         assert(v.is_shared());
         assert(v == hw);
         assert(v.data() == hw.data());
+
+        f5::u8string nhw{v};
+        assert(nhw.is_shared());
+        assert(nhw.data() == hw.data());
     }(hw);
 
     assert(e.empty());
