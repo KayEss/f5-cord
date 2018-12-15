@@ -10,16 +10,14 @@
 
 #include "assert.hpp"
 
-#include <iostream>
-
 
 int main() {
     f5::u8view t1{"123 \xe2\x9c\x93 321"};
 
-    assert(t1 != (const char *)"123");
-    assert(t1 != (const char *)"1234");
-    assert(t1 != (const char *)"123 \xe2\x9c\x93 321 extra");
-    assert(t1 == (const char *)"123 \xe2\x9c\x93 321");
+    assert(t1 != "123");
+    assert(t1 != "1234");
+    assert(t1 != "123 \xe2\x9c\x93 321 extra");
+    assert(t1 == "123 \xe2\x9c\x93 321");
 
     assert(t1.substr(0) == "123 \xe2\x9c\x93 321");
     assert(t1.substr(2) == "3 \xe2\x9c\x93 321");
