@@ -33,33 +33,29 @@ namespace f5 {
             friend class u8string;
 
             const_u8buffer buffer;
-            using control_type = control<unsigned char const>;
+            using control_type = control<char const>;
             control_type *owner = nullptr;
 
             u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}
 
           public:
-            u8view() : buffer{}, owner{} {}
+            constexpr u8view() noexcept : buffer{}, owner{} {}
 
-            explicit u8view(const_u8buffer b) : buffer(b), owner{} {}
+            constexpr explicit u8view(const_u8buffer b) noexcept : buffer(b), owner{} {}
 
             template<std::size_t N>
-            u8view(const char (&s)[N])
-            : buffer(reinterpret_cast<unsigned char const *>(s), N - 1),
+            constexpr u8view(const char (&s)[N]) noexcept
+            : buffer(s, N - 1),
               owner{} {}
 
-            explicit u8view(const char *b, std::size_t s)
-            : buffer(reinterpret_cast<unsigned char const *>(b), s), owner{} {}
+            constexpr explicit u8view(const char *b, std::size_t s) noexcept
+            : buffer(b, s), owner{} {}
 
-            explicit u8view(const std::string &u8)
-            : buffer(reinterpret_cast<unsigned char const *>(u8.data()),
-                     u8.size()),
-              owner{} {}
+            explicit u8view(const std::string &u8) noexcept
+            : buffer(u8.data(), u8.size()), owner{} {}
 
-            u8view(lstring s)
-            : buffer(reinterpret_cast<unsigned char const *>(s.c_str()),
-                     s.size()),
-              owner{} {}
+            constexpr u8view(lstring s) noexcept
+            : buffer(s.data(), s.size()), owner{} {}
 
 
             /// ## Iterators
@@ -99,40 +95,45 @@ namespace f5 {
 
             /// Return the data array
             const char *data() const noexcept {
-                return reinterpret_cast<const char *>(buffer.data());
+                return buffer.data();
             }
             /// Return the size in bytes of the string
-            std::size_t bytes() const noexcept { return buffer.size(); }
+            constexpr std::size_t bytes() const noexcept { return buffer.size(); }
             /// Return the size in code points
             auto code_points() const { return std::distance(begin(), end()); }
             /// Return true if the view is empty
-            bool empty() const noexcept { return buffer.empty(); }
+            constexpr bool empty() const noexcept { return buffer.empty(); }
             /// Return the underlying memory block for the data
-            auto memory() const { return buffer; }
+            constexpr auto memory() const noexcept { return buffer; }
 
             /// ## Comparisons
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
-            bool operator==(u8view r) const {
-                return std::equal(
-                        buffer.begin(), buffer.end(), r.buffer.begin(),
-                        r.buffer.end());
+            constexpr bool operator==(u8view r) const noexcept {
+                if (buffer.size() == r.buffer.size()) {
+                    for (std::size_t s{}; s != buffer.size(); ++s) {
+                        if (buffer[s] != r.buffer[s]) return false;
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            bool operator!=(u8view r) const { return not((*this) == r); }
-            bool operator==(const char *s) const {
+            constexpr bool operator!=(u8view r) const noexcept { return not((*this) == r); }
+            constexpr bool operator==(const char *s) const noexcept{
                 std::size_t pos{};
                 for (; pos < buffer.size() && *s; ++pos, ++s) {
-                    if (buffer[pos] != (unsigned char)*s) return false;
+                    if (buffer[pos] != *s) return false;
                 }
                 return pos == buffer.size() && *s == 0;
             }
-            bool operator!=(const char *s) const { return not((*this) == s); }
+            constexpr bool operator!=(const char *s) const noexcept{ return not((*this) == s); }
 
-            bool operator<(f5::u8view r) const { return buffer < r.buffer; }
-            bool operator<=(f5::u8view r) const { return buffer <= r.buffer; }
-            bool operator>=(f5::u8view r) const { return buffer >= r.buffer; }
-            bool operator>(f5::u8view r) const { return buffer > r.buffer; }
+            constexpr bool operator<(f5::u8view r) const { return buffer < r.buffer; }
+            constexpr bool operator<=(f5::u8view r) const { return buffer <= r.buffer; }
+            constexpr bool operator>=(f5::u8view r) const { return buffer >= r.buffer; }
+            constexpr bool operator>(f5::u8view r) const { return buffer > r.buffer; }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
@@ -155,12 +156,13 @@ namespace f5 {
 
             /// Safe conversions
             operator const_u8buffer() const { return buffer; }
+            operator f5::buffer<byte const>() const {
+                return {reinterpret_cast<byte const *>(buffer.data()), buffer.size()};
+            }
 
             /// Other conversions
             explicit operator std::string_view() const noexcept {
-                return std::string_view(
-                        reinterpret_cast<const char *>(buffer.data()),
-                        buffer.size());
+                return std::string_view(buffer.data(), buffer.size());
             }
             explicit operator std::string() const {
                 return std::string(
@@ -192,6 +194,18 @@ namespace f5 {
         inline std::string &operator+=(std::string &s, u8view e) {
             s.append(e.data(), e.bytes());
             return s;
+        }
+
+
+    }
+
+
+    inline namespace literals {
+
+
+        constexpr inline cord::u8view
+                operator"" _u8(const char *s, std::size_t n) {
+            return cord::u8view(s, n);
         }
 
 

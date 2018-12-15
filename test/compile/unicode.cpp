@@ -1,8 +1,8 @@
-/*
-    Copyright 2016-2017, Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2016-2018, Felspar Co Ltd. <https://kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -29,17 +29,17 @@ static_assert(f5::u8length(0x1d11e) == 4, "The treble clef is 4 bytes long");
 // u8encode
 constexpr auto space = f5::u8encode(' ');
 // u8decode
-constexpr unsigned char x[1] = {'x'};
+constexpr char x[1] = {'x'};
 static_assert(f5::decode_one(x).first == 'x', "Expected x");
 static_assert(f5::decode_one(x).second.size() == 0u, "Should have used it all");
-constexpr unsigned char ae[2] = {0xC3, 0xA6};
+constexpr char ae[2] = {static_cast<char>(0xC3), static_cast<char>(0xA6)};
 static_assert(f5::decode_one(ae).first == 0xe6, "Expected x");
 static_assert(f5::decode_one(ae).second.size() == 0u, "Should have used it all");
-constexpr unsigned char bom[3] = {0xEF, 0xBB, 0xBF};
+constexpr char bom[3] = {static_cast<char>(0xEF), static_cast<char>(0xBB), static_cast<char>(0xBF)};
 static_assert(f5::decode_one(bom).first == 0xfeff, "Expected the BOM");
 static_assert(
         f5::decode_one(bom).second.size() == 0u, "Should have used it all");
-constexpr unsigned char clef[4] = {0xF0, 0x9D, 0x84, 0x9E};
+constexpr char clef[4] = {static_cast<char>(0xF0), static_cast<char>(0x9D), static_cast<char>(0x84), static_cast<char>(0x9E)};
 static_assert(f5::decode_one(clef).first == 0x1d11e, "Expected the Clef");
 static_assert(
         f5::decode_one(clef).second.size() == 0u, "Should have used it all");

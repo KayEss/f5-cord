@@ -57,9 +57,11 @@ namespace f5 {
                 return std::string_view(data(), size());
             }
             /// Safe conversions
-            operator const_u8buffer() const {
-                return const_u8buffer(
-                        reinterpret_cast<const unsigned char *>(p), bytes);
+            constexpr operator const_u8buffer() const noexcept{
+                return const_u8buffer(p, bytes);
+            }
+            operator buffer<unsigned char const>() const noexcept{
+                return {reinterpret_cast<unsigned char const *>(p), bytes};
             }
 
             constexpr bool operator==(lstring o) const {

@@ -24,7 +24,7 @@ namespace f5 {
             friend class u8view;
 
             const_u8buffer buffer;
-            using control_type = control<unsigned char const>;
+            using control_type = control<char const>;
             control_type *owner;
 
             u8string(const_u8buffer b, control_type *o)
@@ -49,9 +49,7 @@ namespace f5 {
             /// From literals we have a `nullptr` control block as we have
             /// nothing to count
             explicit u8string(lstring l) noexcept
-            : buffer{reinterpret_cast<unsigned char const *>(l.data()),
-                     l.size()},
-              owner{} {}
+            : buffer{l.data(), l.size()}, owner{} {}
             template<std::size_t N>
             u8string(const char (&a)[N]) noexcept : u8string{lstring{a}} {}
 
@@ -63,7 +61,7 @@ namespace f5 {
                 // control block. We should be able to allocate all of this
                 // memory in one go
                 auto ss = std::make_unique<std::string>(std::move(s));
-                auto sp = reinterpret_cast<unsigned char const *>(ss->data());
+                auto const sp = ss->data();
                 buffer = const_u8buffer{sp, ss->size()};
                 owner = control_type::make(
                         sp, [ss = ss.release()](auto const *) { delete ss; });
@@ -125,7 +123,7 @@ namespace f5 {
             /// Return the underlying memory block for the data
             auto memory() const noexcept { return buffer; }
             const char *data() const noexcept {
-                return reinterpret_cast<const char *>(buffer.data());
+                return buffer.data();
             }
 
             /// Useful checks for parts of a string
