@@ -15,11 +15,15 @@
 int main() {
     f5::u8string e{};
     f5::u8string h{f5::lstring{"Hello"}};
-    f5::u8string hw{f5::lstring{"Hello world"}};
+    assert(not h.is_shared());
+    f5::u8string hw{std::string{"Hello world"}};
+    assert(hw.is_shared());
     const auto ce{e}, ch{h}, chw{hw};
 
-    [](f5::u8view) {}(hw);
-    [](f5::u8shared) {}(f5::u8shared{chw});
+    [hw](f5::u8view v) {
+        assert(v == hw);
+        assert(v.data() == hw.data());
+    }(hw);
 
     assert(e.empty());
     assert(ce.empty());

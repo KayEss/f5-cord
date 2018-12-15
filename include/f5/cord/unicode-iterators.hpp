@@ -165,7 +165,7 @@ namespace f5 {
         }
 
 
-        template<typename B>
+        template<typename B, typename C = void>
         struct const_u32_iterator :
         public std::iterator<
                 std::forward_iterator_tag,
@@ -174,13 +174,16 @@ namespace f5 {
                 const utf32 *,
                 utf32> {
             using buffer_type = B;
+            using control_type = std::add_pointer_t<C>;
 
             buffer_type buffer;
+            control_type owner;
 
-            constexpr const_u32_iterator() {}
+            constexpr const_u32_iterator(control_type c = nullptr) : owner{c} {}
 
-            explicit const_u32_iterator(buffer_type b) noexcept
-            : buffer(std::move(b)) {}
+            explicit const_u32_iterator(
+                    buffer_type b, control_type c = nullptr) noexcept
+            : buffer(std::move(b)), owner{c} {}
 
             utf32 operator*() const { return decode_one(buffer).first; }
             const_u32_iterator &operator++() {

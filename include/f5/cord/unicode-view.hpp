@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <f5/control.hpp>
 #include <f5/memory.hpp>
 #include <f5/cord/lstring.hpp>
 #include <f5/cord/unicode-encodings.hpp>
@@ -24,29 +25,42 @@ namespace f5 {
     inline namespace cord {
 
 
+        class u8string;
+
+
         /// For unsigned char types with an UTF-8 encoding
         class u8view {
+            friend class u8string;
+
             const_u8buffer buffer;
+            using control_type = control<unsigned char const>;
+            control_type *owner = nullptr;
+
+            u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}
 
           public:
-            u8view() {}
+            u8view() : buffer{}, owner{} {}
 
-            explicit u8view(const_u8buffer b) : buffer(b) {}
+            explicit u8view(const_u8buffer b) : buffer(b), owner{} {}
 
             template<std::size_t N>
             u8view(const char (&s)[N])
-            : buffer(reinterpret_cast<const unsigned char *>(s), N - 1) {}
+            : buffer(reinterpret_cast<unsigned char const *>(s), N - 1),
+              owner{} {}
 
-            u8view(const char *b, std::size_t s)
-            : buffer(reinterpret_cast<const unsigned char *>(b), s) {}
+            explicit u8view(const char *b, std::size_t s)
+            : buffer(reinterpret_cast<unsigned char const *>(b), s), owner{} {}
 
             explicit u8view(const std::string &u8)
-            : buffer(reinterpret_cast<const unsigned char *>(u8.data()),
-                     u8.size()) {}
+            : buffer(reinterpret_cast<unsigned char const *>(u8.data()),
+                     u8.size()),
+              owner{} {}
 
             u8view(lstring s)
-            : buffer(reinterpret_cast<const unsigned char *>(s.c_str()),
-                     s.size()) {}
+            : buffer(reinterpret_cast<unsigned char const *>(s.c_str()),
+                     s.size()),
+              owner{} {}
+
 
             /// ## Iterators
 
@@ -78,6 +92,10 @@ namespace f5 {
             }
 
             /// ## Queries
+
+            /// Returns `true` if this view is over a `u8string` and is a shared
+            /// string
+            bool is_shared() const { return owner != nullptr; }
 
             /// Return the data array
             const char *data() const noexcept {

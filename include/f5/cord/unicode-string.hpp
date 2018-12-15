@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <iostream>
 #include <f5/cord/unicode-view.hpp>
 
 
@@ -20,36 +21,72 @@ namespace f5 {
 
         /// UTF8 string with shared ownership.
         class u8string {
-            u8shared buffer;
+            friend class u8view;
+
+            const_u8buffer buffer;
+            using control_type = control<unsigned char const>;
+            control_type *owner;
+
+            u8string(const_u8buffer b, control_type *o)
+            : buffer{b}, owner{control_type::increment(o)} {}
 
           public:
             /// ## Constructors
-            u8string() {}
+            u8string() : buffer{}, owner{} {}
 
-            explicit u8string(u8shared b) noexcept : buffer{std::move(b)} {}
+            u8string(const u8string &b)
+            : buffer{b.buffer}, owner{control_type::increment(b.owner)} {}
+            u8string(u8string &&b)
+            : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
-            explicit u8string(lstring l)
-            : buffer{std::shared_ptr<const unsigned char>{
-                             reinterpret_cast<const unsigned char *>(l.data()),
-                             [](auto &&) {}},
-                     l.size()} {}
+            explicit u8string(lstring l) noexcept
+            : buffer{reinterpret_cast<unsigned char const *>(l.data()),
+                     l.size()},
+              owner{} {}
             template<std::size_t N>
             u8string(const char (&a)[N]) : u8string{lstring{a}} {}
 
+            explicit u8string(std::string s) : buffer{}, owner{} {
+                auto ss = std::make_unique<std::string>(std::move(s));
+                auto sp = reinterpret_cast<unsigned char const *>(ss->data());
+                buffer = const_u8buffer{sp, ss->size()};
+                owner = control_type::make(
+                        sp, [ss = ss.release()](auto const *) { delete ss; });
+            }
+
+            u8string(u8view v);
+
+            ~u8string() { control_type::decrement(owner); }
+
+
+            /// ## Assignment
+            u8string &operator=(const u8string &s) {
+                buffer = s.buffer;
+                control_type::decrement(owner);
+                owner = control_type::increment(s.owner);
+                return *this;
+            }
+            u8string &operator=(u8string &&s) {
+                buffer = s.buffer;
+                control_type::decrement(owner);
+                owner = std::exchange(s.owner, nullptr);
+                return *this;
+            }
 
             /// ## Iteration
 
             /// An iterator that produces UTF32 code points
-            using const_iterator = const_u32_iterator<u8shared>;
+            using const_iterator =
+                    const_u32_iterator<const_u8buffer, control_type>;
             const_iterator begin() const noexcept {
-                return const_iterator{buffer};
+                return const_iterator{buffer, owner};
             }
             const_iterator end() const noexcept {
-                return const_iterator{buffer.slice(buffer.size())};
+                return const_iterator{buffer.slice(buffer.size()), owner};
             }
             u8string(const_iterator b, const_iterator e) noexcept
-            : buffer{b.buffer, b.buffer.data(),
-                     b.buffer.size() - e.buffer.size()} {}
+            : buffer{b.buffer.data(), b.buffer.size() - e.buffer.size()},
+              owner(control_type::increment(b.owner)) {}
 
             /// An iterator that produces UTF16 code points from the string
             using const_u16_iterator =
@@ -66,10 +103,17 @@ namespace f5 {
 
 
             /// ## Queries
+
+            /// Returns `true` if this is a shared string
+            bool is_shared() const { return owner != nullptr; }
+
             std::size_t bytes() const noexcept { return buffer.size(); }
             bool empty() const noexcept { return bytes() == 0; }
             /// Return the underlying memory block for the data
             auto memory() const noexcept { return buffer; }
+            const char *data() const noexcept {
+                return reinterpret_cast<const char *>(buffer.data());
+            }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
@@ -116,10 +160,7 @@ namespace f5 {
 
 
             /// ## Conversions
-            explicit operator u8shared() const noexcept { return buffer; }
-            operator u8view() const noexcept {
-                return u8view{const_u8buffer{buffer}};
-            }
+            operator u8view() const noexcept { return u8view{buffer, owner}; }
             explicit operator std::string_view() const noexcept {
                 return static_cast<std::string_view>(
                         static_cast<u8view>(*this));
