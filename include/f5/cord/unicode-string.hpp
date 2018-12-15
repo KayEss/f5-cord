@@ -32,7 +32,7 @@ namespace f5 {
 
           public:
             /// ## Constructors
-            u8string() : buffer{}, owner{} {}
+            u8string() noexcept : buffer{}, owner{} {}
 
             u8string(const u8string &b)
             : buffer{b.buffer}, owner{control_type::increment(b.owner)} {}
@@ -40,11 +40,9 @@ namespace f5 {
             : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
             explicit u8string(lstring l) noexcept
-            : buffer{reinterpret_cast<unsigned char const *>(l.data()),
-                     l.size()},
-              owner{} {}
+            : buffer{(unsigned char const *)(l.data()), l.size()}, owner{} {}
             template<std::size_t N>
-            u8string(const char (&a)[N]) : u8string{lstring{a}} {}
+            u8string(const char (&a)[N]) noexcept : u8string{lstring{a}} {}
 
             explicit u8string(std::string s) : buffer{}, owner{} {
                 auto ss = std::make_unique<std::string>(std::move(s));

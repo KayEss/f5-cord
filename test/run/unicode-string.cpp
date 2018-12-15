@@ -21,6 +21,8 @@ int main() {
     const auto ce{e}, ch{h}, chw{hw};
 
     [hw](f5::u8view v) {
+        assert(hw.is_shared());
+        assert(v.is_shared());
         assert(v == hw);
         assert(v.data() == hw.data());
     }(hw);
