@@ -214,9 +214,12 @@ namespace f5 {
         }
 
         /// Iteration across the memory
-        using iterator = V *;
+        using iterator = std::add_pointer_t<V>;
         iterator begin() { return data(); }
         iterator end() { return data() + m_size; }
+        using const_iterator = pointer_const_type;
+        const_iterator begin() const { return data(); }
+        const_iterator end() const { return data() + m_size; }
 
         /// Conversion to non-owning buffers
         operator buffer<V>() { return buffer<V>{m_data.get(), m_size}; }
