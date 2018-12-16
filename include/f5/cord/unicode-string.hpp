@@ -9,7 +9,6 @@
 #pragma once
 
 
-#include <iostream>
 #include <f5/cord/unicode-view.hpp>
 
 
@@ -72,15 +71,15 @@ namespace f5 {
 
 
             /// ## Assignment
-            u8string &operator=(const u8string &s) {
-                buffer = s.buffer;
+            u8string &operator=(const u8string &s) noexcept {
                 control_type::decrement(owner);
+                buffer = s.buffer;
                 owner = control_type::increment(s.owner);
                 return *this;
             }
-            u8string &operator=(u8string &&s) {
-                buffer = s.buffer;
+            u8string &operator=(u8string &&s) noexcept {
                 control_type::decrement(owner);
+                buffer = s.buffer;
                 owner = std::exchange(s.owner, nullptr);
                 return *this;
             }

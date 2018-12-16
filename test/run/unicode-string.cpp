@@ -52,6 +52,10 @@ int main() {
     assert(hw == hwccc);
     assert(hw.shares_allocation_with(hwcc));
     assert(hw.shares_allocation_with(hwccc));
+    hwccc = f5::u8string{std::string("Next")};
+    assert(hwccc == "Next");
+    assert(hw.shares_allocation_with(hwcc));
+    assert(not hw.shares_allocation_with(hwccc));
 
     f5::u8string gw{f5::lstring{"Goodbye world"}};
 

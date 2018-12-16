@@ -39,11 +39,11 @@ namespace f5 {
            exact right count for zero as we will destruct the control block at
            that point (which in turn will destruct the owned memory.
          */
-        static control *increment(control *c) {
+        static control *increment(control *c) noexcept {
             if (c) ++c->ownership_count;
             return c;
         }
-        static void decrement(control *c) {
+        static void decrement(control *c) noexcept {
             if (c && --c->ownership_count == 0u) {
                 c->destructor(c->owned_memory);
                 delete c;
