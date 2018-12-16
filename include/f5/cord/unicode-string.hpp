@@ -95,6 +95,8 @@ namespace f5 {
             const_iterator end() const noexcept {
                 return const_iterator{buffer.slice(buffer.size()), owner};
             }
+
+            /// Construct from a pair of iterators
             u8string(const_iterator b, const_iterator e) noexcept
             : buffer{b.buffer.data(), b.buffer.size() - e.buffer.size()},
               owner(control_type::increment(b.owner)) {}
@@ -116,13 +118,23 @@ namespace f5 {
             /// ## Queries
 
             /// Returns `true` if this is a shared string
-            bool is_shared() const { return owner != nullptr; }
+            bool is_shared() const noexcept { return owner != nullptr; }
+            /// Returns true if the other string uses the same allocation
+            /// as this (they have the same control block).
+            bool shares_allocation_with(u8view v) noexcept {
+                return owner != nullptr && owner == v.owner;
+            }
 
+            /// Return the data array
+            const char *data() const noexcept { return buffer.data(); }
+            /// Return the size in bytes of the string
             std::size_t bytes() const noexcept { return buffer.size(); }
+            /// Return the size in code points
+            auto code_points() const { return std::distance(begin(), end()); }
+            /// Return true if the string is empty
             bool empty() const noexcept { return bytes() == 0; }
             /// Return the underlying memory block for the data
             auto memory() const noexcept { return buffer; }
-            const char *data() const noexcept { return buffer.data(); }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {

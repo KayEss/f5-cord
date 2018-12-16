@@ -29,6 +29,8 @@ int main() {
         f5::u8string nhw{v};
         assert(nhw.is_shared());
         assert(nhw.data() == hw.data());
+        assert(nhw.shares_allocation_with(v));
+        assert(nhw.shares_allocation_with(hw));
     }(hw);
 
     assert(e.empty());
@@ -40,6 +42,16 @@ int main() {
     assert(chw == "Hello world");
     assert("Hello world" == chw);
     assert(hw == chw);
+
+    f5::u8string hwc{hw.begin(), hw.end()};
+    assert(hw == hwc);
+    assert(hw.shares_allocation_with(hwc));
+    f5::u8view hwcc{hwc.begin(), hwc.end()};
+    f5::u8string hwccc{hwcc.begin(), hwcc.end()};
+    assert(hw == hwcc);
+    assert(hw == hwccc);
+    assert(hw.shares_allocation_with(hwcc));
+    assert(hw.shares_allocation_with(hwccc));
 
     f5::u8string gw{f5::lstring{"Goodbye world"}};
 

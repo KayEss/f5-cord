@@ -58,21 +58,25 @@ namespace f5 {
             : buffer(s.data(), s.size()), owner{} {}
 
 
-            /// ## Iterators
+            /// ## Iteration
 
             /// An iterator that spits out UTF32 code points from the string
-            using const_iterator = const_u32_iterator<const_u8buffer>;
+            using const_iterator =
+                    const_u32_iterator<const_u8buffer, control_type>;
 
             /// Return the begin iterator that delivers UTF32 code points
-            const_iterator begin() const { return const_iterator{buffer}; }
+            const_iterator begin() const {
+                return const_iterator{buffer, owner};
+            }
             /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
-                return const_iterator{buffer.slice(buffer.size())};
+                return const_iterator{buffer.slice(buffer.size()), owner};
             }
 
             /// Construct a u8view from part of another
             u8view(const_iterator s, const_iterator e)
-            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()) {}
+            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()),
+              owner(s.owner) {}
 
             /// An iterator that produces UTF16 code points from the string
             using const_u16_iterator =
@@ -87,14 +91,22 @@ namespace f5 {
                 return const_u16_iterator(end(), end());
             }
 
+
             /// ## Queries
 
             /// Returns `true` if this view is over a `u8string` and is a shared
             /// string
-            bool is_shared() const { return owner != nullptr; }
+            bool is_shared() const noexcept { return owner != nullptr; }
+            /// Returns true if the other string uses the same allocation
+            /// as this (they have the same control block).
+            bool shares_allocation_with(u8view v) noexcept {
+                return owner != nullptr && owner == v.owner;
+            }
 
             /// Return the data array
-            const char *data() const noexcept { return buffer.data(); }
+            constexpr const char *data() const noexcept {
+                return buffer.data();
+            }
             /// Return the size in bytes of the string
             constexpr std::size_t bytes() const noexcept {
                 return buffer.size();
