@@ -39,6 +39,8 @@ namespace f5 {
             u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}
 
           public:
+            /// ## Constructors
+
             constexpr u8view() noexcept : buffer{}, owner{} {}
 
             constexpr explicit u8view(const_u8buffer b) noexcept
@@ -118,7 +120,26 @@ namespace f5 {
             /// Return the underlying memory block for the data
             constexpr auto memory() const noexcept { return buffer; }
 
+
+            /// ## Substrings
+
+            /// Safe substring against Unicode code point counts. The result
+            /// undefined if the end marker is smaller than the start marker.
+            u8view substr(std::size_t s) {
+                auto pos = begin(), e = end();
+                for (; s && pos != e; --s, ++pos)
+                    ;
+                return u8view(pos, e);
+            }
+            u8view substr(std::size_t s, std::size_t e) {
+                auto starts = substr(s);
+                auto ends = starts.substr(e - s);
+                return u8view(starts.data(), ends.data() - starts.data());
+            }
+
+
             /// ## Comparisons
+
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
@@ -164,19 +185,8 @@ namespace f5 {
                 return u8view{buffer.slice(0, str.buffer.size())} == str;
             }
 
-            /// Safe substring against Unicode code point counts. The result
-            /// undefined if the end marker is smaller than the start marker.
-            u8view substr(std::size_t s) {
-                auto pos = begin(), e = end();
-                for (; s && pos != e; --s, ++pos)
-                    ;
-                return u8view(pos, e);
-            }
-            u8view substr(std::size_t s, std::size_t e) {
-                auto starts = substr(s);
-                auto ends = starts.substr(e - s);
-                return u8view(starts.data(), ends.data() - starts.data());
-            }
+
+            /// ## Conversions
 
             /// Safe conversions
             operator const_u8buffer() const { return buffer; }

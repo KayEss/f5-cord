@@ -32,6 +32,7 @@ namespace f5 {
 
           public:
             /// ## Constructors
+
             u8string() noexcept : buffer{}, owner{} {}
 
             /// The type is copyable and movable. Handle the control block
@@ -143,6 +144,9 @@ namespace f5 {
 
 
             /// ## Substrings
+
+            /// Safe substring against Unicode code point counts. The result
+            /// undefined if the end marker is smaller than the start marker.
             u8string substr(std::size_t s) const {
                 auto pos = begin(), e = end();
                 for (; s && pos != e; --s, ++pos)
@@ -157,6 +161,7 @@ namespace f5 {
 
 
             /// ## Comparisons
+
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
@@ -181,10 +186,22 @@ namespace f5 {
 
 
             /// ## Conversions
+
+            /// Safe conversions
+            operator const_u8buffer() const { return buffer; }
+            operator f5::buffer<byte const>() const {
+                return static_cast<f5::buffer<byte const>>(
+                        static_cast<u8view>(*this));
+            }
             operator u8view() const noexcept { return u8view{buffer, owner}; }
+
+            /// Other conversions
             explicit operator std::string_view() const noexcept {
                 return static_cast<std::string_view>(
                         static_cast<u8view>(*this));
+            }
+            explicit operator std::string() const {
+                return static_cast<std::string>(static_cast<u8view>(*this));
             }
         };
 
