@@ -57,7 +57,8 @@ namespace f5 {
         buffer(std::vector<value_type> &v)
         : m_data(v.data()), m_size(v.size()) {}
         template<typename T>
-        buffer(const std::vector<T> &v) : m_data(v.data()), m_size(v.size()) {}
+        buffer(const std::vector<T> &v)
+        : m_data(reinterpret_cast<value_type *>(v.data())), m_size(v.size()) {}
         /// For C++ arrays
         template<typename T, std::size_t N>
         constexpr buffer(std::array<T, N> &v) noexcept
