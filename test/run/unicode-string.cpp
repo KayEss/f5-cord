@@ -87,8 +87,8 @@ int main() {
     }
 
     {
-        f5::utf32 hel[] = {'H', 'e', 'l', 'l', 'o'};
-        f5::utf32 *p_hel = hel;
+        char32_t hel[] = {'H', 'e', 'l', 'l', 'o'};
+        char32_t *p_hel = hel;
         for (auto c : h) { assert(c == *p_hel++); }
     }
 

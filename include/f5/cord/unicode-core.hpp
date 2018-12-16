@@ -15,7 +15,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// A UTF-8 code unit
@@ -40,6 +40,10 @@ namespace f5 {
 
 
     }
+
+
+    using utf32 = cord::utf32;
+    using u8shared = cord::u8shared;
 
 
 }

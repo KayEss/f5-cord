@@ -19,7 +19,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// Check that the UTF32 code point is valid. Throw an exception if not.

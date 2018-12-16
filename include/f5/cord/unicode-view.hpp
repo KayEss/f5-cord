@@ -22,7 +22,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         class u8string;
@@ -81,8 +81,7 @@ namespace f5 {
               owner(s.owner) {}
 
             /// An iterator that produces UTF16 code points from the string
-            using const_u16_iterator =
-                    f5::const_u32u16_iterator<const_iterator>;
+            using const_u16_iterator = const_u32u16_iterator<const_iterator>;
 
             /// Return the begin iterator that delivers UTF16 code points
             const_u16_iterator u16begin() const {
@@ -167,16 +166,16 @@ namespace f5 {
                 return not((*this) == s);
             }
 
-            constexpr bool operator<(f5::u8view r) const {
+            constexpr bool operator<(u8view r) const {
                 return buffer < r.buffer;
             }
-            constexpr bool operator<=(f5::u8view r) const {
+            constexpr bool operator<=(u8view r) const {
                 return buffer <= r.buffer;
             }
-            constexpr bool operator>=(f5::u8view r) const {
+            constexpr bool operator>=(u8view r) const {
                 return buffer >= r.buffer;
             }
-            constexpr bool operator>(f5::u8view r) const {
+            constexpr bool operator>(u8view r) const {
                 return buffer > r.buffer;
             }
 
@@ -245,6 +244,9 @@ namespace f5 {
 
 
     }
+
+
+    using u8view = cord::u8view;
 
 
 }

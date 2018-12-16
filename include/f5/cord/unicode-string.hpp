@@ -15,7 +15,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// UTF8 string with shared ownership.
@@ -102,8 +102,7 @@ namespace f5 {
               owner(control_type::increment(b.owner)) {}
 
             /// An iterator that produces UTF16 code points from the string
-            using const_u16_iterator =
-                    f5::const_u32u16_iterator<const_iterator>;
+            using const_u16_iterator = const_u32u16_iterator<const_iterator>;
 
             /// Return the begin iterator that delivers UTF16 code points
             const_u16_iterator u16begin() const {
@@ -206,6 +205,9 @@ namespace f5 {
 
 
     }
+
+
+    using u8string = cord::u8string;
 
 
 }

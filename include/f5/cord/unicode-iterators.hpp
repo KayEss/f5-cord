@@ -17,7 +17,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// An iterator that produces UTF-32 from a UTF-16 iterator
@@ -97,7 +97,7 @@ namespace f5 {
             /// Decode the current position (if safe)
             void decode() {
                 if (pos != end) {
-                    std::tie(in_buffer, buffer) = f5::u16encode(*pos);
+                    std::tie(in_buffer, buffer) = f5::cord::u16encode(*pos);
                 }
             }
 
@@ -207,6 +207,21 @@ namespace f5 {
         };
 
 
+    }
+
+
+    template<typename U32, typename E = std::range_error>
+    using const_u32u16_iterator [[deprecated(
+            "Use the type in the f5::cord namespace, not the f5 namespace")]] =
+            cord::const_u32u16_iterator<U32, E>;
+
+
+    template<typename Iterator, typename E = std::range_error>
+    [
+            [deprecated("Use the function in the f5::cord namespace not the "
+                        "f5::namespace")]] inline auto
+            make_u32u16_iterator(Iterator b, Iterator e) {
+        return cord::make_u32u16_iterator(b, e);
     }
 
 

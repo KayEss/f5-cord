@@ -16,13 +16,15 @@
 namespace f5 {
 
 
-    inline namespace cord { class lstring; }
+    namespace cord {
+        class lstring;
+    }
     inline namespace literals {
-        constexpr lstring operator"" _l(const char *, std::size_t);
+        constexpr cord::lstring operator"" _l(const char *, std::size_t);
     }
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// A wrapper around a string literal used for compile time string
@@ -122,6 +124,9 @@ namespace f5 {
 
 
     }
+
+
+    using lstring = cord::lstring;
 
 
 }
