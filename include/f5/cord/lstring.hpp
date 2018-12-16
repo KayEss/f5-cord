@@ -57,10 +57,10 @@ namespace f5 {
                 return std::string_view(data(), size());
             }
             /// Safe conversions
-            constexpr operator const_u8buffer() const noexcept{
+            constexpr operator const_u8buffer() const noexcept {
                 return const_u8buffer(p, bytes);
             }
-            operator buffer<unsigned char const>() const noexcept{
+            operator buffer<unsigned char const>() const noexcept {
                 return {reinterpret_cast<unsigned char const *>(p), bytes};
             }
 

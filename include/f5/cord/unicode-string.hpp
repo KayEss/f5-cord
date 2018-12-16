@@ -122,9 +122,7 @@ namespace f5 {
             bool empty() const noexcept { return bytes() == 0; }
             /// Return the underlying memory block for the data
             auto memory() const noexcept { return buffer; }
-            const char *data() const noexcept {
-                return buffer.data();
-            }
+            const char *data() const noexcept { return buffer.data(); }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {

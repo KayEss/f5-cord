@@ -35,11 +35,13 @@ static_assert(f5::decode_one(x).second.size() == 0u, "Should have used it all");
 constexpr char ae[2] = {static_cast<char>(0xC3), static_cast<char>(0xA6)};
 static_assert(f5::decode_one(ae).first == 0xe6, "Expected x");
 static_assert(f5::decode_one(ae).second.size() == 0u, "Should have used it all");
-constexpr char bom[3] = {static_cast<char>(0xEF), static_cast<char>(0xBB), static_cast<char>(0xBF)};
+constexpr char bom[3] = {static_cast<char>(0xEF), static_cast<char>(0xBB),
+                         static_cast<char>(0xBF)};
 static_assert(f5::decode_one(bom).first == 0xfeff, "Expected the BOM");
 static_assert(
         f5::decode_one(bom).second.size() == 0u, "Should have used it all");
-constexpr char clef[4] = {static_cast<char>(0xF0), static_cast<char>(0x9D), static_cast<char>(0x84), static_cast<char>(0x9E)};
+constexpr char clef[4] = {static_cast<char>(0xF0), static_cast<char>(0x9D),
+                          static_cast<char>(0x84), static_cast<char>(0x9E)};
 static_assert(f5::decode_one(clef).first == 0x1d11e, "Expected the Clef");
 static_assert(
         f5::decode_one(clef).second.size() == 0u, "Should have used it all");

@@ -41,12 +41,12 @@ namespace f5 {
           public:
             constexpr u8view() noexcept : buffer{}, owner{} {}
 
-            constexpr explicit u8view(const_u8buffer b) noexcept : buffer(b), owner{} {}
+            constexpr explicit u8view(const_u8buffer b) noexcept
+            : buffer(b), owner{} {}
 
             template<std::size_t N>
             constexpr u8view(const char (&s)[N]) noexcept
-            : buffer(s, N - 1),
-              owner{} {}
+            : buffer(s, N - 1), owner{} {}
 
             constexpr explicit u8view(const char *b, std::size_t s) noexcept
             : buffer(b, s), owner{} {}
@@ -94,11 +94,11 @@ namespace f5 {
             bool is_shared() const { return owner != nullptr; }
 
             /// Return the data array
-            const char *data() const noexcept {
-                return buffer.data();
-            }
+            const char *data() const noexcept { return buffer.data(); }
             /// Return the size in bytes of the string
-            constexpr std::size_t bytes() const noexcept { return buffer.size(); }
+            constexpr std::size_t bytes() const noexcept {
+                return buffer.size();
+            }
             /// Return the size in code points
             auto code_points() const { return std::distance(begin(), end()); }
             /// Return true if the view is empty
@@ -120,20 +120,32 @@ namespace f5 {
                     return false;
                 }
             }
-            constexpr bool operator!=(u8view r) const noexcept { return not((*this) == r); }
-            constexpr bool operator==(const char *s) const noexcept{
+            constexpr bool operator!=(u8view r) const noexcept {
+                return not((*this) == r);
+            }
+            constexpr bool operator==(const char *s) const noexcept {
                 std::size_t pos{};
                 for (; pos < buffer.size() && *s; ++pos, ++s) {
                     if (buffer[pos] != *s) return false;
                 }
                 return pos == buffer.size() && *s == 0;
             }
-            constexpr bool operator!=(const char *s) const noexcept{ return not((*this) == s); }
+            constexpr bool operator!=(const char *s) const noexcept {
+                return not((*this) == s);
+            }
 
-            constexpr bool operator<(f5::u8view r) const { return buffer < r.buffer; }
-            constexpr bool operator<=(f5::u8view r) const { return buffer <= r.buffer; }
-            constexpr bool operator>=(f5::u8view r) const { return buffer >= r.buffer; }
-            constexpr bool operator>(f5::u8view r) const { return buffer > r.buffer; }
+            constexpr bool operator<(f5::u8view r) const {
+                return buffer < r.buffer;
+            }
+            constexpr bool operator<=(f5::u8view r) const {
+                return buffer <= r.buffer;
+            }
+            constexpr bool operator>=(f5::u8view r) const {
+                return buffer >= r.buffer;
+            }
+            constexpr bool operator>(f5::u8view r) const {
+                return buffer > r.buffer;
+            }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
@@ -157,7 +169,8 @@ namespace f5 {
             /// Safe conversions
             operator const_u8buffer() const { return buffer; }
             operator f5::buffer<byte const>() const {
-                return {reinterpret_cast<byte const *>(buffer.data()), buffer.size()};
+                return {reinterpret_cast<byte const *>(buffer.data()),
+                        buffer.size()};
             }
 
             /// Other conversions
