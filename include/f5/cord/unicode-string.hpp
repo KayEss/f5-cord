@@ -26,9 +26,6 @@ namespace f5 {
             using control_type = control<char const>;
             control_type *owner;
 
-            u8string(const_u8buffer b, control_type *o)
-            : buffer{b}, owner{control_type::increment(o)} {}
-
           public:
             /// ## Constructors
 
@@ -68,6 +65,25 @@ namespace f5 {
             }
 
             ~u8string() { control_type::decrement(owner); }
+
+
+            /// ## Conversions
+
+            /// Safe conversions
+            explicit operator const_u8buffer() const { return buffer; }
+            operator f5::buffer<byte const>() const {
+                return static_cast<f5::buffer<byte const>>(
+                        static_cast<u8view>(*this));
+            }
+
+            /// Other conversions
+            explicit operator std::string_view() const noexcept {
+                return static_cast<std::string_view>(
+                        static_cast<u8view>(*this));
+            }
+            explicit operator std::string() const {
+                return static_cast<std::string>(static_cast<u8view>(*this));
+            }
 
 
             /// ## Assignment
@@ -181,27 +197,11 @@ namespace f5 {
             bool operator>(u8view l) const {
                 return u8view{const_u8buffer{buffer}} > l;
             }
-
-
-            /// ## Conversions
-
-            /// Safe conversions
-            operator const_u8buffer() const { return buffer; }
-            operator f5::buffer<byte const>() const {
-                return static_cast<f5::buffer<byte const>>(
-                        static_cast<u8view>(*this));
-            }
-            operator u8view() const noexcept { return u8view{buffer, owner}; }
-
-            /// Other conversions
-            explicit operator std::string_view() const noexcept {
-                return static_cast<std::string_view>(
-                        static_cast<u8view>(*this));
-            }
-            explicit operator std::string() const {
-                return static_cast<std::string>(static_cast<u8view>(*this));
-            }
         };
+
+
+        inline u8view::u8view(const u8string &s)
+        : buffer{s.buffer}, owner{s.owner} {}
 
 
     }

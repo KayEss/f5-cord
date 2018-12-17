@@ -36,12 +36,12 @@ namespace f5 {
             using control_type = control<char const>;
             control_type *owner = nullptr;
 
-            u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}
-
           public:
             /// ## Constructors
 
             constexpr u8view() noexcept : buffer{}, owner{} {}
+
+            u8view(const u8string &s);
 
             constexpr explicit u8view(const_u8buffer b) noexcept
             : buffer(b), owner{} {}
@@ -58,6 +58,25 @@ namespace f5 {
 
             constexpr u8view(lstring s) noexcept
             : buffer(s.data(), s.size()), owner{} {}
+
+
+            /// ## Conversions
+
+            /// Safe conversions
+            explicit operator const_u8buffer() const { return buffer; }
+            operator f5::buffer<byte const>() const {
+                return {reinterpret_cast<byte const *>(buffer.data()),
+                        buffer.size()};
+            }
+
+            /// Other conversions
+            explicit operator std::string_view() const noexcept {
+                return std::string_view(buffer.data(), buffer.size());
+            }
+            explicit operator std::string() const {
+                return std::string(
+                        buffer.data(), buffer.data() + buffer.size());
+            }
 
 
             /// ## Iteration
@@ -182,25 +201,6 @@ namespace f5 {
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
                 return u8view{buffer.slice(0, str.buffer.size())} == str;
-            }
-
-
-            /// ## Conversions
-
-            /// Safe conversions
-            operator const_u8buffer() const { return buffer; }
-            operator f5::buffer<byte const>() const {
-                return {reinterpret_cast<byte const *>(buffer.data()),
-                        buffer.size()};
-            }
-
-            /// Other conversions
-            explicit operator std::string_view() const noexcept {
-                return std::string_view(buffer.data(), buffer.size());
-            }
-            explicit operator std::string() const {
-                return std::string(
-                        buffer.data(), buffer.data() + buffer.size());
             }
         };
 
