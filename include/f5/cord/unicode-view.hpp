@@ -95,7 +95,7 @@ namespace f5 {
             }
 
             /// Construct a u8view from part of another
-            u8view(const_iterator s, const_iterator e)
+            constexpr u8view(const_iterator s, const_iterator e) noexcept
             : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()),
               owner(s.owner) {}
 

@@ -181,7 +181,7 @@ namespace f5 {
 
             constexpr const_u32_iterator(control_type c = nullptr) : owner{c} {}
 
-            explicit const_u32_iterator(
+            constexpr explicit const_u32_iterator(
                     buffer_type b, control_type c = nullptr) noexcept
             : buffer(std::move(b)), owner{c} {}
 
