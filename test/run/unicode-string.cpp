@@ -92,12 +92,21 @@ int main() {
         for (auto c : h) { assert(c == *p_hel++); }
     }
 
-    const auto chel = h.substr(3);
-    assert(chel.bytes() == 2);
-    assert(chel == "lo");
+    const auto clo = h.substr(3);
+    assert(clo.bytes() == 2);
+    assert(clo == "lo");
     assert(hw.substr(0, 3) == "Hel");
+    assert(hw.substr(3, 5) == clo);
     assert(h.substr(10) == "");
     assert(hw.substr(3) == hw.substr(3, 123));
+
+    auto lo = hw.substr(3, 5);
+    assert(lo.shares_allocation_with(hw));
+    char const *const plo = lo.shrink_to_fit();
+    assert(plo[0] == 'l');
+    assert(plo[1] == 'o');
+    assert(plo[2] == 0);
+    assert(not lo.shares_allocation_with(hw));
 
     assert(hw.starts_with("Hello"));
 

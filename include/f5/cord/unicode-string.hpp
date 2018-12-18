@@ -26,6 +26,13 @@ namespace f5 {
             using control_type = control<char const>;
             control_type *owner;
 
+            /// Temporary re-allocation function used to handle the cases
+            /// where the string might have been crated from a `u8view`
+            /// that was created from a `std::string`.
+            void transitional_allocation() {
+                if (owner == nullptr) { shrink_to_fit(); }
+            }
+
           public:
             /// ## Constructors
 
@@ -41,7 +48,9 @@ namespace f5 {
             /// Creation from a `u8view` will never allocate because the
             /// `u8view` remembers the shared status of its history
             u8string(u8view v)
-            : buffer{v.buffer}, owner{control_type::increment(v.owner)} {}
+            : buffer{v.buffer}, owner{control_type::increment(v.owner)} {
+                transitional_allocation();
+            }
 
             /// From literals we have a `nullptr` control block as we have
             /// nothing to count
@@ -85,6 +94,13 @@ namespace f5 {
                 return static_cast<std::string>(static_cast<u8view>(*this));
             }
 
+            /// Force re-allocation of the memory such that we also have
+            /// a NUL at the end of string. This guarantees that the string
+            /// is now also C safe.
+            char const *shrink_to_fit() {
+                *this = u8string{std::string{*this}};
+                return data();
+            }
 
             /// ## Assignment
             u8string &operator=(const u8string &s) noexcept {
@@ -115,7 +131,9 @@ namespace f5 {
             /// Construct from a pair of iterators
             u8string(const_iterator b, const_iterator e) noexcept
             : buffer{b.buffer.data(), b.buffer.size() - e.buffer.size()},
-              owner(control_type::increment(b.owner)) {}
+              owner(control_type::increment(b.owner)) {
+                transitional_allocation();
+            }
 
             /// An iterator that produces UTF16 code points from the string
             using const_u16_iterator = const_u32u16_iterator<const_iterator>;
@@ -141,7 +159,7 @@ namespace f5 {
             }
 
             /// Return the data array
-            const char *data() const noexcept { return buffer.data(); }
+            char const *data() const noexcept { return buffer.data(); }
             /// Return the size in bytes of the string
             std::size_t bytes() const noexcept { return buffer.size(); }
             /// Return the size in code points

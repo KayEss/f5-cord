@@ -152,7 +152,7 @@ namespace f5 {
             u8view substr(std::size_t s, std::size_t e) {
                 auto starts = substr(s);
                 auto ends = starts.substr(e - s);
-                return u8view(starts.data(), ends.data() - starts.data());
+                return u8view{starts.begin(), ends.begin()};
             }
 
 
