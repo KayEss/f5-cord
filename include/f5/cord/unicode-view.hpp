@@ -234,18 +234,6 @@ namespace f5 {
     }
 
 
-    inline namespace literals {
-
-
-        constexpr inline cord::u8view
-                operator"" _u8(const char *s, std::size_t n) {
-            return cord::u8view(s, n);
-        }
-
-
-    }
-
-
     using u8view = cord::u8view;
 
 
