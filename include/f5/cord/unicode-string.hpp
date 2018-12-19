@@ -165,9 +165,9 @@ namespace f5 {
             /// Return the size in code points
             auto code_points() const { return std::distance(begin(), end()); }
             /// Return true if the string is empty
-            bool empty() const noexcept { return bytes() == 0; }
+            bool empty() const noexcept { return buffer.empty(); }
             /// Return the underlying memory block for the data
-            auto memory() const noexcept { return buffer; }
+            auto memory() const noexcept { return u8view{*this}.memory(); }
 
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {

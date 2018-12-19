@@ -136,7 +136,11 @@ namespace f5 {
             /// Return true if the view is empty
             constexpr bool empty() const noexcept { return buffer.empty(); }
             /// Return the underlying memory block for the data
-            constexpr auto memory() const noexcept { return buffer; }
+            auto memory() const noexcept {
+                return f5::buffer<byte const>{
+                        reinterpret_cast<byte const *>(buffer.data()),
+                        buffer.size()};
+            }
 
 
             /// ## Substrings
