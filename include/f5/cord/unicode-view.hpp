@@ -178,6 +178,12 @@ namespace f5 {
             constexpr bool operator!=(u8view r) const noexcept {
                 return not((*this) == r);
             }
+            bool operator==(const std::string &r) const noexcept {
+                return *this == u8view{r};
+            }
+            bool operator!=(const std::string &r) const noexcept {
+                return *this != u8view{r};
+            }
             constexpr bool operator==(const char *s) const noexcept {
                 std::size_t pos{};
                 for (; pos < buffer.size() && *s; ++pos, ++s) {
@@ -212,6 +218,12 @@ namespace f5 {
         /// Equality against other types
         inline bool operator==(lstring l, u8view r) { return r.operator==(l); }
         inline bool operator!=(lstring l, u8view r) { return r.operator!=(l); }
+        template<std::size_t N>
+        inline bool operator ==(char const (&l)[N], u8view r) { return r.operator==(l); }
+        template<std::size_t N>
+        inline bool operator !=(char const (&l)[N], u8view r) { return r.operator!=(l); }
+        inline bool operator==(const std::string &l, u8view r) { return r.operator==(l); }
+        inline bool operator!=(const std::string &l, u8view r) { return r.operator!=(l); }
 
         /// Comparison against other types
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
