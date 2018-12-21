@@ -54,7 +54,7 @@ namespace f5 {
 
             /// From literals we have a `nullptr` control block as we have
             /// nothing to count
-            explicit u8string(lstring l) noexcept
+            u8string(lstring l) noexcept
             : buffer{l.data(), l.size()}, owner{} {}
             template<std::size_t N>
             u8string(const char (&a)[N]) noexcept : u8string{lstring{a}} {}
