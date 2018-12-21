@@ -216,19 +216,7 @@ namespace f5 {
         /// Comparison against other types
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
 
-        /// Concatenations with std::string
-        inline std::string operator+(std::string f, u8view e) {
-            f.append(e.data(), e.bytes());
-            return f;
-        }
-        inline std::string operator+(u8view f, u8view e) {
-            std::string r;
-            r.reserve(f.bytes() + e.bytes());
-            r.append(f.data(), f.bytes());
-            r.append(e.data(), e.bytes());
-            return r;
-        }
-
+        /// Concatenation
         inline std::string &operator+=(std::string &s, u8view e) {
             s.append(e.data(), e.bytes());
             return s;

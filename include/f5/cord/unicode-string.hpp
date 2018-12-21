@@ -222,6 +222,30 @@ namespace f5 {
         : buffer{s.buffer}, owner{s.owner} {}
 
 
+        /// ## Concatenation
+        inline u8string operator+(u8view f, u8view e) {
+            std::string r;
+            r.reserve(f.bytes() + e.bytes());
+            r.append(f.data(), f.bytes());
+            r.append(e.data(), e.bytes());
+            return u8string{r};
+        }
+        template<std::size_t N>
+        inline u8string operator+(u8view f, char const (&e)[N]) {
+            return operator+(f, u8view{e});
+        }
+        inline u8string operator+(u8view f, const std::string &e) {
+            return operator+(f, u8view{e});
+        }
+        inline u8string operator+(const std::string &f, u8view e) {
+            return operator+(u8view{f}, e);
+        }
+        template<std::size_t N>
+        inline u8string operator+(char const (&f)[N], u8view e) {
+            return operator+(u8view{f}, e);
+        }
+
+
     }
 
 
