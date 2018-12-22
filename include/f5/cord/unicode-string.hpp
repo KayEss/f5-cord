@@ -218,8 +218,13 @@ namespace f5 {
         };
 
 
-        inline u8view::u8view(const u8string &s)
-        : buffer{s.buffer}, owner{s.owner} {}
+        template<std::size_t N>
+        inline bool operator==(char const (&l)[N], const u8string &r) {
+            return r == l;
+        }
+        inline bool operator==(const std::string &l, const u8string &r) {
+            return u8view{r} == l;
+        }
 
 
         /// ## Concatenation
@@ -234,8 +239,15 @@ namespace f5 {
         inline u8string operator+(u8view f, char const (&e)[N]) {
             return operator+(f, u8view{e});
         }
+        template<std::size_t N>
+        inline u8string operator+(const u8string &f, char const (&e)[N]) {
+            return operator+(u8view{f}, u8view{e});
+        }
         inline u8string operator+(u8view f, const std::string &e) {
             return operator+(f, u8view{e});
+        }
+        inline u8string operator+(u8string f, const std::string &e) {
+            return operator+(u8view{f}, u8view{e});
         }
         inline u8string operator+(const std::string &f, u8view e) {
             return operator+(u8view{f}, e);
@@ -244,6 +256,10 @@ namespace f5 {
         inline u8string operator+(char const (&f)[N], u8view e) {
             return operator+(u8view{f}, e);
         }
+
+
+        inline u8view::u8view(const u8string &s)
+        : buffer{s.buffer}, owner{s.owner} {}
 
 
     }
