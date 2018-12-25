@@ -244,13 +244,13 @@ namespace f5 {
             return operator+(u8view{f}, u8view{e});
         }
         inline u8string operator+(u8view f, const std::string &e) {
-            return operator+(f, u8view{e});
+            return operator+(f, u8view{e.data(), e.size()});
         }
         inline u8string operator+(u8string f, const std::string &e) {
-            return operator+(u8view{f}, u8view{e});
+            return operator+(u8view{f}, u8view{e.data(), e.size()});
         }
         inline u8string operator+(const std::string &f, u8view e) {
-            return operator+(u8view{f}, e);
+            return operator+(u8view{f.data(), f.size()}, e);
         }
         template<std::size_t N>
         inline u8string operator+(char const (&f)[N], u8view e) {

@@ -53,9 +53,6 @@ namespace f5 {
             constexpr explicit u8view(const char *b, std::size_t s) noexcept
             : buffer(b, s), owner{} {}
 
-            explicit u8view(const std::string &u8) noexcept
-            : buffer(u8.data(), u8.size()), owner{} {}
-
             constexpr u8view(lstring s) noexcept
             : buffer(s.data(), s.size()), owner{} {}
 
@@ -179,10 +176,10 @@ namespace f5 {
                 return not((*this) == r);
             }
             bool operator==(const std::string &r) const noexcept {
-                return *this == u8view{r};
+                return *this == u8view{r.data(), r.size()};
             }
             bool operator!=(const std::string &r) const noexcept {
-                return *this != u8view{r};
+                return *this != u8view{r.data(), r.size()};
             }
             constexpr bool operator==(const char *s) const noexcept {
                 std::size_t pos{};
