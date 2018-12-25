@@ -211,6 +211,9 @@ namespace f5 {
             }
         };
 
+        /// ADL `std::size`and `std::data`  implementations
+        inline auto size(u8view v) { return v.bytes(); }
+        inline auto data(u8view v) { return v.data(); }
 
         /// Equality against other types
         inline bool operator==(lstring l, u8view r) { return r.operator==(l); }
