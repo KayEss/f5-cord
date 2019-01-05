@@ -1,5 +1,5 @@
 /**
-    Copyright 2017-2018, Felspar Co Ltd. <https://kirit.com/f5>
+    Copyright 2017-2019, Felspar Co Ltd. <https://kirit.com/f5>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -144,13 +144,13 @@ namespace f5 {
 
             /// Safe substring against Unicode code point counts. The result
             /// undefined if the end marker is smaller than the start marker.
-            u8view substr(std::size_t s) {
+            u8view substr(std::size_t s) const {
                 auto pos = begin(), e = end();
                 for (; s && pos != e; --s, ++pos)
                     ;
                 return u8view(pos, e);
             }
-            u8view substr(std::size_t s, std::size_t e) {
+            u8view substr(std::size_t s, std::size_t e) const {
                 auto starts = substr(s);
                 auto ends = starts.substr(e - s);
                 return u8view{starts.begin(), ends.begin()};
@@ -208,6 +208,15 @@ namespace f5 {
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
                 return u8view{buffer.slice(0, str.buffer.size())} == str;
+            }
+            bool ends_with(u8view str) const {
+                if ( str.bytes() > bytes() ) {
+                    return false;
+                } else if ( str.bytes() == bytes() ) {
+                    return *this == str;
+                } else {
+                    return substr(code_points() - str.code_points()) == str;
+                }
             }
         };
 

@@ -1,5 +1,5 @@
 /**
-    Copyright 2018, Felspar Co Ltd. <https://kirit.com/f5>
+    Copyright 2018-2019, Felspar Co Ltd. <https://kirit.com/f5>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -109,6 +109,11 @@ int main() {
     assert(not lo.shares_allocation_with(hw));
 
     assert(hw.starts_with("Hello"));
+    assert(not hw.ends_with("Hello world!"));
+    assert(hw.ends_with("Hello world"));
+    assert(not hw.ends_with("Hello World"));
+    assert(hw.ends_with("world"));
+    assert(not hw.ends_with("World"));
 
     assert(std::string("Hello") + hw.substr(5) == "Hello world");
     {

@@ -1,5 +1,5 @@
 /**
-    Copyright 2018, Felspar Co Ltd. <https://kirit.com/f5>
+    Copyright 2018-2019, Felspar Co Ltd. <https://kirit.com/f5>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -172,6 +172,9 @@ namespace f5 {
             /// Useful checks for parts of a string
             bool starts_with(u8view str) const {
                 return u8view{buffer.slice(0, str.bytes())} == str;
+            }
+            bool ends_with(u8view str) const {
+                return u8view{*this}.ends_with(str);
             }
 
 
