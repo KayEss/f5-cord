@@ -77,15 +77,11 @@ namespace f5 {
 
 
             /// ## Conversions
-
-            /// Safe conversions
             explicit operator const_u8buffer() const { return buffer; }
-            operator f5::buffer<byte const>() const {
+            explicit operator f5::buffer<byte const>() const {
                 return static_cast<f5::buffer<byte const>>(
                         static_cast<u8view>(*this));
             }
-
-            /// Other conversions
             explicit operator std::string_view() const noexcept {
                 return static_cast<std::string_view>(
                         static_cast<u8view>(*this));

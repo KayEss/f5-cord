@@ -58,15 +58,11 @@ namespace f5 {
 
 
             /// ## Conversions
-
-            /// Safe conversions
             explicit operator const_u8buffer() const { return buffer; }
-            operator f5::buffer<byte const>() const {
+            explicit operator f5::buffer<byte const>() const {
                 return {reinterpret_cast<byte const *>(buffer.data()),
                         buffer.size()};
             }
-
-            /// Other conversions
             explicit operator std::string_view() const noexcept {
                 return std::string_view(buffer.data(), buffer.size());
             }
@@ -210,9 +206,9 @@ namespace f5 {
                 return u8view{buffer.slice(0, str.buffer.size())} == str;
             }
             bool ends_with(u8view str) const {
-                if ( str.bytes() > bytes() ) {
+                if (str.bytes() > bytes()) {
                     return false;
-                } else if ( str.bytes() == bytes() ) {
+                } else if (str.bytes() == bytes()) {
                     return *this == str;
                 } else {
                     return substr(code_points() - str.code_points()) == str;
@@ -228,11 +224,19 @@ namespace f5 {
         inline bool operator==(lstring l, u8view r) { return r.operator==(l); }
         inline bool operator!=(lstring l, u8view r) { return r.operator!=(l); }
         template<std::size_t N>
-        inline bool operator ==(char const (&l)[N], u8view r) { return r.operator==(l); }
+        inline bool operator==(char const (&l)[N], u8view r) {
+            return r.operator==(l);
+        }
         template<std::size_t N>
-        inline bool operator !=(char const (&l)[N], u8view r) { return r.operator!=(l); }
-        inline bool operator==(const std::string &l, u8view r) { return r.operator==(l); }
-        inline bool operator!=(const std::string &l, u8view r) { return r.operator!=(l); }
+        inline bool operator!=(char const (&l)[N], u8view r) {
+            return r.operator!=(l);
+        }
+        inline bool operator==(const std::string &l, u8view r) {
+            return r.operator==(l);
+        }
+        inline bool operator!=(const std::string &l, u8view r) {
+            return r.operator!=(l);
+        }
 
         /// Comparison against other types
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
