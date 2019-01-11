@@ -18,6 +18,10 @@
 #include <algorithm>
 #include <cstring>
 
+#ifndef assert
+#include <cassert>
+#endif
+
 
 namespace f5 {
 
@@ -90,7 +94,9 @@ namespace f5 {
             /// Construct a u8view from part of another
             constexpr u8view(const_iterator s, const_iterator e) noexcept
             : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()),
-              owner(s.owner) {}
+              owner(s.owner) {
+                assert(s.owner == e.owner);
+            }
 
             /// An iterator that produces UTF16 code points from the string
             using const_u16_iterator = const_u32u16_iterator<const_iterator>;

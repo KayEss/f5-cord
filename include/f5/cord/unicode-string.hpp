@@ -11,6 +11,10 @@
 
 #include <f5/cord/unicode-view.hpp>
 
+#ifndef assert
+#include <cassert>
+#endif
+
 
 namespace f5 {
 
@@ -130,6 +134,7 @@ namespace f5 {
             u8string(const_iterator b, const_iterator e) noexcept
             : buffer{b.buffer.data(), b.buffer.size() - e.buffer.size()},
               owner(control_type::increment(b.owner)) {
+                assert(b.owner == e.owner);
                 transitional_allocation();
             }
 
