@@ -36,12 +36,12 @@ namespace f5 {
             using control_type = control<char const>;
             control_type *owner = nullptr;
 
+            u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}
+
           public:
             /// ## Constructors
 
             constexpr u8view() noexcept : buffer{}, owner{} {}
-
-            u8view(const u8string &s);
 
             constexpr explicit u8view(const_u8buffer b) noexcept
             : buffer(b), owner{} {}

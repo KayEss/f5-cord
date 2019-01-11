@@ -77,6 +77,8 @@ namespace f5 {
 
 
             /// ## Conversions
+            operator u8view() const { return u8view{buffer, owner}; }
+
             explicit operator const_u8buffer() const { return buffer; }
             explicit operator f5::buffer<byte const>() const {
                 return static_cast<f5::buffer<byte const>>(
@@ -255,10 +257,6 @@ namespace f5 {
         inline u8string operator+(char const (&f)[N], u8view e) {
             return operator+(u8view{f}, e);
         }
-
-
-        inline u8view::u8view(const u8string &s)
-        : buffer{s.buffer}, owner{s.owner} {}
 
 
     }
