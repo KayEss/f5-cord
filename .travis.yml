@@ -24,5 +24,5 @@ script:
     - cp ../.travis.CMakeLists.txt CMakeLists.txt
     - cmake . -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -G Ninja
     - ninja
-    - ninja check
+    - ninja check f5-cord-fuzz
 
