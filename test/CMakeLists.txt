@@ -16,5 +16,6 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 endif()
 
 add_subdirectory(compile)
+add_subdirectory(fuzz)
 add_subdirectory(headers)
 add_subdirectory(run)
