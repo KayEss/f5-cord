@@ -1,8 +1,8 @@
-/*
-    Copyright 2016-2017, Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2017-2018, Felspar Co Ltd. <https://kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -17,7 +17,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// A compile time string where the string itself is to be manipulated
@@ -79,7 +79,7 @@ namespace f5 {
             static_assert(
                     sizeof(C) == 1,
                     "Only char types allowed with _t string literals");
-            return tstring<Text...>{};
+            return cord::tstring<Text...>{};
         }
 
 

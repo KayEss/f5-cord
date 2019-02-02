@@ -7,7 +7,7 @@ Strings and their utilities (runtime and compile time)
 
 ## `f5::cord`
 
-`cord` is an inline namespace in `f5` meaning it can be left out of the type names below.
+Most of the code and classes are defined in the `f5::cord` namespace, but some common use ones are also available under `f5`.
 
 
 ### Low level memory views
@@ -15,19 +15,25 @@ Strings and their utilities (runtime and compile time)
 There are a few low level memory [span/view types and buffers](./include/f5/memory.hpp) used for dealing with contiguous runs of data.
 
 
-### Compile time strings
-
-These string classes offer different trade offs for creating and manipulating. Non-trivial compile time string manipulation requires a mixture of all of them for best efficiency. All of them operate on `char` types and all may hold zero values (`NIL`).
-
-All of the string types may be compared using `constexpr` operator `==`.
+### String handling
 
 
-#### `[f5::cord::lstring](./include/f5/cord/lstring.hpp)`
 
-A compile time string type for use with literals.
+#### [`f5::cord::u8string`](./include/f5/cord/unicode-string.hpp)
+
+A new vocabulary type for immutable Unicode strings using a shared ownership model. Because it has shared ownership, copying is much cheaper than for a normal string.
+
+This type is also available as `f5::u8string`.
 
 
-#### `[f5::cord::tstring](./include/f5/cord/tstring.hpp)`
+### [`f5::cord::u8view`](./include/f5/cord/unicode-view.hpp)
+
+A new view class for Unicode strings. This class is mostly `constexpr` and is usable as a literals type.
+
+It is also available as `f5::u8view`.
+
+
+#### [`f5::cord::tstring`](./include/f5/cord/tstring.hpp)
 
 A compile time string type where the characters can be manipulated. `tstrings` can be concatenated with other `tstring`s to make `tstring`s and they can also be converted to an `lstring`. They can be created from a string literal using the `_t` literal modifier:
 
@@ -37,12 +43,7 @@ A compile time string type where the characters can be manipulated. `tstrings` c
 `tstring` instances can be concatenated to create new `tstring` instances. De-indexing is also `constexpr`.
 
 
-#### `f5::cord::vstring`
-
-A compile time string type made up of a concatenation of `lstring` values. *This template is deprecated.*
-
-
-### Unicode handling
+### Unicode utilities
 
 For full details see [the Unicode documentation](include/f5/cord/unicode.md).
 

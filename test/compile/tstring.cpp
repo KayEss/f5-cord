@@ -1,15 +1,15 @@
 #include <f5/cord/tstring.hpp>
 
-constexpr f5::tstring<> empty;
+constexpr f5::cord::tstring<> empty;
 static_assert(empty == "", "Not empty");
 static_assert(empty.size() == 0, "Not empty");
 
-constexpr f5::tstring<'h', 't', 'm', 'l'> html;
+constexpr f5::cord::tstring<'h', 't', 'm', 'l'> html;
 static_assert(html.as_lstring() == "html", "Wrong result");
 static_assert(html == "html", "Wrong result");
 static_assert(html.size() == 4, "Wrong size");
 
-constexpr auto html5 = html + f5::tstring<'5'>();
+constexpr auto html5 = html + f5::cord::tstring<'5'>();
 static_assert(html5.as_lstring() == "html5", "Wrong result");
 static_assert(html5 == "html5", "Wrong result");
 static_assert(html5.size() == 5, "Wrong size");

@@ -16,13 +16,15 @@
 namespace f5 {
 
 
-    inline namespace cord { class lstring; }
+    namespace cord {
+        class lstring;
+    }
     inline namespace literals {
-        constexpr lstring operator"" _l(const char *, std::size_t);
+        constexpr cord::lstring operator"" _l(const char *, std::size_t);
     }
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// A wrapper around a string literal used for compile time string
@@ -57,9 +59,11 @@ namespace f5 {
                 return std::string_view(data(), size());
             }
             /// Safe conversions
-            operator const_u8buffer() const {
-                return const_u8buffer(
-                        reinterpret_cast<const unsigned char *>(p), bytes);
+            constexpr operator const_u8buffer() const noexcept {
+                return const_u8buffer(p, bytes);
+            }
+            operator buffer<unsigned char const>() const noexcept {
+                return {reinterpret_cast<unsigned char const *>(p), bytes};
             }
 
             constexpr bool operator==(lstring o) const {
@@ -120,6 +124,9 @@ namespace f5 {
 
 
     }
+
+
+    using lstring = cord::lstring;
 
 
 }

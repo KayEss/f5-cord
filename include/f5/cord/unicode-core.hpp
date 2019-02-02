@@ -1,8 +1,8 @@
-/*
-    Copyright 2016-2017, Felspar Co Ltd. http://www.kirit.com/f5
+/**
+    Copyright 2016-2018, Felspar Co Ltd. <http://www.kirit.com/f5>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -15,11 +15,11 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// A UTF-8 code unit
-        using utf8 = unsigned char;
+        using utf8 = char;
         /// A UTF-16 code unit
         using utf16 = char16_t;
         /// A UTF-32 code unit (or code point)
@@ -40,6 +40,10 @@ namespace f5 {
 
 
     }
+
+
+    using utf32 = cord::utf32;
+    using u8shared = cord::u8shared;
 
 
 }

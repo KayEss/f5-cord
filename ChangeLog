@@ -1,4 +1,7 @@
 2018-12-08  Kirit Sælensminde  <kirit@felspar.com>
+ Add `ends_with` on the u8view and u8string.
+
+2018-12-08  Kirit Sælensminde  <kirit@felspar.com>
  Add `const` iteration of `shared_buffer`.
 
 2018-11-23  Kirit Sælensminde  <kirit@felspar.com>

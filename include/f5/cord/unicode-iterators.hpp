@@ -17,7 +17,7 @@
 namespace f5 {
 
 
-    inline namespace cord {
+    namespace cord {
 
 
         /// An iterator that produces UTF-32 from a UTF-16 iterator
@@ -97,7 +97,7 @@ namespace f5 {
             /// Decode the current position (if safe)
             void decode() {
                 if (pos != end) {
-                    std::tie(in_buffer, buffer) = f5::u16encode(*pos);
+                    std::tie(in_buffer, buffer) = f5::cord::u16encode(*pos);
                 }
             }
 
@@ -165,7 +165,7 @@ namespace f5 {
         }
 
 
-        template<typename B>
+        template<typename B, typename C = void>
         struct const_u32_iterator :
         public std::iterator<
                 std::forward_iterator_tag,
@@ -174,13 +174,16 @@ namespace f5 {
                 const utf32 *,
                 utf32> {
             using buffer_type = B;
+            using control_type = std::add_pointer_t<C>;
 
             buffer_type buffer;
+            control_type owner;
 
-            constexpr const_u32_iterator() {}
+            constexpr const_u32_iterator(control_type c = nullptr) : owner{c} {}
 
-            explicit const_u32_iterator(buffer_type b) noexcept
-            : buffer(std::move(b)) {}
+            constexpr explicit const_u32_iterator(
+                    buffer_type b, control_type c = nullptr) noexcept
+            : buffer(std::move(b)), owner{c} {}
 
             utf32 operator*() const { return decode_one(buffer).first; }
             const_u32_iterator &operator++() {
@@ -204,6 +207,21 @@ namespace f5 {
         };
 
 
+    }
+
+
+    template<typename U32, typename E = std::range_error>
+    using const_u32u16_iterator [[deprecated(
+            "Use the type in the f5::cord namespace, not the f5 namespace")]] =
+            cord::const_u32u16_iterator<U32, E>;
+
+
+    template<typename Iterator, typename E = std::range_error>
+    [
+            [deprecated("Use the function in the f5::cord namespace not the "
+                        "f5::namespace")]] inline auto
+            make_u32u16_iterator(Iterator b, Iterator e) {
+        return cord::make_u32u16_iterator(b, e);
     }
 
 
