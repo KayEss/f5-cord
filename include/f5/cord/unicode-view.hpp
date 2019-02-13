@@ -37,7 +37,7 @@ namespace f5 {
             friend class u8string;
 
             const_u8buffer buffer;
-            using control_type = control<char const>;
+            using control_type = control;
             control_type *owner = nullptr;
 
             u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}

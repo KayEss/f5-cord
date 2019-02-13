@@ -1,5 +1,5 @@
 /**
-    Copyright 2018, Felspar Co Ltd. <http://www.kirit.com/f5>
+    Copyright 2018-2019, Felspar Co Ltd. <http://www.kirit.com/f5>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -10,7 +10,7 @@
 
 
 #include <atomic>
-#include <functional>
+#include <memory>
 
 
 namespace f5 {
@@ -20,16 +20,21 @@ namespace f5 {
     /**
         Control block for owned memory.
      */
-    template<typename T>
     struct control {
-        using pointer_type = std::add_pointer_t<T>;
-        using destructor_type = std::function<void(pointer_type)>;
+        /// Use a virtual destructor for type erasure
+        virtual ~control() = default;
 
         /**
             Creates a new control block with an ownership count of 1.
          */
-        static control *make(pointer_type p, destructor_type d) {
-            return new control(p, std::move(d));
+        template<typename S>
+        static std::pair<std::unique_ptr<control>, S *> make(S &&s) {
+            struct sub : public control {
+                S item;
+                sub(S &&s) : item{std::move(s)} {}
+            };
+            auto made = std::make_unique<sub>(std::move(s));
+            return {std::move(made), &made->item};
         }
 
         /**
@@ -44,17 +49,9 @@ namespace f5 {
             return c;
         }
         static void decrement(control *c) noexcept {
-            if (c && --c->ownership_count == 0u) {
-                c->destructor(c->owned_memory);
-                delete c;
-            }
+            if (c && --c->ownership_count == 0u) { delete c; }
         }
 
-        control(pointer_type p, destructor_type d) noexcept
-        : owned_memory{p}, destructor{std::move(d)} {}
-
-        pointer_type owned_memory;
-        destructor_type destructor;
         std::atomic<std::size_t> ownership_count = 1u;
     };
 

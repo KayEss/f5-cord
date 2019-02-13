@@ -27,7 +27,7 @@ namespace f5 {
             friend class u8view;
 
             const_u8buffer buffer;
-            using control_type = control<char const>;
+            using control_type = control;
             control_type *owner;
 
             /// Temporary re-allocation function used to handle the cases
@@ -66,15 +66,10 @@ namespace f5 {
             /// For `std::string` we have to move the string into a memory area
             /// we can control
             explicit u8string(std::string s) : buffer{}, owner{} {
-                // TODO This allocates memory twice. Once below for the
-                // std::string, and once again in control_type::make for the
-                // control block. We should be able to allocate all of this
-                // memory in one go
-                auto ss = std::make_unique<std::string>(std::move(s));
-                auto const sp = ss->data();
-                buffer = const_u8buffer{sp, ss->size()};
-                owner = control_type::make(
-                        sp, [ss = ss.release()](auto const *) { delete ss; });
+                auto created = control_type::make(std::move(s));
+                owner = created.first.release();
+                buffer = const_u8buffer{created.second->data(),
+                                        created.second->size()};
             }
 
             ~u8string() { control_type::decrement(owner); }
