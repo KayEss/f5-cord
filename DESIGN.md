@@ -85,7 +85,7 @@ Given that we have a load of code that still uses `std::string` as internal stor
 1. The view was created from a literal type, or from a `u8string` that was created from a literal type.
 2. The view was created from `std::string` storage that cannot be moved into a `u8sting` yet.
 
-Because of this, we need to handle the nullptr control block value slightly differently: If we get a `nullptr` in a `u8string` instance that could have come from a `u8view` we must allocate new storage for the string. There are two avenues that this can happen through:
+Because of this, we need to handle the `nullptr` control block value slightly differently: If we get a `nullptr` in a `u8string` instance that could have come from a `u8view` we must allocate new storage for the string. There are two avenues that this can happen through:
 
 1. Construction of a `u8string` from a `u8view`.
 2. Construction via iterators because the `u8string` and the `u8view` share the same iterator type.

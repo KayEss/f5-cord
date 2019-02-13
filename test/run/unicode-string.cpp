@@ -107,6 +107,7 @@ int main() {
     assert(plo[1] == 'o');
     assert(plo[2] == 0);
     assert(not lo.shares_allocation_with(hw));
+    assert(lo.shrink_to_fit() == plo);
 
     assert(hw.starts_with("Hello"));
     assert(not hw.ends_with("Hello world!"));

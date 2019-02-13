@@ -27,7 +27,7 @@ namespace f5 {
             friend class u8view;
 
             const_u8buffer buffer;
-            using control_type = control;
+            using control_type = u8view::control_type;
             control_type *owner;
 
             /// Temporary re-allocation function used to handle the cases
@@ -66,7 +66,7 @@ namespace f5 {
             /// For `std::string` we have to move the string into a memory area
             /// we can control
             explicit u8string(std::string s) : buffer{}, owner{} {
-                auto created = control_type::make(std::move(s));
+                auto created = control_type::make(std::move(s), s.size());
                 owner = created.first.release();
                 buffer = const_u8buffer{created.second->data(),
                                         created.second->size()};
@@ -93,9 +93,14 @@ namespace f5 {
 
             /// Force re-allocation of the memory such that we also have
             /// a NUL at the end of string. This guarantees that the string
-            /// is now also C safe.
+            /// is now also C safe. We make this operation idempotent by
+            /// storing the number of bytes used in the original string
+            /// allocation so that we can check if we need to re-allocate s
+            /// new string or not.
             char const *shrink_to_fit() {
-                *this = u8string{std::string{*this}};
+                if (owner && owner->user_data != bytes()) {
+                    *this = u8string{static_cast<std::string>(*this)};
+                }
                 return data();
             }
 
