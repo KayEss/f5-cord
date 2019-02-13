@@ -98,7 +98,7 @@ namespace f5 {
             /// allocation so that we can check if we need to re-allocate s
             /// new string or not.
             char const *shrink_to_fit() {
-                if (owner && owner->user_data != bytes()) {
+                if ((owner && owner->user_data != bytes()) || not owner) {
                     *this = u8string{static_cast<std::string>(*this)};
                 }
                 return data();
