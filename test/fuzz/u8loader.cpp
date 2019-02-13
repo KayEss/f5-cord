@@ -13,16 +13,18 @@
 
 
 int main(int argc, char const *argv[]) {
-    if ( argc < 2 ) {
+    if (argc < 2) {
         std::cout << "Display information about UTF-8 files\n"
-            "    " << argv[0] << " u8filename" << std::endl;
+                     "    "
+                  << argv[0] << " u8filename" << std::endl;
         return 1;
     }
     /// Load the data from the file
     std::ifstream input{argv[1]};
     std::vector<char> bytes;
-    while ( input ) {
-        char c; input.get(c);
+    while (input) {
+        char c;
+        input.get(c);
         bytes.push_back(c);
     }
     try {
@@ -30,7 +32,7 @@ int main(int argc, char const *argv[]) {
         /// Display meta-data about the file content
         std::cout << "Bytes: " << string.memory().size() << std::endl;
         std::cout << "Code points: " << string.code_points() << std::endl;
-    } catch ( std::exception &e ) {
+    } catch (std::exception &e) {
         std::cerr << "Error caught: " << e.what() << std::endl;
         return 2;
     }
