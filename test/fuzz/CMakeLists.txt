@@ -5,6 +5,6 @@ add_executable(f5-cord-fuzz-u8loader EXCLUDE_FROM_ALL u8loader.cpp)
 target_link_libraries(f5-cord-fuzz-u8loader f5-cord)
 add_dependencies(f5-cord-fuzz f5-cord-fuzz-u8loader)
 
-if(TARGET check OR TARGET stress)
-    add_dependencies(stress f5-cord-fuzz)
+if(TARGET check)
+    add_dependencies(check f5-cord-fuzz)
 endif()
