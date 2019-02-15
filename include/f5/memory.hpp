@@ -51,30 +51,33 @@ namespace f5 {
         using pointer_const_type = std::add_pointer_t<std::add_const_t<V>>;
 
         /// Default construct an empty buffer
-        buffer() : m_data(nullptr), m_size(0u) {}
+        constexpr buffer() noexcept : m_data{nullptr}, m_size{0u} {}
 
         /// Construct from a vector
         buffer(std::vector<value_type> &v)
         : m_data(v.data()), m_size(v.size()) {}
         template<typename T>
-        buffer(const std::vector<T> &v) : m_data(v.data()), m_size(v.size()) {}
+        buffer(const std::vector<T> &v)
+        : m_data(reinterpret_cast<value_type *>(v.data())), m_size(v.size()) {}
         /// For C++ arrays
         template<typename T, std::size_t N>
-        constexpr buffer(std::array<T, N> &v) : m_data(v.data()), m_size(N) {}
+        constexpr buffer(std::array<T, N> &v) noexcept
+        : m_data(v.data()), m_size(N) {}
         template<typename T, std::size_t N>
-        constexpr buffer(const std::array<T, N> &v)
+        constexpr buffer(const std::array<T, N> &v) noexcept
         : m_data(v.data()), m_size(N) {}
         /// From a C array
         template<std::size_t N>
-        constexpr buffer(V (&a)[N]) : m_data(a), m_size(N) {}
+        constexpr buffer(V (&a)[N]) noexcept : m_data(a), m_size(N) {}
 
         /// Construct from pointers
-        constexpr buffer(pointer_type a, std::size_t items)
+        constexpr buffer(pointer_type a, std::size_t items) noexcept
         : m_data(a), m_size(items) {}
-        constexpr buffer(pointer_const_type a, std::size_t items)
+        constexpr buffer(pointer_const_type a, std::size_t items) noexcept
         : m_data(a), m_size(items) {}
-        buffer(pointer_type b, pointer_type e) : m_data(b), m_size(e - b) {}
-        buffer(pointer_const_type b, pointer_const_type e)
+        constexpr buffer(pointer_type b, pointer_type e) noexcept
+        : m_data(b), m_size(e - b) {}
+        constexpr buffer(pointer_const_type b, pointer_const_type e) noexcept
         : m_data(b), m_size(e - b) {}
 
         /// Converting constructors
