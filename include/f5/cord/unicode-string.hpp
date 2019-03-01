@@ -184,17 +184,21 @@ namespace f5 {
             /// ## Substrings
 
             /// Safe substring against Unicode code point counts. The result
-            /// undefined if the end marker is smaller than the start marker.
+            /// is undefined if the end marker is smaller than the start marker.
             u8string substr(std::size_t s) const {
                 auto pos = begin(), e = end();
                 for (; s && pos != e; --s, ++pos)
                     ;
                 return u8string(pos, e);
             }
-            u8string substr(std::size_t s, std::size_t e) const {
+            u8string substr_pos(std::size_t s, std::size_t e) const {
                 auto starts = substr(s);
                 auto ends = starts.substr(e - s);
                 return u8string(starts.begin(), ends.begin());
+            }
+            [[deprecated("Use substr_pos")]] auto
+                    substr(std::size_t s, std::size_t e) const {
+                return substr_pos(s, e);
             }
 
 

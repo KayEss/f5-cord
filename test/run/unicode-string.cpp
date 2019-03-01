@@ -95,12 +95,12 @@ int main() {
     const auto clo = h.substr(3);
     assert(clo.bytes() == 2);
     assert(clo == "lo");
-    assert(hw.substr(0, 3) == "Hel");
-    assert(hw.substr(3, 5) == clo);
+    assert(hw.substr_pos(0, 3) == "Hel");
+    assert(hw.substr_pos(3, 5) == clo);
     assert(h.substr(10) == "");
-    assert(hw.substr(3) == hw.substr(3, 123));
+    assert(hw.substr(3) == hw.substr_pos(3, 123));
 
-    auto lo = hw.substr(3, 5);
+    auto lo = hw.substr_pos(3, 5);
     assert(lo.shares_allocation_with(hw));
     char const *const plo = lo.shrink_to_fit();
     assert(plo[0] == 'l');

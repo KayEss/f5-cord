@@ -1,3 +1,6 @@
+2019-03-01  Kirit Sælensminde  <kirit@felspar.com>
+ Deprecated two argument `substr` as the second argument handling doesn't match `std::string::substr`.
+
 2018-12-08  Kirit Sælensminde  <kirit@felspar.com>
  Add `ends_with` on the u8view and u8string.
 

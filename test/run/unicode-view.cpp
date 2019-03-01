@@ -24,9 +24,9 @@ int main() {
     assert(t1.substr(6) == "321");
     assert(t1.substr(200) == "");
 
-    assert(t1.substr(0, 200) == "123 \xe2\x9c\x93 321");
-    assert(t1.substr(1, 3) == "23");
-    assert(t1.substr(2, 7) == "3 \xe2\x9c\x93 3");
+    assert(t1.substr_pos(0, 200) == "123 \xe2\x9c\x93 321");
+    assert(t1.substr_pos(1, 3) == "23");
+    assert(t1.substr_pos(2, 7) == "3 \xe2\x9c\x93 3");
 
     assert(std::string(t1) == "123 \xe2\x9c\x93 321");
     assert(std::string(t1) + t1.substr(6) == "123 \xe2\x9c\x93 321321");
