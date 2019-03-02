@@ -170,8 +170,10 @@ namespace f5 {
             /// compares the byte values.
             constexpr bool operator==(u8view r) const noexcept {
                 if (buffer.size() == r.buffer.size()) {
-                    for (std::size_t s{}; s != buffer.size(); ++s) {
-                        if (buffer[s] != r.buffer[s]) return false;
+                    if(buffer.data() != r.buffer.data()) {
+                        for (std::size_t s{}; s != buffer.size(); ++s) {
+                            if (buffer[s] != r.buffer[s]) return false;
+                        }
                     }
                     return true;
                 } else {
