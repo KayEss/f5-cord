@@ -31,7 +31,7 @@ namespace f5 {
             control_type *owner;
 
             /// Temporary re-allocation function used to handle the cases
-            /// where the string might have been crated from a `u8view`
+            /// where the string might have been created from a `u8view`
             /// that was created from a `std::string`.
             void transitional_allocation() {
                 if (owner == nullptr) { shrink_to_fit(); }
