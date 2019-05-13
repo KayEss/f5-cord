@@ -27,7 +27,7 @@ namespace f5 {
             constexpr lstring &operator[](std::size_t i) {
                 return i < N ? strings[i]
                              : throw std::out_of_range(
-                                       "Indexing past end of vstring");
+                                     "Indexing past end of vstring");
             }
 
             operator std::string() const {
