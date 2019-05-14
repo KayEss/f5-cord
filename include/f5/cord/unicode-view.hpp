@@ -33,14 +33,16 @@ namespace f5 {
 
 
         /// For unsigned char types with an UTF-8 encoding
-        class u8view {
+        template<typename C, typename IM = iterators<C>>
+        class basic_view {
             friend class u8string;
 
-            f5::buffer<const char> buffer;
+            f5::buffer<const C> buffer;
             using control_type = control<std::size_t>;
             control_type *owner = nullptr;
 
-            u8view(decltype(buffer) b, control_type *o) : buffer{b}, owner{o} {}
+            basic_view(decltype(buffer) b, control_type *o)
+            : buffer{b}, owner{o} {}
 
           public:
             /// ## Types
@@ -49,28 +51,30 @@ namespace f5 {
             using buffer_type = decltype(buffer);
             /// The character type. Always constant
             using value_type = typename buffer_type::value_type;
+            /// Iterator type map
+            using iterator_map = IM;
             /// The standard string types
             using std_string =
-                    std::basic_string<std::remove_const_t<value_type>>;
+                    std::basic_string<typename iterator_map::value_type>;
             using std_string_view =
-                    std::basic_string_view<std::remove_const_t<value_type>>;
+                    std::basic_string_view<typename iterator_map::value_type>;
 
 
             /// ## Constructors
 
-            constexpr u8view() noexcept : buffer{}, owner{} {}
+            constexpr basic_view() noexcept : buffer{}, owner{} {}
 
-            constexpr explicit u8view(buffer_type b) noexcept
+            constexpr explicit basic_view(buffer_type b) noexcept
             : buffer(b), owner{} {}
 
             template<std::size_t N>
-            constexpr u8view(value_type (&s)[N]) noexcept
+            constexpr basic_view(value_type (&s)[N]) noexcept
             : buffer(s, N - 1), owner{} {}
 
-            constexpr explicit u8view(value_type *b, std::size_t s) noexcept
+            constexpr explicit basic_view(value_type *b, std::size_t s) noexcept
             : buffer(b, s), owner{} {}
 
-            constexpr u8view(lstring s) noexcept
+            constexpr basic_view(lstring s) noexcept
             : buffer(s.data(), s.size()), owner{} {}
 
 
@@ -91,8 +95,8 @@ namespace f5 {
             /// ## Iteration
 
             /// An iterator that spits out UTF32 code points from the string
-            using const_iterator =
-                    const_u32_iterator<const_u8buffer, control_type>;
+            using const_iterator = typename iterator_map::
+                    template u32iter<buffer_type, control_type>;
 
             /// Return the begin iterator that delivers UTF32 code points
             const_iterator begin() const {
@@ -103,15 +107,16 @@ namespace f5 {
                 return const_iterator{buffer.slice(buffer.size()), owner};
             }
 
-            /// Construct a u8view from part of another
-            constexpr u8view(const_iterator s, const_iterator e) noexcept
+            /// Construct a basic_view from part of another
+            constexpr basic_view(const_iterator s, const_iterator e) noexcept
             : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()),
               owner(s.owner) {
                 assert(s.owner == e.owner);
             }
 
             /// An iterator that produces UTF16 code points from the string
-            using const_u16_iterator = const_u32u16_iterator<const_iterator>;
+            using const_u16_iterator = typename iterator_map::
+                    template u16iter<buffer_type, control_type>;
 
             /// Return the begin iterator that delivers UTF16 code points
             const_u16_iterator u16begin() const {
@@ -130,7 +135,7 @@ namespace f5 {
             bool is_shared() const noexcept { return owner != nullptr; }
             /// Returns true if the other string uses the same allocation
             /// as this (they have the same control block).
-            bool shares_allocation_with(u8view v) noexcept {
+            bool shares_allocation_with(basic_view v) noexcept {
                 return owner != nullptr && owner == v.owner;
             }
 
@@ -162,16 +167,16 @@ namespace f5 {
 
             /// Safe substring against Unicode code point counts. The result
             /// is undefined if the end marker is smaller than the start marker.
-            u8view substr(std::size_t s) const {
+            basic_view substr(std::size_t s) const {
                 auto pos = begin(), e = end();
                 for (; s && pos != e; --s, ++pos)
                     ;
-                return u8view(pos, e);
+                return basic_view(pos, e);
             }
-            u8view substr_pos(std::size_t s, std::size_t e) const {
+            basic_view substr_pos(std::size_t s, std::size_t e) const {
                 auto starts = substr(s);
                 auto ends = starts.substr(e - s);
-                return u8view{starts.begin(), ends.begin()};
+                return basic_view{starts.begin(), ends.begin()};
             }
             [[deprecated("Use substr_pos")]] auto
                     substr(std::size_t s, std::size_t e) const {
@@ -184,7 +189,7 @@ namespace f5 {
             /// Comparison. Acts as a string would. Not Unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
-            constexpr bool operator==(u8view r) const noexcept {
+            constexpr bool operator==(basic_view r) const noexcept {
                 if (buffer.size() == r.buffer.size()) {
                     if (buffer.data() != r.buffer.data()) {
                         for (std::size_t s{}; s != buffer.size(); ++s) {
@@ -196,14 +201,14 @@ namespace f5 {
                     return false;
                 }
             }
-            constexpr bool operator!=(u8view r) const noexcept {
+            constexpr bool operator!=(basic_view r) const noexcept {
                 return not((*this) == r);
             }
             bool operator==(const std_string &r) const noexcept {
-                return *this == u8view{r.data(), r.size()};
+                return *this == basic_view{r.data(), r.size()};
             }
             bool operator!=(const std_string &r) const noexcept {
-                return *this != u8view{r.data(), r.size()};
+                return *this != basic_view{r.data(), r.size()};
             }
             constexpr bool operator==(value_type *s) const noexcept {
                 std::size_t pos{};
@@ -216,24 +221,24 @@ namespace f5 {
                 return not((*this) == s);
             }
 
-            constexpr bool operator<(u8view r) const {
+            constexpr bool operator<(basic_view r) const {
                 return buffer < r.buffer;
             }
-            constexpr bool operator<=(u8view r) const {
+            constexpr bool operator<=(basic_view r) const {
                 return buffer <= r.buffer;
             }
-            constexpr bool operator>=(u8view r) const {
+            constexpr bool operator>=(basic_view r) const {
                 return buffer >= r.buffer;
             }
-            constexpr bool operator>(u8view r) const {
+            constexpr bool operator>(basic_view r) const {
                 return buffer > r.buffer;
             }
 
             /// Useful checks for parts of a string
-            bool starts_with(u8view str) const {
-                return u8view{buffer.slice(0, str.buffer.size())} == str;
+            bool starts_with(basic_view str) const {
+                return basic_view{buffer.slice(0, str.buffer.size())} == str;
             }
-            bool ends_with(u8view str) const {
+            bool ends_with(basic_view str) const {
                 if (str.bytes() > bytes()) {
                     return false;
                 } else if (str.bytes() == bytes()) {
@@ -243,6 +248,10 @@ namespace f5 {
                 }
             }
         };
+
+        /// ## String view types
+        using u8view = basic_view<char>;
+
 
         /// ADL `std::size`and `std::data`  implementations
         inline auto size(u8view v) { return v.code_units(); }

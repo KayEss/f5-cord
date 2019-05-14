@@ -207,6 +207,28 @@ namespace f5 {
         };
 
 
+        /// ## Iterator map
+        /**
+         * Handles mapping for a character type and returns the
+         * correct iterator types based on the internal buffer and
+         * ownership control types.
+         */
+        template<typename C>
+        struct iterators;
+
+        template<>
+        struct iterators<char> {
+            using value_type = char;
+
+            template<typename Buffer, typename Control>
+            using u8iter = typename Buffer::const_iterator;
+            template<typename Buffer, typename Control>
+            using u32iter = const_u32_iterator<Buffer, Control>;
+            template<typename Buffer, typename Control>
+            using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>>;
+        };
+
+
     }
 
 

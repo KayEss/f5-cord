@@ -24,7 +24,7 @@ namespace f5 {
 
         /// UTF8 string with shared ownership.
         class u8string {
-            friend class u8view;
+            friend class basic_view<char>;
 
             const_u8buffer buffer;
             using control_type = u8view::control_type;
