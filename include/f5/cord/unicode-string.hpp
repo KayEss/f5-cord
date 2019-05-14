@@ -26,7 +26,7 @@ namespace f5 {
         class u8string {
             friend class basic_view<char>;
 
-            const_u8buffer buffer;
+            u8view::buffer_type buffer;
             using control_type = u8view::control_type;
             control_type *owner;
 
@@ -38,6 +38,17 @@ namespace f5 {
             }
 
           public:
+            /// ## Types
+
+            /// See [unicode-view.hpp](./unicode-view.hpp) for meanings
+            /// of type names.
+            using buffer_type = u8view::buffer_type;
+            using value_type = u8view::value_type;
+            using iterator_map = u8view::iterator_map;
+            using std_string = u8view::std_string;
+            using std_string_view = u8view::std_string_view;
+
+
             /// ## Constructors
 
             u8string() noexcept : buffer{}, owner{} {}
@@ -49,8 +60,8 @@ namespace f5 {
             u8string(u8string &&b)
             : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
-            /// Creation from a `u8view` will never allocate because the
-            /// `u8view` remembers the shared status of its history
+            /// Creation from a `basic_view` will never allocate because the
+            /// `basic_view` remembers the shared status of its history
             u8string(u8view v)
             : buffer{v.buffer}, owner{control_type::increment(v.owner)} {
                 transitional_allocation();
@@ -61,11 +72,11 @@ namespace f5 {
             u8string(lstring l) noexcept
             : buffer{l.data(), l.size()}, owner{} {}
             template<std::size_t N>
-            u8string(const char (&a)[N]) noexcept : u8string{lstring{a}} {}
+            u8string(value_type (&a)[N]) noexcept : u8string{lstring{a}} {}
 
-            /// For `std::string` we have to move the string into a memory area
+            /// For `std_string` we have to move the string into a memory area
             /// we can control
-            explicit u8string(std::string s) : buffer{}, owner{} {
+            explicit u8string(std_string s) : buffer{}, owner{} {
                 auto created = control_type::make(std::move(s), s.size());
                 owner = created.first.release();
                 buffer = const_u8buffer{created.second->data(),
@@ -83,12 +94,11 @@ namespace f5 {
                 return static_cast<f5::buffer<byte const>>(
                         static_cast<u8view>(*this));
             }
-            explicit operator std::string_view() const noexcept {
-                return static_cast<std::string_view>(
-                        static_cast<u8view>(*this));
+            explicit operator std_string_view() const noexcept {
+                return static_cast<std_string_view>(static_cast<u8view>(*this));
             }
-            explicit operator std::string() const {
-                return static_cast<std::string>(static_cast<u8view>(*this));
+            explicit operator std_string() const {
+                return static_cast<std_string>(static_cast<u8view>(*this));
             }
 
             /// Force re-allocation of the memory such that we also have
@@ -99,7 +109,7 @@ namespace f5 {
             /// new string or not.
             char const *shrink_to_fit() {
                 if ((owner && owner->user_data != bytes()) || not owner) {
-                    *this = u8string{static_cast<std::string>(*this)};
+                    *this = u8string{static_cast<std_string>(*this)};
                 }
                 return data();
             }
@@ -121,8 +131,7 @@ namespace f5 {
             /// ## Iteration
 
             /// An iterator that produces UTF32 code points
-            using const_iterator =
-                    const_u32_iterator<const_u8buffer, control_type>;
+            using const_iterator = u8view::const_iterator;
             const_iterator begin() const noexcept {
                 return const_iterator{buffer, owner};
             }
@@ -139,7 +148,7 @@ namespace f5 {
             }
 
             /// An iterator that produces UTF16 code points from the string
-            using const_u16_iterator = const_u32u16_iterator<const_iterator>;
+            using const_u16_iterator = u8view::const_u16_iterator;
 
             /// Return the begin iterator that delivers UTF16 code points
             const_u16_iterator u16begin() const {
@@ -162,9 +171,13 @@ namespace f5 {
             }
 
             /// Return the data array
-            char const *data() const noexcept { return buffer.data(); }
+            value_type *data() const noexcept { return buffer.data(); }
             /// Return the size in bytes of the string
-            std::size_t bytes() const noexcept { return buffer.size(); }
+            std::size_t bytes() const noexcept {
+                return buffer.size() * sizeof(value_type);
+            }
+            /// Return the number of code units
+            std::size_t code_units() const noexcept { return buffer.size(); }
             /// Return the size in code points
             auto code_points() const { return std::distance(begin(), end()); }
             /// Return true if the string is empty
