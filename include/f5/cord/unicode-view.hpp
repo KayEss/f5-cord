@@ -36,25 +36,38 @@ namespace f5 {
         class u8view {
             friend class u8string;
 
-            const_u8buffer buffer;
+            f5::buffer<const char> buffer;
             using control_type = control<std::size_t>;
             control_type *owner = nullptr;
 
-            u8view(const_u8buffer b, control_type *o) : buffer{b}, owner{o} {}
+            u8view(decltype(buffer) b, control_type *o) : buffer{b}, owner{o} {}
 
           public:
+            /// ## Types
+
+            /// Buffer used to hold data (via the `owner`/`control_type`)
+            using buffer_type = decltype(buffer);
+            /// The character type. Always constant
+            using value_type = typename buffer_type::value_type;
+            /// The standard string types
+            using std_string =
+                    std::basic_string<std::remove_const_t<value_type>>;
+            using std_string_view =
+                    std::basic_string_view<std::remove_const_t<value_type>>;
+
+
             /// ## Constructors
 
             constexpr u8view() noexcept : buffer{}, owner{} {}
 
-            constexpr explicit u8view(const_u8buffer b) noexcept
+            constexpr explicit u8view(buffer_type b) noexcept
             : buffer(b), owner{} {}
 
             template<std::size_t N>
-            constexpr u8view(const char (&s)[N]) noexcept
+            constexpr u8view(value_type (&s)[N]) noexcept
             : buffer(s, N - 1), owner{} {}
 
-            constexpr explicit u8view(const char *b, std::size_t s) noexcept
+            constexpr explicit u8view(value_type *b, std::size_t s) noexcept
             : buffer(b, s), owner{} {}
 
             constexpr u8view(lstring s) noexcept
@@ -62,17 +75,16 @@ namespace f5 {
 
 
             /// ## Conversions
-            explicit operator const_u8buffer() const { return buffer; }
+            explicit operator buffer_type() const { return buffer; }
             explicit operator f5::buffer<byte const>() const {
                 return {reinterpret_cast<byte const *>(buffer.data()),
-                        buffer.size()};
+                        buffer.size() * sizeof(value_type)};
             }
-            explicit operator std::string_view() const noexcept {
-                return std::string_view(buffer.data(), buffer.size());
+            explicit operator std_string_view() const noexcept {
+                return std_string_view(buffer.data(), buffer.size());
             }
-            explicit operator std::string() const {
-                return std::string(
-                        buffer.data(), buffer.data() + buffer.size());
+            explicit operator std_string() const {
+                return std_string(buffer.data(), buffer.data() + buffer.size());
             }
 
 
@@ -123,11 +135,15 @@ namespace f5 {
             }
 
             /// Return the data array
-            constexpr const char *data() const noexcept {
+            constexpr value_type *data() const noexcept {
                 return buffer.data();
             }
             /// Return the size in bytes of the string
             constexpr std::size_t bytes() const noexcept {
+                return buffer.size() * sizeof(value_type);
+            }
+            /// Return the size in code units
+            constexpr std::size_t code_units() const noexcept {
                 return buffer.size();
             }
             /// Return the size in code points
@@ -165,7 +181,7 @@ namespace f5 {
 
             /// ## Comparisons
 
-            /// Comparison. Acts as a string would. Not unicode aware in
+            /// Comparison. Acts as a string would. Not Unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
             constexpr bool operator==(u8view r) const noexcept {
@@ -183,20 +199,20 @@ namespace f5 {
             constexpr bool operator!=(u8view r) const noexcept {
                 return not((*this) == r);
             }
-            bool operator==(const std::string &r) const noexcept {
+            bool operator==(const std_string &r) const noexcept {
                 return *this == u8view{r.data(), r.size()};
             }
-            bool operator!=(const std::string &r) const noexcept {
+            bool operator!=(const std_string &r) const noexcept {
                 return *this != u8view{r.data(), r.size()};
             }
-            constexpr bool operator==(const char *s) const noexcept {
+            constexpr bool operator==(value_type *s) const noexcept {
                 std::size_t pos{};
                 for (; pos < buffer.size() && *s; ++pos, ++s) {
                     if (buffer[pos] != *s) return false;
                 }
                 return pos == buffer.size() && *s == 0;
             }
-            constexpr bool operator!=(const char *s) const noexcept {
+            constexpr bool operator!=(value_type *s) const noexcept {
                 return not((*this) == s);
             }
 
@@ -229,7 +245,7 @@ namespace f5 {
         };
 
         /// ADL `std::size`and `std::data`  implementations
-        inline auto size(u8view v) { return v.bytes(); }
+        inline auto size(u8view v) { return v.code_units(); }
         inline auto data(u8view v) { return v.data(); }
 
         /// Equality against other types
