@@ -29,26 +29,19 @@ namespace f5 {
     namespace cord {
 
 
-        class u8string;
-
-
-        /// For unsigned char types with an UTF-8 encoding
+        /// String views for any Unicode code unit type
         template<typename C, typename IM = iterators<C>>
         class basic_view {
-            friend class u8string;
-
             f5::buffer<const C> buffer;
-            using control_type = control<std::size_t>;
-            control_type *owner = nullptr;
-
-            basic_view(decltype(buffer) b, control_type *o)
-            : buffer{b}, owner{o} {}
+            control<std::size_t> *owner = nullptr;
 
           public:
             /// ## Types
 
             /// Buffer used to hold data (via the `owner`/`control_type`)
             using buffer_type = decltype(buffer);
+            /// The memory control block type
+            using control_type = std::remove_pointer_t<decltype(owner)>;
             /// The character type. Always constant
             using value_type = typename buffer_type::value_type;
             /// Iterator type map
@@ -76,6 +69,10 @@ namespace f5 {
 
             constexpr basic_view(lstring s) noexcept
             : buffer(s.data(), s.size()), owner{} {}
+
+            /// This constructor is only meant to be used by the string type
+            basic_view(decltype(buffer) b, decltype(owner) o)
+            : buffer{b}, owner{o} {}
 
 
             /// ## Conversions
@@ -138,6 +135,8 @@ namespace f5 {
             bool shares_allocation_with(basic_view v) noexcept {
                 return owner != nullptr && owner == v.owner;
             }
+            /// Return the memory control block
+            control_type *control_block() const noexcept { return owner; }
 
             /// Return the data array
             constexpr value_type *data() const noexcept {

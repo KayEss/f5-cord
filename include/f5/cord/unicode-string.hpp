@@ -24,8 +24,6 @@ namespace f5 {
 
         /// UTF8 string with shared ownership.
         class u8string {
-            friend class basic_view<char>;
-
             u8view::buffer_type buffer;
             using control_type = u8view::control_type;
             control_type *owner;
@@ -63,7 +61,8 @@ namespace f5 {
             /// Creation from a `basic_view` will never allocate because the
             /// `basic_view` remembers the shared status of its history
             u8string(u8view v)
-            : buffer{v.buffer}, owner{control_type::increment(v.owner)} {
+            : buffer{buffer_type{v}},
+              owner{control_type::increment(v.control_block())} {
                 transitional_allocation();
             }
 
@@ -167,8 +166,10 @@ namespace f5 {
             /// Returns true if the other string uses the same allocation
             /// as this (they have the same control block).
             bool shares_allocation_with(u8view v) noexcept {
-                return owner != nullptr && owner == v.owner;
+                return owner != nullptr && owner == v.control_block();
             }
+            /// Return the memory control block
+            control_type *control_block() const noexcept { return owner; }
 
             /// Return the data array
             value_type *data() const noexcept { return buffer.data(); }
