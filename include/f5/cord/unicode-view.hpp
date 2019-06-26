@@ -111,18 +111,22 @@ namespace f5 {
                 assert(s.owner == e.owner);
             }
 
-            /// An iterator that produces UTF16 code points from the string
+            /// An iterator that produces UTF16 code units from the string
             using const_u16_iterator = typename iterator_map::
                     template u16iter<buffer_type, control_type>;
 
-            /// Return the begin iterator that delivers UTF16 code points
+            /// Return the begin iterator that delivers UTF16 code units
             const_u16_iterator u16begin() const {
                 return const_u16_iterator(begin(), end());
             }
-            /// Return the end iterator that delivers UTF16 code points
+            /// Return the end iterator that delivers UTF16 code units
             const_u16_iterator u16end() const {
                 return const_u16_iterator(end(), end());
             }
+
+            /// An iterator that produces UTF8 code units from the string
+            using const_u8_iterator = typename iterator_map::
+                    template u8iter<buffer_type, control_type>;
 
 
             /// ## Queries
