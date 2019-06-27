@@ -210,7 +210,8 @@ namespace f5 {
 
         /// ## Native iterator
         /**
-         * Intended for use over the `f5::buffer` type.
+         * Intended for use over the `f5::buffer` type, but adds ability
+         * to track the control block.
          */
         template<typename B, typename C>
         class native_iterator {
