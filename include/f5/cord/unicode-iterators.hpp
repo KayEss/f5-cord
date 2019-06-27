@@ -208,6 +208,48 @@ namespace f5 {
         };
 
 
+        /// ## Native iterator
+        /**
+         * Intended for use over the `f5::buffer` type.
+         */
+        template<typename B, typename C>
+        class native_iterator {
+            using buffer_type = B;
+            using control_type = std::add_pointer_t<C>;
+
+            buffer_type buffer;
+            control_type owner;
+
+          public:
+            using value_type = typename B::value_type;
+
+            constexpr native_iterator() : owner{nullptr} {}
+            constexpr native_iterator(control_type c) : owner{c} {}
+
+            constexpr explicit native_iterator(
+                    buffer_type b, control_type c = nullptr) noexcept
+            : buffer(std::move(b)), owner{c} {}
+
+            value_type operator *() const { return buffer[0u]; }
+            native_iterator &operator++() {
+                buffer = buffer.slice(1u);
+                return *this;
+            }
+            native_iterator operator++(int) {
+                native_iterator ret{*this};
+                ++(*this);
+                return ret;
+            }
+
+            constexpr bool operator==(native_iterator it) const noexcept {
+                return buffer.data() == it.buffer.data();
+            }
+            constexpr bool operator!=(native_iterator it) const noexcept {
+                return buffer.data() != it.buffer.data();
+            }
+        };
+
+
         /// ## Iterator map
         /**
          * Handles mapping for a character type and returns the
@@ -222,7 +264,7 @@ namespace f5 {
             using value_type = char;
 
             template<typename Buffer, typename Control>
-            using u8iter = typename Buffer::const_iterator;
+            using u8iter = native_iterator<typename Buffer::const_iterator, Control>;
             template<typename Buffer, typename Control>
             using u32iter = const_u8u32_iterator<Buffer, Control>;
             template<typename Buffer, typename Control>
