@@ -26,7 +26,7 @@ namespace f5 {
         public std::iterator<
                 std::forward_iterator_tag,
                 utf32,
-                typename U16::difference_type,
+                std::ptrdiff_t,
                 const utf32 *,
                 utf32> {
             U16 pos, end;
@@ -87,7 +87,7 @@ namespace f5 {
         public std::iterator<
                 std::forward_iterator_tag,
                 utf16,
-                typename U32::difference_type,
+                std::ptrdiff_t,
                 const utf16 *,
                 utf16> {
             U32 pos, end;
