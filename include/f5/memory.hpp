@@ -101,8 +101,8 @@ namespace f5 {
          * much is requested then the slice returned will be the subset
          * covered by the requested slice and the pre-existing buffer.
          *
-         * It is safe to ask for a start position beyond the start of the buffer,
-         * or to ask for more data than is in the buffer. An appropriate
+         * It is safe to ask for a start position beyond the start of the
+         * buffer, or to ask for more data than is in the buffer. An appropriate
          * (possibly empty) buffer will be returned.
          */
         constexpr buffer slice(std::size_t start) const {
