@@ -106,8 +106,8 @@ namespace f5 {
 
             /// Construct a basic_view from part of another
             constexpr basic_view(const_iterator s, const_iterator e) noexcept
-            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()),
-              owner(s.owner) {
+            : buffer{IM::template get_buffer<buffer_type, control_type>(s, e)},
+              owner{IM::template get_owner<buffer_type, control_type>(s)} {
                 assert(s.owner == e.owner);
             }
 

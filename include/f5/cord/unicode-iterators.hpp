@@ -69,6 +69,9 @@ namespace f5 {
             bool operator!=(const const_u16u32_iterator &rhs) const {
                 return pos != rhs.pos;
             }
+
+            /// Return a copy of the current position in the UTF-32 sequence
+            const U16 &u16_iterator() const { return pos; }
         };
 
 
@@ -166,7 +169,7 @@ namespace f5 {
 
 
         template<typename B, typename C = void>
-        struct const_u32_iterator :
+        struct const_u8u32_iterator :
         public std::iterator<
                 std::forward_iterator_tag,
                 utf32,
@@ -179,29 +182,30 @@ namespace f5 {
             buffer_type buffer;
             control_type owner;
 
-            constexpr const_u32_iterator(control_type c = nullptr) : owner{c} {}
+            constexpr const_u8u32_iterator(control_type c = nullptr)
+            : owner{c} {}
 
-            constexpr explicit const_u32_iterator(
+            constexpr explicit const_u8u32_iterator(
                     buffer_type b, control_type c = nullptr) noexcept
             : buffer(std::move(b)), owner{c} {}
 
             utf32 operator*() const { return decode_one(buffer).first; }
-            const_u32_iterator &operator++() {
+            const_u8u32_iterator &operator++() {
                 const auto here = **this;
                 const auto bytes = u8length(here);
                 buffer = buffer.slice(bytes);
                 return *this;
             }
-            const_u32_iterator operator++(int) {
-                const_u32_iterator ret{*this};
+            const_u8u32_iterator operator++(int) {
+                const_u8u32_iterator ret{*this};
                 ++(*this);
                 return ret;
             }
 
-            bool operator==(const_u32_iterator it) const noexcept {
+            bool operator==(const_u8u32_iterator it) const noexcept {
                 return buffer.data() == it.buffer.data();
             }
-            bool operator!=(const_u32_iterator it) const noexcept {
+            bool operator!=(const_u8u32_iterator it) const noexcept {
                 return buffer.data() != it.buffer.data();
             }
         };
@@ -223,9 +227,21 @@ namespace f5 {
             template<typename Buffer, typename Control>
             using u8iter = typename Buffer::const_iterator;
             template<typename Buffer, typename Control>
-            using u32iter = const_u32_iterator<Buffer, Control>;
+            using u32iter = const_u8u32_iterator<Buffer, Control>;
             template<typename Buffer, typename Control>
             using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>>;
+
+            template<typename Buffer, typename Control>
+            static constexpr Buffer get_buffer(
+                    u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
+                return Buffer{s.buffer.data(),
+                              s.buffer.size() - e.buffer.size()};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Control *get_owner(u32iter<Buffer, Control> i) {
+                return i.owner;
+            }
         };
 
 
@@ -236,7 +252,20 @@ namespace f5 {
             template<typename Buffer, typename Control>
             using u16iter = typename Buffer::const_iterator;
             template<typename Buffer, typename Control>
-            using u32iter = const_u16u32_iterator<u16iter<Buffer, Control>>;
+            using u32iter =
+                    const_u16u32_iterator<u16iter<Buffer, Control>, Control>;
+
+            template<typename Buffer, typename Control>
+            static constexpr Buffer get_buffer(
+                    u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
+                return Buffer{s.u16_iterator(),
+                              std::size_t(e.u16_iterator() - s.u16_iterator())};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Control *get_owner(u32iter<Buffer, Control> i) {
+                return i.owner;
+            }
         };
 
 
