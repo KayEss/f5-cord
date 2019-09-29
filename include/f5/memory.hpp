@@ -1,9 +1,9 @@
 /**
-    Copyright 2017-2018, Felspar Co Ltd. <http://www.kirit.com/f5>
+    Copyright 2017-2019 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
-*/
+ */
 
 
 #pragma once
@@ -95,12 +95,24 @@ namespace f5 {
         /// Return true if there are no items in the array
         constexpr bool empty() const noexcept { return m_size == 0; }
 
-        /// Return a slice of this array
+        /// Return a slice of this array.
+        /**
+         * These operations are safe over the buffer, meaning that if too
+         * much is requested then the slice returned will be the subset
+         * covered by the requested slice and the pre-existing buffer.
+         *
+         * It is safe to ask for a start position beyond the start of the buffer,
+         * or to ask for more data than is in the buffer. An appropriate
+         * (possibly empty) buffer will be returned.
+         */
         constexpr buffer slice(std::size_t start) const {
-            return buffer(m_data + start, m_size - start);
+            auto const actual = std::min(start, m_size);
+            return buffer{m_data + actual, m_size - actual};
         }
         constexpr buffer slice(std::size_t start, std::size_t items) const {
-            return buffer(m_data + start, items);
+            auto const actual = std::min(start, m_size);
+            auto const length = std::min(items, m_size - actual);
+            return buffer(m_data + actual, length);
         }
 
         /// Ordering. Performs element-wise ordering. In a tie the shortest
@@ -170,6 +182,8 @@ namespace f5 {
                 std::shared_ptr<V> ptr, std::size_t begin, std::size_t count)
         : m_data(std::move(ptr), ptr.get() + begin), m_size(count) {}
 
+        friend shared_buffer<std::add_const_t<V>>;
+
       public:
         /// Buffer types
         using buffer_type = buffer<std::remove_const_t<V>>;
@@ -195,8 +209,18 @@ namespace f5 {
         /// an array of contiguous memory that can be sliced.
         shared_buffer(std::shared_ptr<V> p, std::size_t s)
         : m_data{s ? p : std::shared_ptr<V>{}}, m_size{s} {}
-        shared_buffer(shared_buffer op, pointer_const_type p, std::size_t s)
+        shared_buffer(shared_buffer op, std::add_pointer_t<V> p, std::size_t s)
         : m_data(op.m_data, p), m_size(s) {}
+
+        /// Conversion from non-`const` buffer to `const` buffer
+        /**
+         * The friendship required for this constructor is only defined
+         * for the `const` version of the non-`const`. So if `Y` is the
+         * non-`const` version of `V` then this will work.
+         */
+        template<typename Y>
+        shared_buffer(shared_buffer<Y> b)
+        : m_data{b.m_data}, m_size{b.m_size} {}
 
         /// The number of elements in the buffer
         std::size_t size() const noexcept { return m_size; }
@@ -209,11 +233,17 @@ namespace f5 {
         V &operator[](std::size_t index) { return data()[index]; }
 
         /// Return a slice which is also shared
+        /**
+         * These are implemented on top of the non-shared buffer type
+         * so share its safety of out-of-bounds requests.
+         */
         shared_buffer slice(std::size_t index) const {
-            return shared_buffer(m_data, index, m_size - index);
+            auto s = buffer<V>{m_data.get(), m_size}.slice(index);
+            return shared_buffer{*this, s.data(), s.size()};
         }
         shared_buffer slice(std::size_t index, std::size_t count) const {
-            return shared_buffer(m_data, index, count);
+            auto s = buffer<V>{m_data.get(), m_size}.slice(index, count);
+            return shared_buffer{*this, s.data(), s.size()};
         }
 
         /// Iteration across the memory
