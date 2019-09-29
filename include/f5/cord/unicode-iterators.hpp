@@ -229,6 +229,17 @@ namespace f5 {
         };
 
 
+        template<>
+        struct iterators<char16_t> {
+            using value_type = char16_t;
+
+            template<typename Buffer, typename Control>
+            using u16iter = typename Buffer::const_iterator;
+            template<typename Buffer, typename Control>
+            using u32iter = const_u16u32_iterator<u16iter<Buffer, Control>>;
+        };
+
+
     }
 
 

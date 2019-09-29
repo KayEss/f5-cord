@@ -250,6 +250,7 @@ namespace f5 {
 
         /// ## String view types
         using u8view = basic_view<char>;
+        using u16view = basic_view<char16_t>;
 
 
         /// ADL `std::size`and `std::data`  implementations
@@ -287,7 +288,9 @@ namespace f5 {
     }
 
 
+    /// Aliases directly in `f5` as these will be used quite often
     using u8view = cord::u8view;
+    using u16view = cord::u16view;
 
 
 }
