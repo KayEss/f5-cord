@@ -11,9 +11,9 @@
  */
 
 
-#include <f5/cord/unicode-string.hpp>
-
 #include "assert.hpp"
+
+#include <f5/cord/unicode-string.hpp>
 
 
 int main() {

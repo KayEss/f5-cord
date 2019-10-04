@@ -6,10 +6,10 @@
  */
 
 
+#include "assert.hpp"
+
 #include <f5/cord/iostream.hpp>
 #include <f5/cord/unicode-string.hpp>
-
-#include "assert.hpp"
 
 
 int main() {
