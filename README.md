@@ -1,8 +1,8 @@
-# f5-cord
+# Cord
 
 Strings and their utilities (runtime and compile time)
 
-[![Build Status](https://travis-ci.org/KayEss/f5-cord.svg?branch=master)](https://travis-ci.org/KayEss/f5-cord)
+[![Build Status](https://travis-ci.org/hotkit/cord.svg?branch=master)](https://travis-ci.org/hotkit/cord)
 
 
 ## `f5::cord`
