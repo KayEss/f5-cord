@@ -97,11 +97,13 @@ namespace f5 {
 
             /// Return the begin iterator that delivers UTF32 code points
             const_iterator begin() const {
-                return const_iterator{buffer, owner};
+                return IM::template make_iterator<buffer_type, control_type>(
+                        buffer, owner);
             }
             /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
-                return const_iterator{buffer.slice(buffer.size()), owner};
+                return IM::template make_iterator<buffer_type, control_type>(
+                        buffer.slice(buffer.size()), owner);
             }
 
             /// Construct a basic_view from part of another

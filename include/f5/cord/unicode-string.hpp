@@ -53,14 +53,14 @@ namespace f5 {
 
             /// The type is copyable and movable. Handle the control block
             /// appropriately.
-            u8string(const u8string &b)
+            u8string(u8string const &b)
             : buffer{b.buffer}, owner{control_type::increment(b.owner)} {}
             u8string(u8string &&b)
             : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
             /// Creation from a `basic_view` will never allocate because the
             /// `basic_view` remembers the shared status of its history
-            u8string(u8view v)
+            u8string(u8view const v)
             : buffer{buffer_type{v}},
               owner{control_type::increment(v.control_block())} {
                 transitional_allocation();
@@ -132,17 +132,20 @@ namespace f5 {
             /// An iterator that produces UTF32 code points
             using const_iterator = u8view::const_iterator;
             const_iterator begin() const noexcept {
-                return const_iterator{buffer, owner};
+                return static_cast<u8view>(*this).begin();
             }
             const_iterator end() const noexcept {
-                return const_iterator{buffer.slice(buffer.size()), owner};
+                return static_cast<u8view>(*this).end();
             }
 
             /// Construct from a pair of iterators
             u8string(const_iterator b, const_iterator e) noexcept
-            : buffer{b.buffer.data(), b.buffer.size() - e.buffer.size()},
-              owner(control_type::increment(b.owner)) {
+            : buffer{iterator_map::template get_buffer<buffer_type, control_type>(
+                    b, e)},
+              owner{iterator_map::template get_owner<buffer_type, control_type>(
+                      b)} {
                 assert(b.owner == e.owner);
+                control_type::increment(owner);
                 transitional_allocation();
             }
 
@@ -165,7 +168,7 @@ namespace f5 {
             bool is_shared() const noexcept { return owner != nullptr; }
             /// Returns true if the other string uses the same allocation
             /// as this (they have the same control block).
-            bool shares_allocation_with(u8view v) noexcept {
+            bool shares_allocation_with(u8view const v) noexcept {
                 return owner != nullptr && owner == v.control_block();
             }
             /// Return the memory control block
@@ -200,7 +203,8 @@ namespace f5 {
             /// Safe substring against Unicode code point counts. The result
             /// is undefined if the end marker is smaller than the start marker.
             u8string substr(std::size_t s) const {
-                auto pos = begin(), e = end();
+                auto pos = begin();
+                auto const e = end();
                 for (; s && pos != e; --s, ++pos)
                     ;
                 return u8string(pos, e);
