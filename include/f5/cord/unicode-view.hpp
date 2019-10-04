@@ -281,8 +281,10 @@ namespace f5 {
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
 
         /// Concatenation
-        inline std::string &operator+=(std::string &s, u8view e) {
-            s.append(e.data(), e.bytes());
+        template<typename C>
+        inline std::basic_string<C> &
+                operator+=(std::basic_string<C> &s, basic_view<C> e) {
+            s.append(e.data(), e.code_units());
             return s;
         }
 

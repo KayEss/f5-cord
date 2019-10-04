@@ -52,5 +52,14 @@ int main() {
     assert(t16.substr(6) == u"321");
     assert(t16.substr(200) == u"");
 
+    assert(t16.substr_pos(0, 200) == u"123 \x2713 321");
+    assert(t16.substr_pos(1, 3) == u"23");
+    assert(t16.substr_pos(2, 7) == u"3 \x2713 3");
+
+    assert(std::u16string(t16) == u"123 \x2713 321");
+    assert(std::u16string(t16) + t16.substr(6) == u"123 \x2713 321321");
+    std::u16string s16{u"ABC"};
+    assert((s16 += t16) == u"ABC123 \x2713 321");
+
     return 0;
 }
