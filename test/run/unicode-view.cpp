@@ -47,10 +47,10 @@ int main() {
     assert(t16 != u"123 \x2713 321 extra");
     assert(t16 == u"123 \x2713 321");
 
-    //     assert(t16.substr(0) == u"123 \x2713 321");
-    //     assert(t16.substr(2) == u"3 \x2713 321");
-    //     assert(t16.substr(6) == u"321");
-    //     assert(t16.substr(200) == u"");
+    assert(t16.substr(0) == u"123 \x2713 321");
+    assert(t16.substr(2) == u"3 \x2713 321");
+    assert(t16.substr(6) == u"321");
+    assert(t16.substr(200) == u"");
 
     return 0;
 }

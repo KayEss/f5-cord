@@ -263,10 +263,20 @@ namespace f5 {
                     Control>;
 
             template<typename Buffer, typename Control>
+            static auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+                return u32iter<Buffer, Control>{
+                        const_u16u32_iterator<u16iter<Buffer, Control>>{
+                                b.begin(), b.end()},
+                        o};
+            }
+
+            template<typename Buffer, typename Control>
             static constexpr Buffer get_buffer(
                     u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
-                return Buffer{s.u16_iterator(),
-                              std::size_t(e.u16_iterator() - s.u16_iterator())};
+                return Buffer{s.iterator.u16_iterator(),
+                              std::size_t(
+                                      e.iterator.u16_iterator()
+                                      - s.iterator.u16_iterator())};
             }
 
             template<typename Buffer, typename Control>
