@@ -16,11 +16,15 @@ static_assert(empty == "", "Empty");
 static_assert(empty.empty(), "Empty");
 static_assert(empty.bytes() == 0, "Empty");
 static_assert(f5::u8view{""}.bytes() == 0, "Empty");
+static_assert(empty.code_units() == 0, "Empty");
+static_assert(f5::u8view{""}.code_units() == 0, "Empty");
 
 constexpr f5::u8view html = "html";
 static_assert(html == "html", "Wrong result");
 static_assert(not html.empty(), "Not empty");
 static_assert(html.bytes() == 4, "Wrong size");
 static_assert(f5::u8view{"html"}.bytes() == 4, "Wrong size");
+static_assert(html.code_units() == 4, "Wrong size");
+static_assert(f5::u8view{"html"}.code_units() == 4, "Wrong size");
 
 static_assert(empty != html, "Wrong result");

@@ -11,10 +11,6 @@
 
 #include <f5/cord/unicode-view.hpp>
 
-#ifndef assert
-#include <cassert>
-#endif
-
 
 namespace f5 {
 
@@ -22,10 +18,10 @@ namespace f5 {
     namespace cord {
 
 
-        /// String with shared ownership.
-        template<typename C, typename IM = iterators<C>>
+        /// UTF8 string with shared ownership.
+        template<typename C, typename V = basic_view<C>>
         class basic_string {
-            using view_type = basic_view<C, IM>;
+            using view_type = V;
             typename view_type::buffer_type buffer;
             using control_type = typename view_type::control_type;
             control_type *owner;
@@ -60,14 +56,14 @@ namespace f5 {
 
             /// The type is copyable and movable. Handle the control block
             /// appropriately.
-            basic_string(const basic_string &b)
+            basic_string(basic_string const &b)
             : buffer{b.buffer}, owner{control_type::increment(b.owner)} {}
             basic_string(basic_string &&b)
             : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
             /// Creation from a `basic_view` will never allocate because the
             /// `basic_view` remembers the shared status of its history
-            basic_string(view_type v)
+            basic_string(view_type const v)
             : buffer{buffer_type{v}},
               owner{control_type::increment(v.control_block())} {
                 transitional_allocation();
@@ -78,15 +74,16 @@ namespace f5 {
             basic_string(lstring l) noexcept
             : buffer{l.data(), l.size()}, owner{} {}
             template<std::size_t N>
-            basic_string(value_type (&a)[N]) noexcept : basic_string{lstring{a}} {}
+            basic_string(value_type (&a)[N]) noexcept
+            : basic_string{lstring{a}} {}
 
             /// For `std_string` we have to move the string into a memory area
             /// we can control
             explicit basic_string(std_string s) : buffer{}, owner{} {
                 auto created = control_type::make(std::move(s), s.size());
                 owner = created.first.release();
-                buffer = const_u8buffer{created.second->data(),
-                                        created.second->size()};
+                buffer = buffer_type{created.second->data(),
+                                     created.second->size()};
             }
 
             ~basic_string() { control_type::decrement(owner); }
@@ -95,13 +92,14 @@ namespace f5 {
             /// ## Conversions
             operator view_type() const { return view_type{buffer, owner}; }
 
-            explicit operator const_u8buffer() const { return buffer; }
+            explicit operator buffer_type() const { return buffer; }
             explicit operator f5::buffer<byte const>() const {
                 return static_cast<f5::buffer<byte const>>(
                         static_cast<view_type>(*this));
             }
             explicit operator std_string_view() const noexcept {
-                return static_cast<std_string_view>(static_cast<view_type>(*this));
+                return static_cast<std_string_view>(
+                        static_cast<view_type>(*this));
             }
             explicit operator std_string() const {
                 return static_cast<std_string>(static_cast<view_type>(*this));
@@ -139,17 +137,20 @@ namespace f5 {
             /// An iterator that produces UTF32 code points
             using const_iterator = typename view_type::const_iterator;
             const_iterator begin() const noexcept {
-                return const_iterator{buffer, owner};
+                return static_cast<view_type>(*this).begin();
             }
             const_iterator end() const noexcept {
-                return const_iterator{buffer.slice(buffer.size()), owner};
+                return static_cast<view_type>(*this).end();
             }
 
             /// Construct from a pair of iterators
             basic_string(const_iterator b, const_iterator e) noexcept
-            : buffer{b.buffer.data(), b.buffer.size() - e.buffer.size()},
-              owner(control_type::increment(b.owner)) {
+            : buffer{iterator_map::template get_buffer<buffer_type, control_type>(
+                    b, e)},
+              owner{iterator_map::template get_owner<buffer_type, control_type>(
+                      b)} {
                 assert(b.owner == e.owner);
+                control_type::increment(owner);
                 transitional_allocation();
             }
 
@@ -165,9 +166,6 @@ namespace f5 {
                 return const_u16_iterator(end(), end());
             }
 
-            /// An iterator that produces UTF8 code units from the string
-            using const_u8_iterator = typename view_type::const_u8_iterator;
-
 
             /// ## Queries
 
@@ -175,7 +173,7 @@ namespace f5 {
             bool is_shared() const noexcept { return owner != nullptr; }
             /// Returns true if the other string uses the same allocation
             /// as this (they have the same control block).
-            bool shares_allocation_with(view_type v) noexcept {
+            bool shares_allocation_with(view_type const v) noexcept {
                 return owner != nullptr && owner == v.control_block();
             }
             /// Return the memory control block
@@ -210,7 +208,8 @@ namespace f5 {
             /// Safe substring against Unicode code point counts. The result
             /// is undefined if the end marker is smaller than the start marker.
             basic_string substr(std::size_t s) const {
-                auto pos = begin(), e = end();
+                auto pos = begin();
+                auto const e = end();
                 for (; s && pos != e; --s, ++pos)
                     ;
                 return basic_string(pos, e);
@@ -232,28 +231,24 @@ namespace f5 {
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
             bool operator==(view_type l) const {
-                return view_type{const_u8buffer{buffer}} == l;
+                return view_type{buffer} == l;
             }
             bool operator!=(view_type l) const {
-                return view_type{const_u8buffer{buffer}} != l;
+                return view_type{buffer} != l;
             }
-            bool operator<(view_type l) const {
-                return view_type{const_u8buffer{buffer}} < l;
-            }
+            bool operator<(view_type l) const { return view_type{buffer} < l; }
             bool operator<=(view_type l) const {
-                return view_type{const_u8buffer{buffer}} <= l;
+                return view_type{buffer} <= l;
             }
             bool operator>=(view_type l) const {
-                return view_type{const_u8buffer{buffer}} >= l;
+                return view_type{buffer} >= l;
             }
-            bool operator>(view_type l) const {
-                return view_type{const_u8buffer{buffer}} > l;
-            }
+            bool operator>(view_type l) const { return view_type{buffer} > l; }
         };
 
 
+        /// String types
         using u8string = basic_string<char>;
-
 
         template<std::size_t N>
         inline bool operator==(char const (&l)[N], const u8string &r) {
@@ -265,12 +260,21 @@ namespace f5 {
 
 
         /// ## Concatenation
-        inline u8string operator+(u8view f, u8view e) {
-            std::string r;
-            r.reserve(f.bytes() + e.bytes());
-            r.append(f.data(), f.bytes());
-            r.append(e.data(), e.bytes());
-            return u8string{r};
+        template<typename C>
+        inline basic_string<C> operator+(basic_view<C> f, basic_view<C> e) {
+            std::basic_string<C> r;
+            r.reserve(f.code_units() + e.code_units());
+            r.append(f.data(), f.code_units());
+            r.append(e.data(), e.code_units());
+            return basic_string<C>{r};
+        }
+        template<typename C>
+        inline auto operator+(basic_string<C> l, basic_view<C> r) {
+            return operator+(basic_view<C>{l}, r);
+        }
+        template<typename C>
+        inline auto operator+(basic_string<C> l, basic_string<C> r) {
+            return operator+(basic_view<C>{l}, basic_view<C>{r});
         }
         template<std::size_t N>
         inline u8string operator+(u8view f, char const (&e)[N]) {
@@ -286,12 +290,27 @@ namespace f5 {
         inline u8string operator+(u8string f, const std::string &e) {
             return operator+(u8view{f}, u8view{e.data(), e.size()});
         }
-        inline u8string operator+(const std::string &f, u8view e) {
-            return operator+(u8view{f.data(), f.size()}, e);
+        template<typename C>
+        inline basic_string<C>
+                operator+(std::basic_string<C> const &f, basic_view<C> const e) {
+            return operator+(basic_view<C>{f.data(), f.size()}, e);
+        }
+        template<typename C>
+        inline basic_string<C> operator+(
+                std::basic_string<C> const &f, basic_string<C> const e) {
+            return operator+(
+                    basic_view<C>{f.data(), f.size()}, basic_view<C>{e});
         }
         template<std::size_t N>
         inline u8string operator+(char const (&f)[N], u8view e) {
             return operator+(u8view{f}, e);
+        }
+
+        template<typename C>
+        inline std::basic_string<C> &
+                operator+=(std::basic_string<C> &s, basic_string<C> e) {
+            s.append(e.data(), e.code_units());
+            return s;
         }
 
 

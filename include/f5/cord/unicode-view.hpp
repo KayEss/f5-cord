@@ -97,17 +97,19 @@ namespace f5 {
 
             /// Return the begin iterator that delivers UTF32 code points
             const_iterator begin() const {
-                return const_iterator{buffer, owner};
+                return IM::template make_iterator<buffer_type, control_type>(
+                        buffer, owner);
             }
             /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
-                return const_iterator{buffer.slice(buffer.size()), owner};
+                return IM::template make_iterator<buffer_type, control_type>(
+                        buffer.slice(buffer.size()), owner);
             }
 
             /// Construct a basic_view from part of another
             constexpr basic_view(const_iterator s, const_iterator e) noexcept
-            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()),
-              owner(s.owner) {
+            : buffer{IM::template get_buffer<buffer_type, control_type>(s, e)},
+              owner{IM::template get_owner<buffer_type, control_type>(s)} {
                 assert(s.owner == e.owner);
             }
 
@@ -123,10 +125,6 @@ namespace f5 {
             const_u16_iterator u16end() const {
                 return const_u16_iterator(end(), end());
             }
-
-            /// An iterator that produces UTF8 code units from the string
-            using const_u8_iterator = typename iterator_map::
-                    template u8iter<buffer_type, control_type>;
 
 
             /// ## Queries
@@ -254,6 +252,7 @@ namespace f5 {
 
         /// ## String view types
         using u8view = basic_view<char>;
+        using u16view = basic_view<char16_t>;
 
 
         /// ADL `std::size`and `std::data`  implementations
@@ -282,8 +281,10 @@ namespace f5 {
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
 
         /// Concatenation
-        inline std::string &operator+=(std::string &s, u8view e) {
-            s.append(e.data(), e.bytes());
+        template<typename C>
+        inline std::basic_string<C> &
+                operator+=(std::basic_string<C> &s, basic_view<C> e) {
+            s.append(e.data(), e.code_units());
             return s;
         }
 
@@ -291,7 +292,9 @@ namespace f5 {
     }
 
 
+    /// Aliases directly in `f5` as these will be used quite often
     using u8view = cord::u8view;
+    using u16view = cord::u16view;
 
 
 }

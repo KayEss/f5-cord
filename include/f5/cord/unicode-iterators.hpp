@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <f5/control.hpp>
 #include <f5/cord/unicode-encodings.hpp>
 
 #include <tuple>
@@ -26,7 +27,7 @@ namespace f5 {
         public std::iterator<
                 std::forward_iterator_tag,
                 utf32,
-                typename U16::difference_type,
+                std::ptrdiff_t,
                 const utf32 *,
                 utf32> {
             U16 pos, end;
@@ -69,6 +70,9 @@ namespace f5 {
             bool operator!=(const const_u16u32_iterator &rhs) const {
                 return pos != rhs.pos;
             }
+
+            /// Return a copy of the current position in the UTF-32 sequence
+            const U16 &u16_iterator() const { return pos; }
         };
 
 
@@ -87,7 +91,7 @@ namespace f5 {
         public std::iterator<
                 std::forward_iterator_tag,
                 utf16,
-                typename U32::difference_type,
+                std::ptrdiff_t,
                 const utf16 *,
                 utf16> {
             U32 pos, end;
@@ -103,7 +107,7 @@ namespace f5 {
 
           public:
             /// Default construct
-            const_u32u16_iterator() : in_buffer{} {}
+            const_u32u16_iterator() : pos{}, end{}, in_buffer{} {}
 
             /// Wrap a U32 iterator
             const_u32u16_iterator(U32 pos, U32 end)
@@ -165,7 +169,7 @@ namespace f5 {
         }
 
 
-        template<typename B, typename C = void>
+        template<typename B>
         struct const_u8u32_iterator :
         public std::iterator<
                 std::forward_iterator_tag,
@@ -174,17 +178,13 @@ namespace f5 {
                 const utf32 *,
                 utf32> {
             using buffer_type = B;
-            using control_type = std::add_pointer_t<C>;
 
             buffer_type buffer;
-            control_type owner;
 
-            constexpr const_u8u32_iterator() : owner{nullptr} {}
-            constexpr const_u8u32_iterator(control_type c) : owner{c} {}
+            constexpr const_u8u32_iterator() {}
 
-            constexpr explicit const_u8u32_iterator(
-                    buffer_type b, control_type c = nullptr) noexcept
-            : buffer(std::move(b)), owner{c} {}
+            constexpr explicit const_u8u32_iterator(buffer_type b) noexcept
+            : buffer(std::move(b)) {}
 
             utf32 operator*() const { return decode_one(buffer).first; }
             const_u8u32_iterator &operator++() {
@@ -267,9 +267,65 @@ namespace f5 {
             template<typename Buffer, typename Control>
             using u8iter = native_iterator<typename Buffer::const_iterator, Control>;
             template<typename Buffer, typename Control>
-            using u32iter = const_u8u32_iterator<Buffer, Control>;
+            using u32iter =
+                    owner_tracking_iterator<const_u8u32_iterator<Buffer>, Control>;
             template<typename Buffer, typename Control>
             using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>>;
+
+            template<typename Buffer, typename Control>
+            static auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+                return u32iter<Buffer, Control>{const_u8u32_iterator<Buffer>{b},
+                                                o};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Buffer get_buffer(
+                    u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
+                return Buffer{s.iterator.buffer.data(),
+                              std::size_t(
+                                      e.iterator.buffer.data()
+                                      - s.iterator.buffer.data())};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Control *get_owner(u32iter<Buffer, Control> i) {
+                return i.owner;
+            }
+        };
+
+
+        template<>
+        struct iterators<char16_t> {
+            using value_type = char16_t;
+
+            template<typename Buffer, typename Control>
+            using u16iter = typename Buffer::const_iterator;
+            template<typename Buffer, typename Control>
+            using u32iter = owner_tracking_iterator<
+                    const_u16u32_iterator<u16iter<Buffer, Control>>,
+                    Control>;
+
+            template<typename Buffer, typename Control>
+            static auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+                return u32iter<Buffer, Control>{
+                        const_u16u32_iterator<u16iter<Buffer, Control>>{
+                                b.begin(), b.end()},
+                        o};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Buffer get_buffer(
+                    u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
+                return Buffer{s.iterator.u16_iterator(),
+                              std::size_t(
+                                      e.iterator.u16_iterator()
+                                      - s.iterator.u16_iterator())};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Control *get_owner(u32iter<Buffer, Control> i) {
+                return i.owner;
+            }
         };
 
 
