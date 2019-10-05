@@ -91,14 +91,14 @@ namespace f5 {
 
             /// ## Conversions
             operator view_type() const { return view_type{buffer, owner}; }
+            operator std_string_view() const noexcept {
+                return static_cast<std_string_view>(
+                        static_cast<view_type>(*this));
+            }
 
             explicit operator buffer_type() const { return buffer; }
             explicit operator f5::buffer<byte const>() const {
                 return static_cast<f5::buffer<byte const>>(
-                        static_cast<view_type>(*this));
-            }
-            explicit operator std_string_view() const noexcept {
-                return static_cast<std_string_view>(
                         static_cast<view_type>(*this));
             }
             explicit operator std_string() const {
@@ -302,13 +302,6 @@ namespace f5 {
         template<std::size_t N>
         inline u8string operator+(char const (&f)[N], u8view e) {
             return operator+(u8view{f}, e);
-        }
-
-        template<typename C>
-        inline std::basic_string<C> &
-                operator+=(std::basic_string<C> &s, basic_string<C> e) {
-            s.append(e.data(), e.code_units());
-            return s;
         }
 
 

@@ -76,13 +76,14 @@ namespace f5 {
 
 
             /// ## Conversions
+            operator std_string_view() const noexcept {
+                return std_string_view(buffer.data(), buffer.size());
+            }
+
             explicit operator buffer_type() const { return buffer; }
             explicit operator f5::buffer<byte const>() const {
                 return {reinterpret_cast<byte const *>(buffer.data()),
                         buffer.size() * sizeof(value_type)};
-            }
-            explicit operator std_string_view() const noexcept {
-                return std_string_view(buffer.data(), buffer.size());
             }
             explicit operator std_string() const {
                 return std_string(buffer.data(), buffer.data() + buffer.size());
@@ -279,14 +280,6 @@ namespace f5 {
 
         /// Comparison against other types
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
-
-        /// Concatenation
-        template<typename C>
-        inline std::basic_string<C> &
-                operator+=(std::basic_string<C> &s, basic_view<C> e) {
-            s.append(e.data(), e.code_units());
-            return s;
-        }
 
 
     }
