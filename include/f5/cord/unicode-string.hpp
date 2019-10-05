@@ -147,10 +147,8 @@ namespace f5 {
             basic_string(const_iterator b, const_iterator e) noexcept
             : buffer{iterator_map::template get_buffer<buffer_type, control_type>(
                     b, e)},
-              owner{iterator_map::template get_owner<buffer_type, control_type>(
-                      b)} {
+              owner{control_type::increment(b.owner)} {
                 assert(b.owner == e.owner);
-                control_type::increment(owner);
                 transitional_allocation();
             }
 

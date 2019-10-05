@@ -231,7 +231,7 @@ namespace f5 {
                     buffer_type b, control_type c = nullptr) noexcept
             : buffer(std::move(b)), owner{c} {}
 
-            value_type operator *() const { return buffer[0u]; }
+            value_type operator*() const { return buffer[0u]; }
             native_iterator &operator++() {
                 buffer = buffer.slice(1u);
                 return *this;
@@ -265,7 +265,8 @@ namespace f5 {
             using value_type = char;
 
             template<typename Buffer, typename Control>
-            using u8iter = native_iterator<typename Buffer::const_iterator, Control>;
+            using u8iter =
+                    native_iterator<typename Buffer::const_iterator, Control>;
             template<typename Buffer, typename Control>
             using u32iter =
                     owner_tracking_iterator<const_u8u32_iterator<Buffer>, Control>;
@@ -285,11 +286,6 @@ namespace f5 {
                               std::size_t(
                                       e.iterator.buffer.data()
                                       - s.iterator.buffer.data())};
-            }
-
-            template<typename Buffer, typename Control>
-            static constexpr Control *get_owner(u32iter<Buffer, Control> i) {
-                return i.owner;
             }
         };
 
@@ -320,11 +316,6 @@ namespace f5 {
                               std::size_t(
                                       e.iterator.u16_iterator()
                                       - s.iterator.u16_iterator())};
-            }
-
-            template<typename Buffer, typename Control>
-            static constexpr Control *get_owner(u32iter<Buffer, Control> i) {
-                return i.owner;
             }
         };
 
