@@ -247,6 +247,8 @@ namespace f5 {
 
         /// String types
         using u8string = basic_string<char>;
+        using u16string = basic_string<char16_t>;
+
 
         template<std::size_t N>
         inline bool operator==(char const (&l)[N], const u8string &r) {
@@ -308,7 +310,9 @@ namespace f5 {
     }
 
 
+    /// Aliases directly in `f5` as these will be used quite often
     using u8string = cord::u8string;
+    using u16string = cord::u16string;
 
 
 }
