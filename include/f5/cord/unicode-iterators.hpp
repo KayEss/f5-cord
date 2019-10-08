@@ -179,7 +179,7 @@ namespace f5 {
         }
 
 
-        template<typename B>
+        template<typename B, typename E = std::range_error>
         struct const_u8u32_iterator :
         public std::iterator<
                 std::forward_iterator_tag,
@@ -196,10 +196,10 @@ namespace f5 {
             constexpr explicit const_u8u32_iterator(buffer_type b) noexcept
             : buffer(std::move(b)) {}
 
-            constexpr utf32 operator*() const { return decode_one(buffer).first; }
+            constexpr utf32 operator*() const { return decode_one<E>(buffer).first; }
             constexpr const_u8u32_iterator &operator++() {
                 const auto here = **this;
-                const auto bytes = u8length(here);
+                const auto bytes = u8length<E>(here);
                 buffer = buffer.slice(bytes);
                 return *this;
             }
@@ -224,18 +224,18 @@ namespace f5 {
          * correct iterator types based on the internal buffer and
          * ownership control types.
          */
-        template<typename C>
+        template<typename C, typename E = std::range_error>
         struct iterators;
 
-        template<>
-        struct iterators<char> {
+        template<typename E>
+        struct iterators<char, E> {
             using value_type = char;
 
             template<typename Buffer, typename Control>
             using u32iter =
-                    owner_tracking_iterator<const_u8u32_iterator<Buffer>, Control>;
+                    owner_tracking_iterator<const_u8u32_iterator<Buffer, E>, Control>;
             template<typename Buffer, typename Control>
-            using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>>;
+            using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>, E>;
 
             template<typename Buffer, typename Control>
             constexpr static auto make_iterator(
@@ -260,15 +260,15 @@ namespace f5 {
         };
 
 
-        template<>
-        struct iterators<char16_t> {
+        template<typename E>
+        struct iterators<char16_t, E> {
             using value_type = char16_t;
 
             template<typename Buffer, typename Control>
             using u16iter = typename Buffer::const_iterator;
             template<typename Buffer, typename Control>
             using u32iter = owner_tracking_iterator<
-                    const_u16u32_iterator<u16iter<Buffer, Control>>,
+                    const_u16u32_iterator<u16iter<Buffer, Control>, E>,
                     Control>;
 
             template<typename Buffer, typename Control>

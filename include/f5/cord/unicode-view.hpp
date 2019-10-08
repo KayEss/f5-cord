@@ -30,7 +30,7 @@ namespace f5 {
 
 
         /// String views for any Unicode code unit type
-        template<typename C, typename IM = iterators<C>>
+        template<typename C, typename E = std::range_error, typename IM = iterators<C, E>>
         class basic_view {
             f5::buffer<const C> buffer;
             control<std::size_t> *owner = nullptr;
@@ -51,6 +51,8 @@ namespace f5 {
                     std::basic_string<typename iterator_map::value_type>;
             using std_string_view =
                     std::basic_string_view<typename iterator_map::value_type>;
+            /// Error exception type
+            using encoding_error_type = E;
 
 
             /// ## Constructors
