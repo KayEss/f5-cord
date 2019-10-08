@@ -34,20 +34,26 @@ namespace f5 {
 
           public:
             /// Default construct
-            const_u16u32_iterator() : pos{}, end{} {}
+            constexpr const_u16u32_iterator() noexcept : pos{}, end{} {}
 
             /// Construct from a begin and end pair
-            const_u16u32_iterator(U16 begin, U16 end) : pos(begin), end(end) {}
+            constexpr const_u16u32_iterator(U16 b, U16 e) noexcept
+            : pos{std::move(b)}, end{std::move(e)} {}
 
             /// Increment position
-            const_u16u32_iterator &operator++() {
+            constexpr const_u16u32_iterator &operator++() {
                 if (u16length(**this) == 2) ++pos;
                 ++pos;
                 return *this;
             }
+            constexpr const_u16u32_iterator operator++(int) {
+                auto ret = *this;
+                pos++;
+                return ret;
+            }
 
             /// Return the current character
-            utf32 operator*() const {
+            constexpr utf32 operator*() const {
                 if (is_surrogate(*pos)) {
                     auto next = pos;
                     ++next;
@@ -63,22 +69,22 @@ namespace f5 {
             }
 
             /// Compare for equality
-            bool operator==(const const_u16u32_iterator &rhs) const {
+            constexpr bool operator==(const const_u16u32_iterator &rhs) const noexcept {
                 return pos == rhs.pos;
             }
             /// Compare for inequality
-            bool operator!=(const const_u16u32_iterator &rhs) const {
+            constexpr bool operator!=(const const_u16u32_iterator &rhs) const noexcept {
                 return pos != rhs.pos;
             }
 
             /// Return a copy of the current position in the UTF-32 sequence
-            const U16 &u16_iterator() const { return pos; }
+            constexpr const U16 &u16_iterator() const noexcept { return pos; }
         };
 
 
         /// Make a pair of iterators from a UTF-32 iterator
         template<typename E = std::range_error, typename Iterator>
-        inline auto make_u16u32_iterator(Iterator b, Iterator e) {
+        inline constexpr auto make_u16u32_iterator(Iterator b, Iterator e) {
             return std::make_pair(
                     const_u16u32_iterator<Iterator, E>(b, e),
                     const_u16u32_iterator<Iterator, E>(e, e));
@@ -99,7 +105,7 @@ namespace f5 {
             char in_buffer;
 
             /// Decode the current position (if safe)
-            void decode() {
+            void decode() noexcept {
                 if (pos != end) {
                     std::tie(in_buffer, buffer) = f5::cord::u16encode(*pos);
                 }
@@ -107,16 +113,17 @@ namespace f5 {
 
           public:
             /// Default construct
-            const_u32u16_iterator() : pos{}, end{}, in_buffer{} {}
+            const_u32u16_iterator() noexcept
+            : pos{}, end{}, in_buffer{} {}
 
             /// Wrap a U32 iterator
-            const_u32u16_iterator(U32 pos, U32 end)
-            : pos(pos), end(end), in_buffer{} {
+            const_u32u16_iterator(U32 pos, U32 end) noexcept
+            : pos{std::move(pos)}, end{std::move(end)}, in_buffer{} {
                 decode();
             }
 
             /// The current code point
-            utf16 operator*() const { return buffer[0]; }
+            utf16 operator*() const noexcept { return buffer[0]; }
 
             /// Increment the iterator
             const_u32u16_iterator &operator++() {
@@ -147,22 +154,25 @@ namespace f5 {
             }
 
             /// Compare iterators
-            bool operator==(const const_u32u16_iterator &rhs) const {
+            bool operator==(const const_u32u16_iterator &rhs) const
+                    noexcept {
                 return pos == rhs.pos && in_buffer == rhs.in_buffer;
             }
             /// Compare iterators
-            bool operator!=(const const_u32u16_iterator &rhs) const {
+            bool operator!=(const const_u32u16_iterator &rhs) const
+                    noexcept {
                 return not(*this == rhs);
             }
 
             /// Return a copy of the current position in the UTF-32 sequence
-            const U32 &u32_iterator() const { return pos; }
+            const U32 &u32_iterator() const noexcept { return pos; }
         };
 
 
         /// Make a pair of iterators from a UTF-32 iterator
         template<typename Iterator, typename E = std::range_error>
-        inline auto make_u32u16_iterator(Iterator b, Iterator e) {
+        inline constexpr auto
+                make_u32u16_iterator(Iterator b, Iterator e) noexcept {
             return std::make_pair(
                     const_u32u16_iterator<Iterator, E>(b, e),
                     const_u32u16_iterator<Iterator, E>(e, e));
@@ -186,23 +196,23 @@ namespace f5 {
             constexpr explicit const_u8u32_iterator(buffer_type b) noexcept
             : buffer(std::move(b)) {}
 
-            utf32 operator*() const { return decode_one(buffer).first; }
-            const_u8u32_iterator &operator++() {
+            constexpr utf32 operator*() const { return decode_one(buffer).first; }
+            constexpr const_u8u32_iterator &operator++() {
                 const auto here = **this;
                 const auto bytes = u8length(here);
                 buffer = buffer.slice(bytes);
                 return *this;
             }
-            const_u8u32_iterator operator++(int) {
+            constexpr const_u8u32_iterator operator++(int) {
                 const_u8u32_iterator ret{*this};
                 ++(*this);
                 return ret;
             }
 
-            bool operator==(const_u8u32_iterator it) const noexcept {
+            constexpr bool operator==(const_u8u32_iterator it) const noexcept {
                 return buffer.data() == it.buffer.data();
             }
-            bool operator!=(const_u8u32_iterator it) const noexcept {
+            constexpr bool operator!=(const_u8u32_iterator it) const noexcept {
                 return buffer.data() != it.buffer.data();
             }
         };
@@ -274,9 +284,15 @@ namespace f5 {
             using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>>;
 
             template<typename Buffer, typename Control>
-            static auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+            constexpr static auto make_iterator(
+                    Buffer b, std::add_pointer_t<Control> o) noexcept {
                 return u32iter<Buffer, Control>{const_u8u32_iterator<Buffer>{b},
                                                 o};
+            }
+            template<typename Buffer, typename Control>
+            constexpr static auto make_u16iterator(
+                    u32iter<Buffer, Control> b, u32iter<Buffer, Control> e) noexcept {
+                return u16iter<Buffer, Control>{b, e};
             }
 
             template<typename Buffer, typename Control>
@@ -302,11 +318,16 @@ namespace f5 {
                     Control>;
 
             template<typename Buffer, typename Control>
-            static auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+            static constexpr auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
                 return u32iter<Buffer, Control>{
                         const_u16u32_iterator<u16iter<Buffer, Control>>{
                                 b.begin(), b.end()},
                         o};
+            }
+            template<typename Buffer, typename Control>
+            static constexpr auto make_u16iterator(
+                    u32iter<Buffer, Control> b, u32iter<Buffer, Control>) noexcept {
+                return b.iterator.u16_iterator();
             }
 
             template<typename Buffer, typename Control>

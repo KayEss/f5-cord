@@ -130,21 +130,21 @@ namespace f5 {
                 Iter i, control_type c = nullptr) noexcept
         : iterator{i}, owner{c} {}
 
-        decltype(auto) operator*() const { return *iterator; }
-        owner_tracking_iterator &operator++() {
+        constexpr decltype(auto) operator*() const { return *iterator; }
+        constexpr owner_tracking_iterator &operator++() {
             ++iterator;
             return *this;
         }
-        owner_tracking_iterator operator++(int) {
+        constexpr owner_tracking_iterator operator++(int) {
             auto ret = *this;
             iterator++;
             return ret;
         }
-        bool operator==(owner_tracking_iterator i) const noexcept {
+        constexpr bool operator==(owner_tracking_iterator i) const noexcept {
             assert(owner == i.owner);
             return iterator == i.iterator;
         }
-        bool operator!=(owner_tracking_iterator i) const noexcept {
+        constexpr bool operator!=(owner_tracking_iterator i) const noexcept {
             assert(owner == i.owner);
             return iterator != i.iterator;
         }

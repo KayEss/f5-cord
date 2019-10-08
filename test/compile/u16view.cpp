@@ -28,3 +28,13 @@ static_assert(html.code_units() == 4, "Wrong size");
 static_assert(f5::u16view{u"html"}.code_units() == 4, "Wrong size");
 
 static_assert(empty != html, "Wrong result");
+
+static_assert(empty.begin() == empty.end(), "Not empty");
+static_assert(*html.begin() == 'h', "Wrong letter");
+static_assert(*(++html.begin()) == 't', "Wrong letter");
+static_assert(*(html.begin()++) == 'h', "Wrong letter");
+
+static_assert(empty.u16begin() == empty.u16end(), "Not empty");
+static_assert(*html.u16begin() == 'h', "Wrong letter");
+// static_assert(*(++html.u16begin()) == 't', "Wrong letter");
+// static_assert(*(html.u16begin()++) == 'h', "Wrong letter");

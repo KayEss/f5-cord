@@ -71,17 +71,19 @@ namespace f5 {
             : buffer(s.data(), s.size()), owner{} {}
 
             /// This constructor is only meant to be used by the string type
-            basic_view(decltype(buffer) b, decltype(owner) o)
+            constexpr basic_view(decltype(buffer) b, decltype(owner) o) noexcept
             : buffer{b}, owner{o} {}
 
 
             /// ## Conversions
-            operator std_string_view() const noexcept {
+            constexpr operator std_string_view() const noexcept {
                 return std_string_view(buffer.data(), buffer.size());
             }
 
-            explicit operator buffer_type() const { return buffer; }
-            explicit operator f5::buffer<byte const>() const {
+            constexpr explicit operator buffer_type() const noexcept {
+                return buffer;
+            }
+            explicit operator f5::buffer<byte const>() const noexcept {
                 return {reinterpret_cast<byte const *>(buffer.data()),
                         buffer.size() * sizeof(value_type)};
             }
@@ -97,12 +99,12 @@ namespace f5 {
                     template u32iter<buffer_type, control_type>;
 
             /// Return the begin iterator that delivers UTF32 code points
-            const_iterator begin() const {
+            constexpr const_iterator begin() const {
                 return IM::template make_iterator<buffer_type, control_type>(
                         buffer, owner);
             }
             /// Return the end iterator that delivers UTF32 code points
-            const_iterator end() const {
+            constexpr const_iterator end() const {
                 return IM::template make_iterator<buffer_type, control_type>(
                         buffer.slice(buffer.size()), owner);
             }
@@ -119,12 +121,12 @@ namespace f5 {
                     template u16iter<buffer_type, control_type>;
 
             /// Return the begin iterator that delivers UTF16 code units
-            const_u16_iterator u16begin() const {
-                return const_u16_iterator(begin(), end());
+            constexpr const_u16_iterator u16begin() const {
+                return IM::template make_u16iterator<buffer_type, control_type>(begin(), end());
             }
             /// Return the end iterator that delivers UTF16 code units
-            const_u16_iterator u16end() const {
-                return const_u16_iterator(end(), end());
+            constexpr const_u16_iterator u16end() const {
+                return IM::template make_u16iterator<buffer_type, control_type>(end(), end());
             }
 
 
