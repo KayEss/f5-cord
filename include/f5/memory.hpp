@@ -139,7 +139,9 @@ namespace f5 {
         /// Start iterator
         constexpr const_iterator begin() const noexcept { return data(); }
         /// End iterator
-        constexpr const_iterator end() const noexcept { return data() + size(); }
+        constexpr const_iterator end() const noexcept {
+            return data() + size();
+        }
 
         /// Reverse const iterator
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;

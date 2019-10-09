@@ -69,11 +69,13 @@ namespace f5 {
             }
 
             /// Compare for equality
-            constexpr bool operator==(const const_u16u32_iterator &rhs) const noexcept {
+            constexpr bool operator==(const const_u16u32_iterator &rhs) const
+                    noexcept {
                 return pos == rhs.pos;
             }
             /// Compare for inequality
-            constexpr bool operator!=(const const_u16u32_iterator &rhs) const noexcept {
+            constexpr bool operator!=(const const_u16u32_iterator &rhs) const
+                    noexcept {
                 return pos != rhs.pos;
             }
 
@@ -113,8 +115,7 @@ namespace f5 {
 
           public:
             /// Default construct
-            const_u32u16_iterator() noexcept
-            : pos{}, end{}, in_buffer{} {}
+            const_u32u16_iterator() noexcept : pos{}, end{}, in_buffer{} {}
 
             /// Wrap a U32 iterator
             const_u32u16_iterator(U32 pos, U32 end) noexcept
@@ -154,13 +155,11 @@ namespace f5 {
             }
 
             /// Compare iterators
-            bool operator==(const const_u32u16_iterator &rhs) const
-                    noexcept {
+            bool operator==(const const_u32u16_iterator &rhs) const noexcept {
                 return pos == rhs.pos && in_buffer == rhs.in_buffer;
             }
             /// Compare iterators
-            bool operator!=(const const_u32u16_iterator &rhs) const
-                    noexcept {
+            bool operator!=(const const_u32u16_iterator &rhs) const noexcept {
                 return not(*this == rhs);
             }
 
@@ -196,7 +195,9 @@ namespace f5 {
             constexpr explicit const_u8u32_iterator(buffer_type b) noexcept
             : buffer(std::move(b)) {}
 
-            constexpr utf32 operator*() const { return decode_one<E>(buffer).first; }
+            constexpr utf32 operator*() const {
+                return decode_one<E>(buffer).first;
+            }
             constexpr const_u8u32_iterator &operator++() {
                 const auto here = **this;
                 const auto bytes = u8length<E>(here);
@@ -232,8 +233,9 @@ namespace f5 {
             using value_type = char;
 
             template<typename Buffer, typename Control>
-            using u32iter =
-                    owner_tracking_iterator<const_u8u32_iterator<Buffer, E>, Control>;
+            using u32iter = owner_tracking_iterator<
+                    const_u8u32_iterator<Buffer, E>,
+                    Control>;
             template<typename Buffer, typename Control>
             using u16iter = const_u32u16_iterator<u32iter<Buffer, Control>, E>;
 
@@ -245,7 +247,8 @@ namespace f5 {
             }
             template<typename Buffer, typename Control>
             constexpr static auto make_u16iterator(
-                    u32iter<Buffer, Control> b, u32iter<Buffer, Control> e) noexcept {
+                    u32iter<Buffer, Control> b,
+                    u32iter<Buffer, Control> e) noexcept {
                 return u16iter<Buffer, Control>{b, e};
             }
 
@@ -272,7 +275,8 @@ namespace f5 {
                     Control>;
 
             template<typename Buffer, typename Control>
-            static constexpr auto make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+            static constexpr auto
+                    make_iterator(Buffer b, std::add_pointer_t<Control> o) {
                 return u32iter<Buffer, Control>{
                         const_u16u32_iterator<u16iter<Buffer, Control>>{
                                 b.begin(), b.end()},
@@ -280,7 +284,8 @@ namespace f5 {
             }
             template<typename Buffer, typename Control>
             static constexpr auto make_u16iterator(
-                    u32iter<Buffer, Control> b, u32iter<Buffer, Control>) noexcept {
+                    u32iter<Buffer, Control> b,
+                    u32iter<Buffer, Control>) noexcept {
                 return b.iterator.u16_iterator();
             }
 

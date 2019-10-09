@@ -30,7 +30,10 @@ namespace f5 {
 
 
         /// String views for any Unicode code unit type
-        template<typename C, typename E = std::range_error, typename IM = iterators<C, E>>
+        template<
+                typename C,
+                typename E = std::range_error,
+                typename IM = iterators<C, E>>
         class basic_view {
             f5::buffer<const C> buffer;
             control<std::size_t> *owner = nullptr;
@@ -124,11 +127,13 @@ namespace f5 {
 
             /// Return the begin iterator that delivers UTF16 code units
             constexpr const_u16_iterator u16begin() const {
-                return IM::template make_u16iterator<buffer_type, control_type>(begin(), end());
+                return IM::template make_u16iterator<buffer_type, control_type>(
+                        begin(), end());
             }
             /// Return the end iterator that delivers UTF16 code units
             constexpr const_u16_iterator u16end() const {
-                return IM::template make_u16iterator<buffer_type, control_type>(end(), end());
+                return IM::template make_u16iterator<buffer_type, control_type>(
+                        end(), end());
             }
 
 
