@@ -300,6 +300,37 @@ namespace f5 {
         };
 
 
+        template<typename E>
+        struct iterators<char32_t, E> {
+            using value_type = char32_t;
+
+            template<typename Buffer, typename Control>
+            using u32iter = owner_tracking_iterator<
+                    typename Buffer::const_iterator,
+                    Control>;
+            template<typename Buffer, typename Control>
+            using u16iter =
+                    const_u32u16_iterator<typename Buffer::const_iterator>;
+
+            template<typename Buffer, typename Control>
+            static constexpr auto
+                    make_iterator(Buffer b, std::add_pointer_t<Control> o) {
+                return u32iter<Buffer, Control>{b.begin(), o};
+            }
+            template<typename Buffer, typename Control>
+            static constexpr auto make_u16iterator(
+                    u32iter<Buffer, Control> b, u32iter<Buffer, Control> e) {
+                return u16iter<Buffer, Control>{b.iterator, e.iterator};
+            }
+
+            template<typename Buffer, typename Control>
+            static constexpr Buffer get_buffer(
+                    u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
+                return Buffer{s.iterator, e.iterator - s.iterator};
+            }
+        };
+
+
     }
 
 

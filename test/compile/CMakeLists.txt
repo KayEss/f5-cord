@@ -5,6 +5,7 @@ add_library(cord-compile-tests STATIC EXCLUDE_FROM_ALL
         tstring.cpp
         u8view.cpp
         u16view.cpp
+        u32view.cpp
         unicode.cpp
     )
 target_link_libraries(cord-compile-tests f5-cord)

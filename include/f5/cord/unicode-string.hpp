@@ -248,6 +248,7 @@ namespace f5 {
         /// String types
         using u8string = basic_string<char>;
         using u16string = basic_string<char16_t>;
+        using u32string = basic_string<char32_t>;
 
 
         template<std::size_t N>
@@ -313,6 +314,7 @@ namespace f5 {
     /// Aliases directly in `f5` as these will be used quite often
     using u8string = cord::u8string;
     using u16string = cord::u16string;
+    using u32string = cord::u32string;
 
 
 }
