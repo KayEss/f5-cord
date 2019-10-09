@@ -149,6 +149,10 @@ namespace f5 {
             return iterator != i.iterator;
         }
 
+        decltype(auto) operator-(const owner_tracking_iterator &it) {
+            return iterator - it.iterator;
+        }
+
         Iter iterator;
         control_type owner;
     };
