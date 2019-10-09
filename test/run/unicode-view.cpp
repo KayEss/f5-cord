@@ -61,5 +61,27 @@ int main() {
     std::u16string s16{u"ABC"};
     assert((s16 += t16) == u"ABC123 \x2713 321");
 
+    /// ## UTF-32
+    f5::cord::u32view t32{U"123 \x2713 321"};
+
+    assert(t32 != U"123");
+    assert(t32 != U"1234");
+    assert(t32 != U"123 \x2713 321 extra");
+    assert(t32 == U"123 \x2713 321");
+
+    assert(t32.substr(0) == U"123 \x2713 321");
+    assert(t32.substr(2) == U"3 \x2713 321");
+    assert(t32.substr(6) == U"321");
+    assert(t32.substr(200) == U"");
+
+    assert(t32.substr_pos(0, 200) == U"123 \x2713 321");
+    assert(t32.substr_pos(1, 3) == U"23");
+    assert(t32.substr_pos(2, 7) == U"3 \x2713 3");
+
+    assert(std::u32string(t32) == U"123 \x2713 321");
+    assert(std::u32string(t32) + t32.substr(6) == U"123 \x2713 321321");
+    std::u32string s32{U"ABC"};
+    assert((s32 += t32) == U"ABC123 \x2713 321");
+
     return 0;
 }

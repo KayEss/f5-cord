@@ -326,7 +326,7 @@ namespace f5 {
             template<typename Buffer, typename Control>
             static constexpr Buffer get_buffer(
                     u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
-                return Buffer{s.iterator, e.iterator - s.iterator};
+                return Buffer{s.iterator, std::size_t(e.iterator - s.iterator)};
             }
         };
 
