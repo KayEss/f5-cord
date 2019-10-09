@@ -75,7 +75,7 @@ namespace f5 {
             : buffer{l.data(), l.size()}, owner{} {}
             template<std::size_t N>
             basic_string(value_type (&a)[N]) noexcept
-            : basic_string{lstring{a}} {}
+            : buffer{a, N - 1}, owner{} {}
 
             /// For `std_string` we have to move the string into a memory area
             /// we can control
@@ -111,8 +111,8 @@ namespace f5 {
             /// storing the number of bytes used in the original string
             /// allocation so that we can check if we need to re-allocate s
             /// new string or not.
-            char const *shrink_to_fit() {
-                if ((owner && owner->user_data != bytes()) || not owner) {
+            value_type const *shrink_to_fit() {
+                if ((owner && owner->user_data != code_units()) || not owner) {
                     *this = basic_string{static_cast<std_string>(*this)};
                 }
                 return data();
@@ -194,7 +194,7 @@ namespace f5 {
 
             /// Useful checks for parts of a string
             bool starts_with(view_type str) const {
-                return view_type{buffer.slice(0, str.bytes())} == str;
+                return view_type{buffer.slice(0, str.code_units())} == str;
             }
             bool ends_with(view_type str) const {
                 return view_type{*this}.ends_with(str);
@@ -251,8 +251,8 @@ namespace f5 {
         using u32string = basic_string<char32_t>;
 
 
-        template<std::size_t N>
-        inline bool operator==(char const (&l)[N], const u8string &r) {
+        template<std::size_t N, typename C>
+        inline bool operator==(C const (&l)[N], const basic_string<C> &r) {
             return r == l;
         }
         inline bool operator==(const std::string &l, const u8string &r) {
