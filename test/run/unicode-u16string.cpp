@@ -122,6 +122,8 @@ int main() {
     assert(std::u16string(u"Hello") + hw.substr(5) == u"Hello world");
     {
         std::u16string s{u"Hello"};
+        assert(s == chw.substr_pos(0, 5));
+        assert(s != chw.substr(5));
         s += chw.substr(5);
         assert(s == u"Hello world");
     }

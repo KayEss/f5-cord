@@ -255,8 +255,19 @@ namespace f5 {
         inline bool operator==(C const (&l)[N], const basic_string<C> &r) {
             return r == l;
         }
-        inline bool operator==(const std::string &l, const u8string &r) {
-            return u8view{r} == l;
+        template<std::size_t N, typename C>
+        inline bool operator!=(C const (&l)[N], basic_string<C> const &r) {
+            return r == l;
+        }
+        template<typename C>
+        inline bool operator==(
+                std::basic_string<C> const &l, basic_string<C> const &r) {
+            return basic_view<C>{r} == l;
+        }
+        template<typename C>
+        inline bool operator!=(
+                std::basic_string<C> const &l, basic_string<C> const &r) {
+            return basic_view<C>{r} != l;
         }
 
 

@@ -119,9 +119,11 @@ int main() {
     assert(hw.ends_with("world"));
     assert(not hw.ends_with("World"));
 
-    assert(std::string("Hello") + hw.substr(5) == "Hello world");
+    assert(std::string{"Hello"} + hw.substr(5) == "Hello world");
     {
         std::string s{"Hello"};
+        assert(s == chw.substr_pos(0, 5));
+        assert(s != chw.substr(5));
         s += chw.substr(5);
         assert(s == "Hello world");
     }

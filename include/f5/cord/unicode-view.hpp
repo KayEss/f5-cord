@@ -267,24 +267,36 @@ namespace f5 {
 
 
         /// ADL `std::size`and `std::data`  implementations
-        inline auto size(u8view v) { return v.code_units(); }
-        inline auto data(u8view v) { return v.data(); }
+        template<typename C>
+        inline constexpr auto size(basic_view<C> const v) {
+            return v.code_units();
+        }
+        template<typename C>
+        inline constexpr auto data(basic_view<C> const v) {
+            return v.data();
+        }
 
         /// Equality against other types
         inline bool operator==(lstring l, u8view r) { return r.operator==(l); }
         inline bool operator!=(lstring l, u8view r) { return r.operator!=(l); }
-        template<std::size_t N>
-        inline bool operator==(char const (&l)[N], u8view r) {
+        template<std::size_t N, typename C>
+        inline constexpr bool
+                operator==(C const (&l)[N], basic_view<C> const r) {
             return r.operator==(l);
         }
-        template<std::size_t N>
-        inline bool operator!=(char const (&l)[N], u8view r) {
+        template<std::size_t N, typename C>
+        inline constexpr bool
+                operator!=(C const (&l)[N], basic_view<C> const r) {
             return r.operator!=(l);
         }
-        inline bool operator==(const std::string &l, u8view r) {
+        template<typename C>
+        inline bool operator==(
+                std::basic_string<C> const &l, basic_view<C> const r) {
             return r.operator==(l);
         }
-        inline bool operator!=(const std::string &l, u8view r) {
+        template<typename C>
+        inline bool operator!=(
+                std::basic_string<C> const &l, basic_view<C> const r) {
             return r.operator!=(l);
         }
 
