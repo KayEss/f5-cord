@@ -250,9 +250,9 @@ namespace f5 {
                 return basic_view{buffer.slice(0, str.buffer.size())} == str;
             }
             bool ends_with(basic_view str) const {
-                if (str.bytes() > bytes()) {
+                if (str.code_units() > code_units()) {
                     return false;
-                } else if (str.bytes() == bytes()) {
+                } else if (str.code_units() == code_units()) {
                     return *this == str;
                 } else {
                     return substr(code_points() - str.code_points()) == str;
