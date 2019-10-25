@@ -35,8 +35,8 @@ namespace f5 {
             std::size_t bytes;
 
             /// Used only by the literal
-            friend constexpr lstring f5::literals::
-                    operator"" _l(const char *, std::size_t);
+            friend constexpr lstring
+                    f5::literals::operator"" _l(const char *, std::size_t);
             constexpr lstring(const char *s, std::size_t b) : p(s), bytes(b) {}
 
           public:
