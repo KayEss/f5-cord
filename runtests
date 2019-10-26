@@ -39,7 +39,7 @@ def compile(command, expected=0, fn=None):
 CPP_OPTS = ['-Iinclude', '-Werror', '-Wall', '-Wextra', '-Wpedantic']
 
 if __name__ == "__main__":
-    for std in ['-std=c++17']:
+    for std in ['-std=c++17', '-std=c++2a']:
         folder = 'test/headers'
         for fname in os.listdir(folder):
             if fname == "CMakeLists.txt": continue
