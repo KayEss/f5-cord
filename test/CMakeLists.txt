@@ -1,6 +1,6 @@
 add_compile_options(
         -fdiagnostics-show-option
-        -Werror -Wall -Wextra -Wpedantic
+        -Wall -Wextra -Wpedantic
         -Wno-gnu-string-literal-operator-template
         -Wno-unused-const-variable
         -Wno-unused-local-typedefs
