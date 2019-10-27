@@ -21,7 +21,6 @@ COMPILER = {
     ],
     'g++': [
         '-fdiagnostics-show-option',
-        '-Wno-gnu-string-literal-operator-template',
         '-Wno-unused-variable',
     ],
 }
