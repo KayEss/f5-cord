@@ -1,3 +1,6 @@
+2019-10-26  Kirit Sælensminde  <kirit@felspar.com>
+ Remove the `vstring` header.
+
 2019-07-16  Kirit Sælensminde  <kirit@felspar.com>
  Fix a bug in the string slice operations that could cause undefined behaviour when used with `nullptr` buffers.
 

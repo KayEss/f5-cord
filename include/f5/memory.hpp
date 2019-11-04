@@ -137,9 +137,11 @@ namespace f5 {
         /// Constant iterator
         using const_iterator = pointer_const_type;
         /// Start iterator
-        const_iterator begin() const { return data(); }
+        constexpr const_iterator begin() const noexcept { return data(); }
         /// End iterator
-        const_iterator end() const { return data() + size(); }
+        constexpr const_iterator end() const noexcept {
+            return data() + size();
+        }
 
         /// Reverse const iterator
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;

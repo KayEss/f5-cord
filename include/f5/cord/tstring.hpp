@@ -74,6 +74,7 @@ namespace f5 {
     inline namespace literals {
 
 
+#pragma GCC diagnostic warning "-Wpedantic"
         template<typename C, C... Text>
         constexpr inline auto operator"" _t() {
             static_assert(

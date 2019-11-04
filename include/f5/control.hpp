@@ -10,7 +10,12 @@
 
 
 #include <atomic>
+#include <iterator>
 #include <memory>
+
+#ifndef assert
+#include <cassert>
+#endif
 
 
 namespace f5 {
@@ -96,6 +101,60 @@ namespace f5 {
             auto made = std::make_unique<sub>(std::move(s), std::move(t));
             return {std::move(made), &made->item};
         }
+    };
+
+
+    /**
+        This type can be used to wrap an iterator so that it will also carry
+        a pointer to a control block.
+     */
+
+
+    template<typename Iter, typename Control>
+    struct owner_tracking_iterator {
+        using difference_type =
+                typename std::iterator_traits<Iter>::difference_type;
+        using value_type = typename std::iterator_traits<Iter>::value_type;
+        using pointer = typename std::iterator_traits<Iter>::pointer;
+        using reference = typename std::iterator_traits<Iter>::reference;
+        using iterator_category =
+                typename std::iterator_traits<Iter>::iterator_category;
+
+        using iterator_type = Iter;
+        using control_type = std::add_pointer_t<Control>;
+
+
+        constexpr owner_tracking_iterator() : iterator{}, owner{} {}
+
+        constexpr owner_tracking_iterator(
+                Iter i, control_type c = nullptr) noexcept
+        : iterator{i}, owner{c} {}
+
+        constexpr decltype(auto) operator*() const { return *iterator; }
+        constexpr owner_tracking_iterator &operator++() {
+            ++iterator;
+            return *this;
+        }
+        constexpr owner_tracking_iterator operator++(int) {
+            auto ret = *this;
+            iterator++;
+            return ret;
+        }
+        constexpr bool operator==(owner_tracking_iterator i) const noexcept {
+            assert(owner == i.owner);
+            return iterator == i.iterator;
+        }
+        constexpr bool operator!=(owner_tracking_iterator i) const noexcept {
+            assert(owner == i.owner);
+            return iterator != i.iterator;
+        }
+
+        decltype(auto) operator-(const owner_tracking_iterator &it) {
+            return iterator - it.iterator;
+        }
+
+        Iter iterator;
+        control_type owner;
     };
 
 
