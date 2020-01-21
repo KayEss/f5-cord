@@ -1,5 +1,5 @@
 /**
-    Copyright 2017-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2017-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -56,6 +56,10 @@ namespace f5 {
                     std::basic_string_view<typename iterator_map::value_type>;
             /// Error exception type
             using encoding_error_type = E;
+
+            using size_type = std::size_t;
+            constexpr static size_type const npos =
+                    std::numeric_limits<size_type>::max();
 
 
             /// ## Constructors
