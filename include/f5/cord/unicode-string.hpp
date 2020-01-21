@@ -231,12 +231,36 @@ namespace f5 {
             /// Comparison. Acts as a string would. Not unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
-            bool operator==(view_type l) const {
-                return view_type{buffer} == l;
+            friend bool
+                    operator==(basic_string const &l, basic_string const &r) {
+                return view_type{l} == view_type{r};
             }
-            bool operator!=(view_type l) const {
-                return view_type{buffer} != l;
+            template<typename O>
+            friend std::enable_if_t<is_detected_v<op_eq_t, view_type, O>, bool>
+                    operator==(basic_string const &s, O const &l) {
+                return view_type{s} == l;
             }
+            template<typename O>
+            friend std::enable_if_t<is_detected_v<op_eq_t, O, view_type>, bool>
+                    operator==(O const &r, basic_string const &s) {
+                return r == view_type{s};
+            }
+
+            friend bool
+                    operator!=(basic_string const &l, basic_string const &r) {
+                return view_type{l} != view_type{r};
+            }
+            template<typename O>
+            friend std::enable_if_t<is_detected_v<op_eq_t, view_type, O>, bool>
+                    operator!=(basic_string const &s, O const &l) {
+                return view_type{s} != l;
+            }
+            template<typename O>
+            friend std::enable_if_t<is_detected_v<op_eq_t, O, view_type>, bool>
+                    operator!=(O const &r, basic_string const &s) {
+                return r != view_type{s};
+            }
+
             bool operator<(view_type l) const { return view_type{buffer} < l; }
             bool operator<=(view_type l) const {
                 return view_type{buffer} <= l;
@@ -252,26 +276,6 @@ namespace f5 {
         using u8string = basic_string<char>;
         using u16string = basic_string<char16_t>;
         using u32string = basic_string<char32_t>;
-
-
-        template<std::size_t N, typename C>
-        inline bool operator==(C const (&l)[N], const basic_string<C> &r) {
-            return r == l;
-        }
-        template<std::size_t N, typename C>
-        inline bool operator!=(C const (&l)[N], basic_string<C> const &r) {
-            return r == l;
-        }
-        template<typename C>
-        inline bool operator==(
-                std::basic_string<C> const &l, basic_string<C> const &r) {
-            return basic_view<C>{r} == l;
-        }
-        template<typename C>
-        inline bool operator!=(
-                std::basic_string<C> const &l, basic_string<C> const &r) {
-            return basic_view<C>{r} != l;
-        }
 
 
         /// ## Concatenation

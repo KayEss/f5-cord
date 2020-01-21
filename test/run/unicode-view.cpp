@@ -15,6 +15,8 @@
 
 #include <f5/cord/unicode-string.hpp>
 
+#include <optional>
+
 
 int main() {
     /// ## UTF-8
@@ -82,6 +84,12 @@ int main() {
     assert(std::u32string(t32) + t32.substr(6) == U"123 \x2713 321321");
     std::u32string s32{U"ABC"};
     assert((s32 += t32) == U"ABC123 \x2713 321");
+
+    /// ## `std::ptional`
+
+    std::optional<f5::u8view> empty, x{"x"};
+    assert(empty != "");
+    assert(x == "x");
 
     return 0;
 }
