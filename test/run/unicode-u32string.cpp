@@ -1,5 +1,5 @@
 /**
-    Copyright 2019 Red Anchor Trading Co. Ltd.
+    Copyright 2019-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -127,4 +127,11 @@ int main() {
         s += chw.substr(5);
         assert(s == U"Hello world");
     }
+
+    f5::u32string h8{"Hello world \xF0\x9F\x98\x83"};
+    f5::u32string h16{u"Hello world \xD83D\xDE03"};
+    f5::u32string h32{U"Hello world \x1F603"};
+    assert(h8 == h16);
+    assert(h8 == h32);
+    assert(h16 == h32);
 }

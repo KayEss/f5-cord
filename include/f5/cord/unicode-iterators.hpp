@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2016-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -230,6 +230,7 @@ namespace f5 {
 
         template<typename E>
         struct iterators<char, E> {
+            using encoding_error_type = E;
             using value_type = char;
 
             template<typename Buffer, typename Control>
@@ -260,11 +261,14 @@ namespace f5 {
                                       e.iterator.buffer.data()
                                       - s.iterator.buffer.data())};
             }
+
+            static auto encode_one(utf32 const c) { return u8encode(c); }
         };
 
 
         template<typename E>
         struct iterators<char16_t, E> {
+            using encoding_error_type = E;
             using value_type = char16_t;
 
             template<typename Buffer, typename Control>
@@ -297,11 +301,14 @@ namespace f5 {
                                       e.iterator.u16_iterator()
                                       - s.iterator.u16_iterator())};
             }
+
+            static auto encode_one(utf32 const c) { return u16encode(c); }
         };
 
 
         template<typename E>
         struct iterators<char32_t, E> {
+            using encoding_error_type = E;
             using value_type = char32_t;
 
             template<typename Buffer, typename Control>
@@ -328,24 +335,14 @@ namespace f5 {
                     u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
                 return Buffer{s.iterator, std::size_t(e.iterator - s.iterator)};
             }
+
+            static std::pair<char, std::array<char32_t, 1>>
+                    encode_one(utf32 const c) {
+                return {1, {c}};
+            }
         };
 
 
-    }
-
-
-    template<typename U32, typename E = std::range_error>
-    using const_u32u16_iterator [[deprecated(
-            "Use the type in the f5::cord namespace, not the f5 namespace")]] =
-            cord::const_u32u16_iterator<U32, E>;
-
-
-    template<typename Iterator, typename E = std::range_error>
-    [
-            [deprecated("Use the function in the f5::cord namespace not the "
-                        "f5::namespace")]] inline auto
-            make_u32u16_iterator(Iterator b, Iterator e) {
-        return cord::make_u32u16_iterator(b, e);
     }
 
 

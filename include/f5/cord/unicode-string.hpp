@@ -89,6 +89,22 @@ namespace f5 {
                                      created.second->size()};
             }
 
+            /// Construct from character literals in the non-native encodings
+            template<typename O, std::size_t N>
+            explicit basic_string(O const (&s)[N])
+            : basic_string{[&]() {
+                  using o_view =
+                          basic_view<O, typename view_type::encoding_error_type>;
+                  o_view nn{s};
+                  std_string ret;
+                  ret.reserve(N);
+                  for (auto u32 : nn) {
+                      auto const en = iterator_map::encode_one(u32);
+                      ret.append(en.second.data(), en.first);
+                  }
+                  return ret;
+              }()} {}
+
             ~basic_string() { control_type::decrement(owner); }
 
 
