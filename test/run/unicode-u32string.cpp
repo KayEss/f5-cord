@@ -134,4 +134,10 @@ int main() {
     assert(h8 == h16);
     assert(h8 == h32);
     assert(h16 == h32);
+    assert(h32 == "Hello world \xF0\x9F\x98\x83");
+    assert(h32 == u"Hello world \xD83D\xDE03");
+    assert(h32 == U"Hello world \x1F603");
+    assert("Hello world \xF0\x9F\x98\x83" == h32);
+    assert(u"Hello world \xD83D\xDE03" == h32);
+    assert( U"Hello world \x1F603" == h32);
 }
