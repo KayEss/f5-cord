@@ -139,5 +139,5 @@ int main() {
     assert(h8 == U"Hello world \x1F603");
     assert("Hello world \xF0\x9F\x98\x83" == h8);
     assert(u"Hello world \xD83D\xDE03" == h8);
-    assert( U"Hello world \x1F603" == h8);
+    assert(U"Hello world \x1F603" == h8);
 }

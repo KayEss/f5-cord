@@ -247,12 +247,14 @@ namespace f5 {
                 return basic_view(s) == r;
             }
             template<typename O, std::size_t N>
-            friend constexpr bool operator==(O const (&s)[N], basic_view r) noexcept {
+            friend constexpr bool
+                    operator==(O const (&s)[N], basic_view r) noexcept {
                 basic_view<O, encoding_error_type> const l{s};
                 return std::equal(l.begin(), l.end(), r.begin(), r.end());
             }
             template<typename O, std::size_t N>
-            friend constexpr bool operator==(basic_view l, O const (&s)[N]) noexcept {
+            friend constexpr bool
+                    operator==(basic_view l, O const (&s)[N]) noexcept {
                 basic_view<O, encoding_error_type> const r{s};
                 return std::equal(l.begin(), l.end(), r.begin(), r.end());
             }
