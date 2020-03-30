@@ -1,3 +1,6 @@
+2020-01-29  Kirit Sælensminde  <kirit@felspar.com>
+ `f5::cord::basic_string` instances can now be created using character literals of other Unicode encodings.
+
 2019-10-26  Kirit Sælensminde  <kirit@felspar.com>
  Remove the `vstring` header.
 
