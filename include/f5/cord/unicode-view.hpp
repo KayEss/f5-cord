@@ -205,12 +205,12 @@ namespace f5 {
             /// Comparison. Acts as a string would. Not Unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
-            friend constexpr bool
-                    operator==(basic_view l, basic_view r) noexcept {
-                if (l.buffer.size() == r.buffer.size()) {
-                    if (l.buffer.data() != r.buffer.data()) {
-                        for (std::size_t s{}; s != l.buffer.size(); ++s) {
-                            if (l.buffer[s] != r.buffer[s]) return false;
+            constexpr bool
+                    operator==(basic_view r) const noexcept {
+                if (buffer.size() == r.buffer.size()) {
+                    if (buffer.data() != r.buffer.data()) {
+                        for (std::size_t s{}; s != buffer.size(); ++s) {
+                            if (buffer[s] != r.buffer[s]) return false;
                         }
                     }
                     return true;
@@ -218,62 +218,55 @@ namespace f5 {
                     return false;
                 }
             }
-            friend bool operator==(basic_view l, std_string const &r) noexcept {
-                return l == basic_view{r.data(), r.size()};
+            bool operator==(std_string_view const r) const noexcept {
+                return *this == basic_view{r.data(), r.size()};
             }
-            friend bool operator==(std_string const &l, basic_view r) noexcept {
-                return r == basic_view{l.data(), l.size()};
+            bool operator==(std_string const &r) const noexcept {
+                return *this == basic_view{r.data(), r.size()};
             }
-            friend constexpr bool
-                    operator==(basic_view l, value_type *s) noexcept {
+            constexpr bool operator==(value_type const *s) const noexcept {
                 std::size_t pos{};
-                for (; pos < l.buffer.size() && *s; ++pos, ++s) {
-                    if (l.buffer[pos] != *s) return false;
+                for (; pos < buffer.size() && *s; ++pos, ++s) {
+                    if (buffer[pos] != *s) return false;
                 }
-                return pos == l.buffer.size() && *s == 0;
-            }
-            friend constexpr bool
-                    operator==(value_type *s, basic_view r) noexcept {
-                return r == s;
+                return pos == buffer.size() && *s == 0;
             }
             template<std::size_t N>
-            friend constexpr bool
-                    operator==(basic_view l, value_type (&s)[N]) noexcept {
-                return l == basic_view(s);
-            }
-            template<std::size_t N>
-            friend constexpr bool
-                    operator==(value_type (&s)[N], basic_view r) noexcept {
-                return basic_view(s) == r;
+            constexpr bool operator==(value_type const (&s)[N]) const noexcept {
+                if (buffer.size() != N) return false;
+                for (std::size_t index{}; index < N; ++index) {
+                    if (buffer[index] != s[index]) return false;
+                }
+                return true;
             }
             template<typename O, std::size_t N>
-            friend constexpr bool
-                    operator==(O const (&s)[N], basic_view r) noexcept {
-                basic_view<O, encoding_error_type> const l{s};
-                return std::equal(l.begin(), l.end(), r.begin(), r.end());
-            }
-            template<typename O, std::size_t N>
-            friend constexpr bool
-                    operator==(basic_view l, O const (&s)[N]) noexcept {
+            constexpr bool operator==(O const (&s)[N]) const noexcept {
                 basic_view<O, encoding_error_type> const r{s};
-                return std::equal(l.begin(), l.end(), r.begin(), r.end());
+                return std::equal(begin(), end(), r.begin(), r.end());
+            }
+            /// Where `basic_view` appears on the right
+            template<typename O>
+            friend constexpr std::
+                    enable_if_t<is_detected_v<op_meq_t, basic_view, O>, bool>
+                    operator==(O const &l, basic_view r) noexcept {
+                return r == l;
             }
 
-            friend constexpr bool
-                    operator!=(basic_view l, basic_view r) noexcept {
-                return not(l == r);
+            /// For not equals
+            constexpr bool operator!=(basic_view r) const noexcept {
+                return not(*this == r);
+            }
+            template<typename O>
+            constexpr std::
+                    enable_if_t<is_detected_v<op_meq_t, basic_view, O>, bool>
+                    operator!=(O const &r) const noexcept {
+                return not(*this == r);
             }
             template<typename O>
             friend constexpr std::
-                    enable_if_t<is_detected_v<op_eq_t, basic_view, O>, bool>
-                    operator!=(basic_view l, O const &r) noexcept {
-                return not(l == r);
-            }
-            template<typename O>
-            friend constexpr std::
-                    enable_if_t<is_detected_v<op_eq_t, O, basic_view>, bool>
+                    enable_if_t<is_detected_v<op_meq_t, basic_view, O>, bool>
                     operator!=(O const &l, basic_view r) noexcept {
-                return not(l == r);
+                return not(r == l);
             }
 
             constexpr bool operator<(basic_view r) const {

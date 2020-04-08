@@ -65,7 +65,9 @@ namespace f5 {
             : buffer{b.buffer}, owner{std::exchange(b.owner, nullptr)} {}
 
             /// Creation from a `basic_view` will never allocate because the
-            /// `basic_view` remembers the shared status of its history
+            /// `basic_view` remembers the shared status of its history.
+            /// During the transitional period however basic_view *may*
+            /// allocate.
             basic_string(view_type const v)
             : buffer{buffer_type{v}},
               owner{control_type::increment(v.control_block())} {
@@ -252,14 +254,14 @@ namespace f5 {
                 return view_type{l} == view_type{r};
             }
             template<typename O>
-            friend std::enable_if_t<is_detected_v<op_eq_t, view_type, O>, bool>
+            friend std::enable_if_t<is_detected_v<op_meq_t, view_type, O>, bool>
                     operator==(basic_string const &s, O const &l) {
                 return view_type{s} == l;
             }
             template<typename O>
-            friend std::enable_if_t<is_detected_v<op_eq_t, O, view_type>, bool>
+            friend std::enable_if_t<is_detected_v<op_meq_t, view_type, O>, bool>
                     operator==(O const &r, basic_string const &s) {
-                return r == view_type{s};
+                return view_type{s} == r;
             }
 
             friend bool
@@ -267,14 +269,14 @@ namespace f5 {
                 return view_type{l} != view_type{r};
             }
             template<typename O>
-            friend std::enable_if_t<is_detected_v<op_eq_t, view_type, O>, bool>
+            friend std::enable_if_t<is_detected_v<op_meq_t, view_type, O>, bool>
                     operator!=(basic_string const &s, O const &l) {
                 return view_type{s} != l;
             }
             template<typename O>
-            friend std::enable_if_t<is_detected_v<op_eq_t, O, view_type>, bool>
+            friend std::enable_if_t<is_detected_v<op_meq_t, view_type, O>, bool>
                     operator!=(O const &r, basic_string const &s) {
-                return r != view_type{s};
+                return view_type{s} != r;
             }
 
             bool operator<(view_type l) const { return view_type{buffer} < l; }

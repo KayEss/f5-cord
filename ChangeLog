@@ -1,3 +1,6 @@
+2020-04-08  Kirit Sælensminde  <kirit@felspar.com>
+ Refactor the way equality and inequality members work to cut down on code duplication.
+
 2020-01-29  Kirit Sælensminde  <kirit@felspar.com>
  `f5::cord::basic_string` instances can now be created using character literals of other Unicode encodings.
 
