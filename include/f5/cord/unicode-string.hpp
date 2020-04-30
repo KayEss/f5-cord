@@ -90,6 +90,9 @@ namespace f5 {
                 buffer = buffer_type{
                         created.second->data(), created.second->size()};
             }
+            /// Given a data block we are going to have to allocate as well
+            basic_string(value_type const *data, std::size_t size)
+            : basic_string(std_string{data, size}) {}
 
             /// Construct from character literals in the non-native encodings
             template<typename O, std::size_t N>
