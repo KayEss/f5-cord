@@ -39,7 +39,7 @@ namespace {
     template<class Ch, class Tr>
     inline auto &operator<<(std::basic_ostream<Ch, Tr> &os, clock::duration d) {
         auto const mscount =
-                std::chrono::duration_cast<std::chrono::microseconds>(d).count();
+                std::chrono::duration_cast<std::chrono::milliseconds>(d).count();
         if (mscount) { return os << mscount << "ms"; }
         auto const μscount =
                 std::chrono::duration_cast<std::chrono::microseconds>(d).count();
