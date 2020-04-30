@@ -313,7 +313,7 @@ namespace f5 {
         }
 
         /// Equality against other types
-        inline bool operator==(lstring l, u8view r) { return r == l; }
+        inline bool operator==(lstring l, u8view r) { return r == u8view{l}; }
 
         /// Comparison against other types
         inline bool operator<(lstring l, u8view r) { return u8view(l) < r; }
