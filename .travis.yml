@@ -17,8 +17,8 @@ install:
 script:
     - mkdir build.tmp && cd build.tmp
     - 'if [ "$CXX" = "g++" ]; then export CC=gcc-10; export CXX=g++-10; fi'
+    - 'if [ "$CXX" = "clang++" ]; then export CC=clang-10; export CXX=clang++-10; fi'
     - cp ../.travis.CMakeLists.txt CMakeLists.txt
     - cmake . -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -G Ninja
     - ninja
     - ninja check f5-cord-fuzz
-
