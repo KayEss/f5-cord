@@ -35,6 +35,8 @@ namespace {
         datum<S> wordlist = {};
         datum<std::size_t> length = {};
         datum<std::pair<std::size_t, std::size_t>> words_letters = {};
+        datum<std::vector<V>> words_view = {};
+        datum<std::vector<S>> words = {};
     };
     template<class Ch, class Tr>
     inline auto &operator<<(std::basic_ostream<Ch, Tr> &os, clock::duration d) {
@@ -60,6 +62,8 @@ namespace {
         os << "\n  length " << s.length.v << " " << duration(s.length.t);
         os << "\n  words " << s.words_letters.v.first << " letters "
            << s.words_letters.v.second << " " << duration(s.words_letters.t);
+        os << "\n  word view arrray " << s.words_view.v.size() << " " << duration(s.words_view.t);
+        os << "\n  words arrray " << s.words.v.size() << " " << duration(s.words.t);
         return os << '\n';
     }
 
@@ -79,6 +83,18 @@ namespace {
                 ++letters;
         }
         s.words_letters.save({words, letters});
+
+        std::vector<V> words_view;
+        words_view.reserve(s.words_letters.v.first);
+        for (auto pos{s.wordlist.v.begin()}, end{s.wordlist.v.end()}; pos != end;) {
+            auto ends = std::find(pos, end, '\n');
+            words_view.emplace_back(pos, ends);
+            pos = ends;
+            if (pos != end) ++pos;
+        }
+        s.words_view.save(std::move(words_view));
+        s.words.save(std::vector<S>{s.words_view.v.begin(), s.words_view.v.end()});
+
         return s;
     }
     template<typename S, typename V>
