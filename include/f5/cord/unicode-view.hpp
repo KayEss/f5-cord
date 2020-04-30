@@ -205,8 +205,7 @@ namespace f5 {
             /// Comparison. Acts as a string would. Not Unicode aware in
             /// that it doesn't take into account normalisation, it only
             /// compares the byte values.
-            constexpr bool
-                    operator==(basic_view r) const noexcept {
+            constexpr bool operator==(basic_view r) const noexcept {
                 if (buffer.size() == r.buffer.size()) {
                     if (buffer.data() != r.buffer.data()) {
                         for (std::size_t s{}; s != buffer.size(); ++s) {
