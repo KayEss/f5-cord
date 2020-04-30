@@ -17,17 +17,20 @@ int main() {
     assert((f5::cord::u8encode(0) == u8encoded{1, {{0, 0, 0, 0}}}));
     assert((f5::cord::u8encode(' ') == u8encoded{1, {{0x20, 0, 0, 0}}}));
     assert((f5::cord::u8encode(0xa2)
-            == u8encoded{2,
-                         {{static_cast<char>(0xc2), static_cast<char>(0xa2), 0,
-                           0}}}));
+            == u8encoded{
+                    2,
+                    {{static_cast<char>(0xc2), static_cast<char>(0xa2), 0,
+                      0}}}));
     assert((f5::cord::u8encode(0x20ac)
-            == u8encoded{3,
-                         {{static_cast<char>(0xe2), static_cast<char>(0x82),
-                           static_cast<char>(0xac), 0}}})); // euro
+            == u8encoded{
+                    3,
+                    {{static_cast<char>(0xe2), static_cast<char>(0x82),
+                      static_cast<char>(0xac), 0}}})); // euro
     assert((f5::cord::u8encode(0x10348)
-            == u8encoded{4,
-                         {{static_cast<char>(0xf0), static_cast<char>(0x90),
-                           static_cast<char>(0x8d), static_cast<char>(0x88)}}}));
+            == u8encoded{
+                    4,
+                    {{static_cast<char>(0xf0), static_cast<char>(0x90),
+                      static_cast<char>(0x8d), static_cast<char>(0x88)}}}));
     assert((f5::cord::u8encode<void>(0xffffff) == u8encoded{0, {{0, 0, 0, 0}}}));
 
     using u16encoded = decltype(f5::cord::u16encode(0));
