@@ -87,8 +87,8 @@ namespace f5 {
             explicit basic_string(std_string s) : buffer{}, owner{} {
                 auto created = control_type::make(std::move(s), s.size());
                 owner = created.first.release();
-                buffer = buffer_type{created.second->data(),
-                                     created.second->size()};
+                buffer = buffer_type{
+                        created.second->data(), created.second->size()};
             }
 
             /// Construct from character literals in the non-native encodings

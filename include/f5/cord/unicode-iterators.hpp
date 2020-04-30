@@ -69,13 +69,13 @@ namespace f5 {
             }
 
             /// Compare for equality
-            constexpr bool operator==(const const_u16u32_iterator &rhs) const
-                    noexcept {
+            constexpr bool operator==(
+                    const const_u16u32_iterator &rhs) const noexcept {
                 return pos == rhs.pos;
             }
             /// Compare for inequality
-            constexpr bool operator!=(const const_u16u32_iterator &rhs) const
-                    noexcept {
+            constexpr bool operator!=(
+                    const const_u16u32_iterator &rhs) const noexcept {
                 return pos != rhs.pos;
             }
 
@@ -243,8 +243,8 @@ namespace f5 {
             template<typename Buffer, typename Control>
             constexpr static auto make_iterator(
                     Buffer b, std::add_pointer_t<Control> o) noexcept {
-                return u32iter<Buffer, Control>{const_u8u32_iterator<Buffer>{b},
-                                                o};
+                return u32iter<Buffer, Control>{
+                        const_u8u32_iterator<Buffer>{b}, o};
             }
             template<typename Buffer, typename Control>
             constexpr static auto make_u16iterator(
@@ -256,10 +256,11 @@ namespace f5 {
             template<typename Buffer, typename Control>
             static constexpr Buffer get_buffer(
                     u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
-                return Buffer{s.iterator.buffer.data(),
-                              std::size_t(
-                                      e.iterator.buffer.data()
-                                      - s.iterator.buffer.data())};
+                return Buffer{
+                        s.iterator.buffer.data(),
+                        std::size_t(
+                                e.iterator.buffer.data()
+                                - s.iterator.buffer.data())};
             }
 
             static auto encode_one(utf32 const c) { return u8encode(c); }
@@ -296,10 +297,11 @@ namespace f5 {
             template<typename Buffer, typename Control>
             static constexpr Buffer get_buffer(
                     u32iter<Buffer, Control> s, u32iter<Buffer, Control> e) {
-                return Buffer{s.iterator.u16_iterator(),
-                              std::size_t(
-                                      e.iterator.u16_iterator()
-                                      - s.iterator.u16_iterator())};
+                return Buffer{
+                        s.iterator.u16_iterator(),
+                        std::size_t(
+                                e.iterator.u16_iterator()
+                                - s.iterator.u16_iterator())};
             }
 
             static auto encode_one(utf32 const c) { return u16encode(c); }
