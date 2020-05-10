@@ -70,6 +70,13 @@ namespace {
     auto count(std::string const &s) { return s.size(); }
     auto count(f5::u8view s) { return s.memory().size(); }
 
+    void emplace(std::vector<std::string_view> &w, std::string::const_iterator p, std::string::const_iterator e) {
+        w.emplace_back(&*p, e - p);
+    }
+    void emplace(std::vector<f5::u8view> &w, f5::u8string::const_iterator p, f5::u8string::const_iterator e) {
+        w.emplace_back(p, e);
+    }
+
     template<typename S, typename V>
     auto test(std::vector<char> const &data) {
         stats<S, V> s;
@@ -88,7 +95,7 @@ namespace {
         words_view.reserve(s.words_letters.v.first);
         for (auto pos{s.wordlist.v.begin()}, end{s.wordlist.v.end()}; pos != end;) {
             auto ends = std::find(pos, end, '\n');
-            words_view.emplace_back(pos, ends);
+            emplace(words_view, pos, end);
             pos = ends;
             if (pos != end) ++pos;
         }
