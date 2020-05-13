@@ -55,8 +55,10 @@ namespace f5 {
 
 
     template<typename L, typename R>
-    using op_eq_t =
-            decltype(std::declval<L const &>() == std::declval<R const &>());
+    using op_eq_t = decltype(std::declval<L>() == std::declval<R>());
+
+    template<typename L, typename R>
+    using op_meq_t = decltype(std::declval<L>().operator==(std::declval<R>()));
 
 
 }
