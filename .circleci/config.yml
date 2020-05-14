@@ -38,7 +38,7 @@ jobs:
       - run:
           name: cmake
           environment:
-            CMAKE_BUILD_TYPE=<< parameters.variant >>
+            CMAKE_BUILD_TYPE: << parameters.variant >>
           command: |
             mkdir build.tmp
             cd build.tmp
