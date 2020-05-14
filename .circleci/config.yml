@@ -1,16 +1,19 @@
 version: 2
-jobs:
-  build:
-    docker:
+
+executor:
+    gcc:
+      docker:
       - image: ubuntu:focal
 
-    environment:
-      CC: gcc-10
-      CXX: g++-10
+      environment:
+        CC: gcc-10
+        CXX: g++-10
 
+jobs:
+  build:
+    executor: gcc
     steps:
       - checkout
-
       - run:
           name: install
           environment:
