@@ -21,7 +21,9 @@ jobs:
           command: |
             mkdir build.tmp
             cd build.tmp
-            cmake .. -G Ninja
+            cp ../.travis.CMakeLists.txt .
+            cmake . -G Ninja
+            
       - run:
           name: ninja
           command: ninja -C build.tmp
