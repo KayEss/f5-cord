@@ -1,6 +1,12 @@
 version: 2.1
 
 executors:
+  clang:
+    docker:
+    - image: ubuntu:focal
+    environment:
+      CC: clang
+      CXX: clang++
   gcc:
     docker:
     - image: ubuntu:focal
@@ -8,9 +14,15 @@ executors:
       CC: gcc-10
       CXX: g++-10
 
+
 jobs:
   build:
-    executor: gcc
+    parameters:
+      compiler:
+        type: executor
+      variant:
+        type: string
+    executor: << parameters.compiler >>
     steps:
       - checkout
       - run:
@@ -25,6 +37,8 @@ jobs:
 
       - run:
           name: cmake
+          environment:
+            CMAKE_BUILD_TYPE=<< parameters.variant >>
           command: |
             mkdir build.tmp
             cd build.tmp
@@ -37,3 +51,12 @@ jobs:
       - run:
           name: check tests
           command: ninja -C build.tmp check
+
+workflows:
+  all-tests:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              compiler: [gcc, clang]
+              variant: [Debug, Release]
