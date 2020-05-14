@@ -6,7 +6,7 @@ jobs:
 
     environment:
       CC: gcc-10
-      CXX: g++10
+      CXX: g++-10
 
     steps:
       - checkout
