@@ -55,7 +55,7 @@ jobs:
 workflows:
   all-tests:
     jobs:
-      - test:
+      - build:
           matrix:
             parameters:
               compiler: [gcc, clang]
