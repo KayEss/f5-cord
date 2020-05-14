@@ -17,11 +17,6 @@ jobs:
             ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
             dpkg-reconfigure --frontend noninteractive tzdata
       - run:
-          name: submodules
-          command: |
-            sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-            git submodule update --init --recursive
-      - run:
           name: cmake
           command: |
             mkdir build.tmp
