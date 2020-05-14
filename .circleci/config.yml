@@ -1,10 +1,9 @@
-version: 2
+version: 2.1
 
 executor:
     gcc:
       docker:
       - image: ubuntu:focal
-
       environment:
         CC: gcc-10
         CXX: g++-10
