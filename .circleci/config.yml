@@ -14,7 +14,6 @@ executors:
       CC: gcc-10
       CXX: g++-10
 
-
 jobs:
   build:
     parameters:
@@ -30,18 +29,14 @@ jobs:
           name: cmake
           environment:
             CMAKE_BUILD_TYPE: << parameters.variant >>
-          command: |
-            mkdir build.tmp
-            cd build.tmp
-            cp ../.travis.CMakeLists.txt CMakeLists.txt
-            cmake . -G Ninja
+          command: cmake -G Ninja -S .circleci/ -B .circleci/
 
       - run:
           name: ninja
-          command: ninja -C build.tmp
+          command: ninja -C .circleci/
       - run:
           name: check tests
-          command: ninja -C build.tmp check
+          command: ninja -C .circleci/ check
 
 workflows:
   all-tests:
