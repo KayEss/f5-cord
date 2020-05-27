@@ -62,18 +62,26 @@ namespace {
         os << "\n  length " << s.length.v << " " << duration(s.length.t);
         os << "\n  words " << s.words_letters.v.first << " letters "
            << s.words_letters.v.second << " " << duration(s.words_letters.t);
-        os << "\n  word view arrray " << s.words_view.v.size() << " " << duration(s.words_view.t);
-        os << "\n  words arrray " << s.words.v.size() << " " << duration(s.words.t);
+        os << "\n  word view arrray " << s.words_view.v.size() << " "
+           << duration(s.words_view.t);
+        os << "\n  words arrray " << s.words.v.size() << " "
+           << duration(s.words.t);
         return os << '\n';
     }
 
     auto count(std::string const &s) { return s.size(); }
     auto count(f5::u8view s) { return s.memory().size(); }
 
-    void emplace(std::vector<std::string_view> &w, std::string::const_iterator p, std::string::const_iterator e) {
+    void
+            emplace(std::vector<std::string_view> &w,
+                    std::string::const_iterator p,
+                    std::string::const_iterator e) {
         w.emplace_back(&*p, e - p);
     }
-    void emplace(std::vector<f5::u8view> &w, f5::u8string::const_iterator p, f5::u8string::const_iterator e) {
+    void
+            emplace(std::vector<f5::u8view> &w,
+                    f5::u8string::const_iterator p,
+                    f5::u8string::const_iterator e) {
         w.emplace_back(p, e);
     }
 
@@ -93,14 +101,16 @@ namespace {
 
         std::vector<V> words_view;
         words_view.reserve(s.words_letters.v.first);
-        for (auto pos{s.wordlist.v.begin()}, end{s.wordlist.v.end()}; pos != end;) {
+        for (auto pos{s.wordlist.v.begin()}, end{s.wordlist.v.end()};
+             pos != end;) {
             auto ends = std::find(pos, end, '\n');
             emplace(words_view, pos, end);
             pos = ends;
             if (pos != end) ++pos;
         }
         s.words_view.save(std::move(words_view));
-        s.words.save(std::vector<S>{s.words_view.v.begin(), s.words_view.v.end()});
+        s.words.save(
+                std::vector<S>{s.words_view.v.begin(), s.words_view.v.end()});
 
         return s;
     }
