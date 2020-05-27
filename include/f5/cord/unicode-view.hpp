@@ -194,10 +194,6 @@ namespace f5 {
                 auto ends = starts.substr(e - s);
                 return basic_view{starts.begin(), ends.begin()};
             }
-            [[deprecated("Use substr_pos")]] auto
-                    substr(std::size_t s, std::size_t e) const {
-                return substr_pos(s, e);
-            }
 
 
             /// ## Comparisons
